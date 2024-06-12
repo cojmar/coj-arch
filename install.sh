@@ -40,16 +40,39 @@ genfstab -U /mnt > /mnt/etc/fstab
 ln -sf /mnt/usr/share/zoneinfo/$my_time_zone /mnt/etc/localtime
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo $my_host_name > /mnt/etc/hostname
-echo -ne "
+echo -ne '
 systemctl enable sshd && systemctl enable dhcpcd
+# determine processor type and install microcode
+proc_type=$(lscpu)
+if grep -E "GenuineIntel" <<< ${proc_type}; then
+    echo "Installing Intel microcode"
+    pacman -S --noconfirm --needed intel-ucode
+    proc_ucode=intel-ucode.img
+elif grep -E "AuthenticAMD" <<< ${proc_type}; then
+    echo "Installing AMD microcode"
+    pacman -S --noconfirm --needed amd-ucode
+    proc_ucode=amd-ucode.img
+fi
+# Graphics Drivers find and install
+gpu_type=$(lspci)
+if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
+    pacman -S --noconfirm --needed nvidia
+    nvidia-xconfig
+elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
+    pacman -S --noconfirm --needed xf86-video-amdgpu
+elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
+    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
+    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+fi
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
 useradd -U $my_user 
-echo '$my_user ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$my_user 
+echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user 
 chmod 0440 /etc/sudoers.d/$my_user 
 mkdir /home/$my_user && chown $my_user /home/$my_user
 echo AllowUsers $my_user >> /etc/ssh/sshd_config
 passwd $my_user
-" > /mnt/continue.sh
+' > /mnt/continue.sh
 chmod +x /mnt/continue.sh
 clear
 echo pls type ./continue.sh to finish
