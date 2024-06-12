@@ -26,9 +26,9 @@ echo $sep && printf "%s" "Mirors (default $iso) : " && read my_iso && if [[ -z "
 echo $my_iso
 echo $sep && printf "%s" "TimeZone (default $time_zone) : " && read my_time_zone && if [[ -z "$my_time_zone" ]]; then my_time_zone=$time_zone;fi &&echo $my_time_zone
 echo $sep && printf "%s" "Host name (default coj-arch) : " && read my_host_name && if [[ -z "$my_host_name" ]]; then my_host_name=coj_arch;fi
-echo $my_host_name
-
+echo $my_host_name && echo ''
 mkfs.fat $boot_part && mkfs.ext4 $sys_part
+sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 timedatectl set-ntp true
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
@@ -68,27 +68,6 @@ elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
     pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
 fi
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
-echo -ne '
-                                         ▄▆▅▄   ▆▅▄        █     
-                  ▟█▙                  █        █    █       █    
-                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
-                ▟█████▙                
-               ▟███████▙
-              ▂▔▀▜██████▙
-             ▟██▅▂▝▜█████▙
-            ▟█████████████▙
-           ▟███████████████▙
-          ▟█████████████████▙
-         ▟███████████████████▙
-        ▟█████████▛▀▀▜████████▙
-       ▟████████▛      ▜███████▙
-      ▟█████████        ████████▙
-     ▟██████████        █████▆▅▄▃▂
-    ▟██████████▛        ▜█████████▙
-   ▟██████▀▀▀              ▀▀██████▙
-  ▟███▀▘                       ▝▀███▙
- ▟▛▀                               ▀▜▙
-'
 useradd -U $my_user && echo "$my_userALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user && chmod 0440 /etc/sudoers.d/$my_user && mkdir /home/$my_user && chown $my_user /home/$my_user && echo AllowUsers $my_user>> /etc/ssh/sshd_config && passwd $my_user
 echo Arch installed, can reboot now
 rm -rf continue.sh
