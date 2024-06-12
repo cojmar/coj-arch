@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+umount -A --recursive /mnt
 sep="
 
 -----------------
