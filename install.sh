@@ -69,7 +69,7 @@ grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
 useradd -U $my_user 
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user 
 chmod 0440 /etc/sudoers.d/$my_user 
-mkdir /home/$my_user && chown $my_user /home/$my_user
+#mkdir /home/$my_user && chown $my_user /home/$my_user
 echo AllowUsers $my_user >> /etc/ssh/sshd_config
 passwd $my_user
 ' > /mnt/continue.sh
