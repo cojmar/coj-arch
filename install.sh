@@ -66,7 +66,7 @@ elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
     pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
 fi
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
-useradd -m -G wheel,libvirt -s /bin/bash $my_user
+useradd -m -G wheel -s /bin/bash $my_user
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 #mkdir /home/$my_user && chown $my_user /home/$my_user
