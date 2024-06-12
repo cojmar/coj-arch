@@ -4,29 +4,6 @@ sep="
 
 -----------------
 "
-echo "
-                                         ▄▆▅▄   ▆▅▄        █     
-                  ▟█▙                  █        █    █       █    
-                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
-                ▟█████▙                
-               ▟███████▙
-              ▂▔▀▜██████▙
-             ▟██▅▂▝▜█████▙
-            ▟█████████████▙
-           ▟███████████████▙
-          ▟█████████████████▙
-         ▟███████████████████▙
-        ▟█████████▛▀▀▜████████▙
-       ▟████████▛      ▜███████▙
-      ▟█████████        ████████▙
-     ▟██████████        █████▆▅▄▃▂
-    ▟██████████▛        ▜█████████▙
-   ▟██████▀▀▀              ▀▀██████▙
-  ▟███▀▘                       ▝▀███▙
- ▟▛▀                               ▀▜▙
-"
-
-
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" && clear
 echo $sep && echo Welcome to cojmar arch, please note this script is on progress and atm requires u to make partitions in advance && echo ''
 echo U can use cfdisk to make hdd GPT add 1 efi partition 1M and another linux system rest of the disk hf
@@ -91,6 +68,27 @@ elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
     pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
 fi
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
+echo -ne '
+                                         ▄▆▅▄   ▆▅▄        █     
+                  ▟█▙                  █        █    █       █    
+                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
+                ▟█████▙                
+               ▟███████▙
+              ▂▔▀▜██████▙
+             ▟██▅▂▝▜█████▙
+            ▟█████████████▙
+           ▟███████████████▙
+          ▟█████████████████▙
+         ▟███████████████████▙
+        ▟█████████▛▀▀▜████████▙
+       ▟████████▛      ▜███████▙
+      ▟█████████        ████████▙
+     ▟██████████        █████▆▅▄▃▂
+    ▟██████████▛        ▜█████████▙
+   ▟██████▀▀▀              ▀▀██████▙
+  ▟███▀▘                       ▝▀███▙
+ ▟▛▀                               ▀▜▙
+'
 useradd -U $my_user && echo "$my_userALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user && chmod 0440 /etc/sudoers.d/$my_user && mkdir /home/$my_user && chown $my_user /home/$my_user && echo AllowUsers $my_user>> /etc/ssh/sshd_config && passwd $my_user
 echo Arch installed, can reboot now
 rm -rf continue.sh
