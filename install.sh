@@ -76,6 +76,8 @@ echo AllowUsers $my_user >> /etc/ssh/sshd_config
 passwd $my_user
 ' > /mnt/continue.sh
 chmod +x /mnt/continue.sh
+export my_user = $my_user
+export my_disk = $my_disk
 clear
 echo pls type ./continue.sh to finish
 arch-chroot /mnt
