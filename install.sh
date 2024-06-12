@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+sep="
+
+-----------------
+"
+iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" && clear
+echo $sep && echo Welcome to cojmar arch, please note this script is on progress and atm requires u to make partitions in advance && echo ''
+echo U can use cfdisk to make hdd GPT add 1 efi partition 1M and another linux system rest of the disk hf
+echo $sep && echo "Available partitions"
+lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
+echo '' && printf "%s" "Boot partition EFI (default 1) : " && read boot_part && if [[ -z "$boot_part" ]]; then boot_part=1;fi
+boot_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$boot_part' {print $2}')
+echo $boot_part
+echo '' && printf "%s" "OS partition (default 2) : " && read sys_part && if [[ -z "$sys_part" ]]; then sys_part=2;fi
+sys_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$sys_part' {print $2}')
+echo $sys_part
+echo $sep && echo "Available disks"
+lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
+echo '' && printf "%s" "OS disk (default 1) : " && read my_disk && if [[ -z "$my_disk" ]]; then my_disk=1;fi
+my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'| awk 'NR=='$my_disk' {print $2}')
+echo $my_disk
+echo $sep && printf "%s" "Username (default cojmar) : " && read my_user && if [[ -z "$my_user" ]]; then my_user=cojmar;fi
+echo $my_user
+echo $sep && printf "%s" "Mirors (default $iso) : " && read my_iso && if [[ -z "$my_iso" ]]; then my_iso=$iso;fi
+echo $my_iso
+echo $sep && printf "%s" "TimeZone (default $time_zone) : " && read my_time_zone && if [[ -z "$my_time_zone" ]]; then my_time_zone=$time_zone;fi &&echo $my_time_zone
+echo $sep && printf "%s" "Host name (default coj-arch) : " && read my_host_name && if [[ -z "$my_host_name" ]]; then my_host_name=coj_arch;fi
+echo $my_host_name
+mkfs.fat $boot_part && mkfs.ext4 $sys_part
+mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
+timedatectl set-ntp true
+sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
+pacstrap -K /mnt base linux linux-firmware grub efibootmgr openssh dhcpcd sudo vim mc htop ncdu xorg xfce4
+cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
+cp /etc/pacman.conf /mnt/etc/pacman.conf
+echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
+genfstab -U /mnt > /mnt/etc/fstab
+ln -sf /mnt/usr/share/zoneinfo/$my_time_zone /mnt/etc/localtime
+echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
+echo $my_host_name > /mnt/etc/hostname
+echo -ne "
+systemctl enable sshd && systemctl enable dhcpcd
+grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
+useradd -U $my_user 
+echo '$my_user ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$my_user 
+chmod 0440 /etc/sudoers.d/$my_user 
+mkdir /home/$my_user && chown $my_user /home/$my_user
+echo AllowUsers $my_user >> /etc/ssh/sshd_config
+passwd $my_user
+" > /mnt/continue.sh
+chmod +x /mnt/continue.sh
+clear
+echo pls type ./continue.sh to finish
+arch-chroot /mnt
