@@ -90,8 +90,7 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 echo Autologin done
 fi
 
-echo $sep MINIMAL CONFIG DONE $sep OPTIONAL CONFIG $sep
-
+echo $sep MINIMAL CONFIG DONE && echo $sep OPTIONAL CONFIG && echo $sep
 
 echo $sep && printf "%s" "Network manager (replaces dhcpcd not realy needed) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo skiped
@@ -156,7 +155,7 @@ fi
 echo AutostartX done
 fi
 
-echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies code) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 pacman -S --needed --noconfirm chromium xfce4-goodies code
 fi
 
