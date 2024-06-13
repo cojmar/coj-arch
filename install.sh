@@ -27,7 +27,7 @@ echo $my_iso
 echo $sep && printf "%s" "TimeZone (default $time_zone) : " && read my_time_zone && if [[ -z "$my_time_zone" ]]; then my_time_zone=$time_zone;fi &&echo $my_time_zone
 echo $sep && printf "%s" "Host name (default coj-arch) : " && read my_host_name && if [[ -z "$my_host_name" ]]; then my_host_name=coj_arch;fi
 echo $my_host_name && echo ''
-mkfs.fat $boot_part && mkfs.ext4 $sys_part
+mkfs.fat -F $boot_part && mkfs.ext4 -F $sys_part
 sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 timedatectl set-ntp true
@@ -68,8 +68,11 @@ elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
     pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
 fi
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
-useradd -U $my_user && echo "$my_userALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user && chmod 0440 /etc/sudoers.d/$my_user && mkdir /home/$my_user && chown $my_user /home/$my_user && echo AllowUsers $my_user>> /etc/ssh/sshd_config && passwd $my_user
-echo Arch installed, can reboot now
+useradd -U $my_user
+echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
+chmod 0440 /etc/sudoers.d/$my_user
+mkdir /home/$my_user && chown $my_user /home/$my_user 
+echo AllowUsers $my_user>> /etc/ssh/sshd_config && passwd $my_user
 rm -rf continue.sh
 ' > /mnt/continue.sh
 chmod +x /mnt/continue.sh
@@ -78,3 +81,4 @@ export my_disk = $my_disk
 clear
 #echo pls type ./continue.sh to finish
 arch-chroot /mnt ./continue.sh
+echo $sep && printf "%s" "Arch installed, reboot? (default y) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
