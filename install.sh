@@ -104,7 +104,29 @@ systemctl enable NetworkManager.service
 fi
 
 echo $sep && printf "%s" "GUI (xorg xfce4 unzip graphicdrivers audiomixer) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-echo console only
+
+echo $sep && printf "%s" "Install Video/Audio drivers? ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo Audio/Video drivers skiped
+else
+pacman -S --needed --noconfirm alsa-utils libva-utils lib32-mesa
+
+# Graphics Drivers find and install
+gpu_type=$(lspci)
+if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
+    pacman -S --noconfirm --needed nvidia lib32-nvidia-utils
+    nvidia-xconfig
+elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
+    pacman -S --noconfirm --needed xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon
+elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
+    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver
+elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
+    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver
+else
+    pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
+    systemctl enable vmtoolsd
+fi
+fi
+
 else
 pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse
 
