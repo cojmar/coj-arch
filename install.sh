@@ -138,6 +138,12 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 echo Autologin done
 fi
 
+echo $sep && printf "%s" "Extra packages :" && read do_reb && if [[ -z "$do_reb" ]]; then
+echo skiped
+else
+pacman -S --needed --noconfirm $do_reb
+fi
+
 rm -rf continue.sh
 ' > /mnt/continue.sh
 chmod +x /mnt/continue.sh
