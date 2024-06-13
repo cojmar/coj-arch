@@ -4,11 +4,6 @@ export sep=$(echo -e "\n===========================\n \n")
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" && clear
 echo $sep && echo  Welcome to cojmar arch, please note this script is on progress and atm requires u to make partitions in advance && echo ''
 echo U can use cfdisk to make hdd GPT add 1 efi partition 1M and another linux system rest of the disk hf
-echo $sep && echo "Available disks"
-lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
-echo '' && printf "%s" "OS disk (default 1) : " && read my_disk && if [[ -z "$my_disk" ]]; then my_disk=1;fi
-my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'| awk 'NR=='$my_disk' {print $2}')
-echo $my_disk
 echo $sep && echo "Available partitions"
 lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
 echo '' && printf "%s" "Boot partition EFI (default 1) : " && read boot_part && if [[ -z "$boot_part" ]]; then boot_part=1;fi
@@ -17,6 +12,11 @@ echo $boot_part
 echo '' && printf "%s" "OS partition (default 2) : " && read sys_part && if [[ -z "$sys_part" ]]; then sys_part=2;fi
 sys_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$sys_part' {print $2}')
 echo $sys_part
+echo $sep && echo "Available disks"
+lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
+echo '' && printf "%s" "OS disk (default 1) : " && read my_disk && if [[ -z "$my_disk" ]]; then my_disk=1;fi
+my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'| awk 'NR=='$my_disk' {print $2}')
+echo $my_disk
 echo $sep && printf "%s" "Username (default cojmar) : " && read my_user && if [[ -z "$my_user" ]]; then my_user=cojmar;fi
 echo $my_user
 echo $sep && printf "%s" "Mirors (default $iso) : " && read my_iso && if [[ -z "$my_iso" ]]; then my_iso=$iso;fi
@@ -26,19 +26,6 @@ echo $sep && printf "%s" "Host name (default cojarch) : " && read my_host_name &
 echo $my_host_name && echo ''
 mkfs.fat $boot_part && mkfs.ext4 -F $sys_part && sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
-genfstab -U /mnt > /mnt/etc/fstab
-echo $sep && printf "Make swap? (leave blank for yes) :" && read do_this && if [[ -z "$do_this" ]]; then 
-    # Put swap into the actual system, not into RAM disk, otherwise there is no point in it, it'll cache RAM into RAM. So, /mnt/ everything.
-    mkdir -p /mnt/opt/swap # make a dir that we can apply NOCOW to to make it btrfs-friendly.
-    chattr +C /mnt/opt/swap # apply NOCOW, btrfs needs that.
-    dd if=/dev/zero of=/mnt/opt/swap/swapfile bs=1M count=2048 status=progress
-    chmod 600 /mnt/opt/swap/swapfile # set permissions.
-    chown root /mnt/opt/swap/swapfile
-    mkswap /mnt/opt/swap/swapfile
-    swapon /mnt/opt/swap/swapfile
-    # The line below is written to /mnt/ but doesn't contain /mnt/, since it's just / for the system itself.
-    echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
-fi
 timedatectl set-ntp true
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
@@ -47,10 +34,11 @@ pacstrap -K /mnt base linux linux-firmware grub efibootmgr openssh dhcpcd sudo v
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
+genfstab -U /mnt > /mnt/etc/fstab
 ln -sf /mnt/usr/share/zoneinfo/$my_time_zone /mnt/etc/localtime
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo $my_host_name > /mnt/etc/hostname
-post_install=$(echo -ne '
+echo -ne '
 systemctl enable sshd && systemctl enable dhcpcd
 # determine processor type and install microcode
 proc_type=$(lscpu)
@@ -88,6 +76,18 @@ echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
+echo $sep && printf "Make swap? (leave blank for yes) :" && read do_this && if [[ -z "$do_this" ]]; then 
+    # Put swap into the actual system, not into RAM disk, otherwise there is no point in it, itll cache RAM into RAM. So, /mnt/ everything.
+    mkdir -p /mnt/opt/swap # make a dir that we can apply NOCOW to to make it btrfs-friendly.
+    chattr +C /mnt/opt/swap # apply NOCOW, btrfs needs that.
+    dd if=/dev/zero of=/mnt/opt/swap/swapfile bs=1M count=2048 status=progress
+    chmod 600 /mnt/opt/swap/swapfile # set permissions.
+    chown root /mnt/opt/swap/swapfile
+    mkswap /mnt/opt/swap/swapfile
+    swapon /mnt/opt/swap/swapfile
+    # The line below is written to /mnt/ but doesnt contain /mnt/, since it s just / for the system itself.
+    echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
+fi
 echo $sep && printf "%s" "Autostart Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo -ne "
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
@@ -106,11 +106,12 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 echo Autologin done
 fi
 pacman -Syy
-
-')
+rm -rf continue.sh
+' > /mnt/continue.sh
+chmod +x /mnt/continue.sh
 export my_user = $my_user
 export my_disk = $my_disk
-arch-chroot /mnt /bin/sh -c $post_install
+arch-chroot /mnt ./continue.sh
 clear
 echo "
 
