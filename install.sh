@@ -203,7 +203,7 @@ fi
 fi
 
 echo $sep && printf "%s" "Gaming (adds wine winetricks) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-pacman -S --needed --noconfirm wine-staging winetricks zenity lib32-sdl2
+pacman -S --needed --noconfirm wine winetricks zenity lib32-sdl2
 fi
 
 fi
