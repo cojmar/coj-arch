@@ -77,8 +77,8 @@ chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
 echo $sep && printf "%s" "Autostart Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-echo ne "
-if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+echo -ne "
+if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
     startxfce4
 fi
 " > /home/$my_user/bash_profile && chown $my_user /home/$my_user/bash_profile
