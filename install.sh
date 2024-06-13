@@ -57,6 +57,7 @@ echo -ne '
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
 localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_TIME="en_US.UTF-8"
+localectl --no-ask-password set-keymap en
 pacman -Syy
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
 systemctl enable sshd && systemctl enable dhcpcd
@@ -107,24 +108,23 @@ echo console only
 else
 pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol
 
+#openGL Drivers
+pacman -S --needed --noconfirm  libva-utils lib32-mesa
+
 # Graphics Drivers find and install
 gpu_type=$(lspci)
 if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed nvidia
+    pacman -S --noconfirm --needed nvidia lib32-nvidia-utils
     nvidia-xconfig
 elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
-    pacman -S --noconfirm --needed xf86-video-amdgpu
+    pacman -S --noconfirm --needed xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon
 elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver
 elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver
 else
     pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
     systemctl enable vmtoolsd
-fi
-if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
-    Xorg :0 -configure
-    cp /root/xorg.conf.new /etc/X11/xorg.conf
 fi
 
 #AUDIO
@@ -160,8 +160,8 @@ echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodie
 pacman -S --needed --noconfirm chromium xfce4-goodies
 fi
 
-echo $sep && printf "%s" "Gaming (adds wine winetricks) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-pacman -S --needed --noconfirm wine winetricks zenity
+echo $sep && printf "%s" "Gaming (adds wine winetricks and lib32 libs) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm wine winetricks zenity lib32-alsa-plugins lib32-alsa-lib lib32-libpulse lib32-sdl2
 fi
 
 fi
