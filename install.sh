@@ -27,7 +27,7 @@ echo $my_host_name && echo ''
 mkfs.fat $boot_part && mkfs.ext4 -F $sys_part && sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 genfstab -U /mnt > /mnt/etc/fstab
-echo $sep && printf "Make swap? (leave blank for yes) :" && read my_host_name && if [[ -z "$my_host_name" ]]; then 
+echo $sep && printf "Make swap? (leave blank for yes) :" && read do_this && if [[ -z "$do_this" ]]; then 
     # Put swap into the actual system, not into RAM disk, otherwise there is no point in it, it'll cache RAM into RAM. So, /mnt/ everything.
     mkdir -p /mnt/opt/swap # make a dir that we can apply NOCOW to to make it btrfs-friendly.
     chattr +C /mnt/opt/swap # apply NOCOW, btrfs needs that.
