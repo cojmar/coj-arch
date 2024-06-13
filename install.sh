@@ -108,7 +108,7 @@ echo $sep && printf "%s" "GUI (xorg xfce4 unzip graphicdrivers audiomixer) ? (le
 echo $sep && printf "%s" "Install Video/Audio drivers? ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo Audio/Video drivers skiped
 else
-pacman -S --needed --noconfirm alsa-utils 
+pacman -S --needed --noconfirm alsa-utils libva-utils lib32-mesa
 # Graphics Drivers find and install
 gpu_type=$(lspci)
 if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
@@ -127,9 +127,7 @@ fi
 fi
 
 else
-pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse
-
-
+pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse libva-utils lib32-mesa
 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
@@ -176,8 +174,8 @@ fi
 echo AutostartX done
 fi
 
-echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies lib32-mesa[openGL] vulkan drivers) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-pacman -S --needed --noconfirm chromium xfce4-goodies libva-utils lib32-mesa
+echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies vulkan drivers) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm chromium xfce4-goodies
 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
