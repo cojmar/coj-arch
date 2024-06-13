@@ -137,7 +137,7 @@ fi
 fi
 
 else
-pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse libva-utils lib32-mesa
+pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse libva-utils lib32-mesa xfce4-taskmanager
 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
@@ -145,11 +145,11 @@ if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
     pacman -S --noconfirm --needed nvidia lib32-nvidia-utils
     nvidia-xconfig
 elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
-    pacman -S --noconfirm --needed xf86-video-amdgpu
+    pacman -S --noconfirm --needed xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon
 elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl
+    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel
 elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl
+    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel
 else
     pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
     systemctl enable vmtoolsd
@@ -182,23 +182,6 @@ if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
 fi
 " > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
 echo AutostartX done
-fi
-
-echo $sep && printf "%s" "install bleeding edge drivers? (vulkan drivers) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-
-# Graphics Drivers find and install
-gpu_type=$(lspci)
-if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed lib32-nvidia-utils
-    nvidia-xconfig
-elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
-    pacman -S --noconfirm --needed vulkan-radeon lib32-vulkan-radeon
-elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed lib32-vulkan-intel vulkan-intel 
-elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-    pacman -S --needed --noconfirm lib32-vulkan-intel vulkan-intel 
-fi
-
 fi
 
 echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
