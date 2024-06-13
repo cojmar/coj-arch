@@ -50,7 +50,7 @@ genfstab -U /mnt > /mnt/etc/fstab
 ln -sf /mnt/usr/share/zoneinfo/$my_time_zone /mnt/etc/localtime
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo $my_host_name > /mnt/etc/hostname
-echo -ne '
+post_install=$(echo -ne '
 systemctl enable sshd && systemctl enable dhcpcd
 # determine processor type and install microcode
 proc_type=$(lscpu)
@@ -106,12 +106,11 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 echo Autologin done
 fi
 pacman -Syy
-rm -rf continue.sh
-' > /mnt/continue.sh
-chmod +x /mnt/continue.sh
+
+')
 export my_user = $my_user
 export my_disk = $my_disk
-arch-chroot /mnt ./continue.sh
+arch-chroot /mnt /bin/sh -c $post_install
 clear
 echo "
 
