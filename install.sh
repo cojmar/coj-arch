@@ -99,10 +99,10 @@ systemctl stop dhcpcd
 systemctl enable NetworkManager.service
 fi
 
-echo $sep && printf "%s" "GUI (xorg xfce4 graphicdrivers) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo $sep && printf "%s" "GUI (xorg xfce4 unzip graphicdrivers) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo console only
 else
-pacman -S --needed --noconfirm xorg xfce4
+pacman -S --needed --noconfirm xorg xfce4 unzip
 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
