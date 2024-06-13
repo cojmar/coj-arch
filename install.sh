@@ -90,7 +90,7 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 echo Autologin done
 fi
 
-echo $sep && printf "%s" "Network manager (replaces dhcpcd) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo $sep && printf "%s" "Network manager (replaces dhcpcd not realy needed) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo skiped
 else
 pacman -S --needed --noconfirm networkmanager dhclient
