@@ -54,6 +54,9 @@ else
     echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
 fi
 echo -ne '
+sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+locale-gen
+localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_TIME="en_US.UTF-8"
 pacman -Syy
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
 systemctl enable sshd && systemctl enable dhcpcd
