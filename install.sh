@@ -80,5 +80,5 @@ chmod +x /mnt/continue.sh
 export my_user = $my_user
 export my_disk = $my_disk
 arch-chroot /mnt ./continue.sh
-echo 
-echo '' && echo $sep && printf "%s" "Arch installed, reboot? (default y) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
+clear
+echo $sep && printf "%s" "Arch installed, reboot? (default y) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
