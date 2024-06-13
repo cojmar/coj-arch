@@ -60,10 +60,10 @@ else
     # The line below is written to /mnt/ but doesnt contain /mnt/, since it s just / for the system itself.
     echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
 fi
-export $test=$my_iso
+
 echo -ne '
 hwclock --systohc
-sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
 locale-gen
 pacman -Syy
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
