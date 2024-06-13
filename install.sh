@@ -92,7 +92,7 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 echo Autologin done
 fi
 
-echo $sep MINIMAL CONFIG DONE && echo $sep OPTIONAL CONFIG && echo $sep
+echo -e $sep \n MINIMAL CONFIG DONE \n $sep OPTIONAL CONFIG \n 
 
 echo $sep && printf "%s" "Network manager (replaces dhcpcd not realy needed) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo skiped
@@ -108,19 +108,18 @@ echo $sep && printf "%s" "GUI (xorg xfce4 unzip graphicdrivers audiomixer) ? (le
 echo $sep && printf "%s" "Install Video/Audio drivers? ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo Audio/Video drivers skiped
 else
-pacman -S --needed --noconfirm alsa-utils libva-utils lib32-mesa
-
+pacman -S --needed --noconfirm alsa-utils 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
 if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed nvidia lib32-nvidia-utils
+    pacman -S --noconfirm --needed nvidia
     nvidia-xconfig
 elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
-    pacman -S --noconfirm --needed xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon
+    pacman -S --noconfirm --needed xf86-video-amdgpu
 elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver
+    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl
 elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver
+    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl
 else
     pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
     systemctl enable vmtoolsd
@@ -130,8 +129,7 @@ fi
 else
 pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse
 
-#openGL Drivers
-pacman -S --needed --noconfirm  libva-utils lib32-mesa
+
 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
@@ -139,11 +137,11 @@ if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
     pacman -S --noconfirm --needed nvidia lib32-nvidia-utils
     nvidia-xconfig
 elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
-    pacman -S --noconfirm --needed xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon
+    pacman -S --noconfirm --needed xf86-video-amdgpu
 elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver
+    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl
 elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver
+    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl
 else
     pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
     systemctl enable vmtoolsd
@@ -178,11 +176,25 @@ fi
 echo AutostartX done
 fi
 
-echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-pacman -S --needed --noconfirm chromium xfce4-goodies
+echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies lib32-mesa[openGL] vulkan drivers) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm chromium xfce4-goodies libva-utils lib32-mesa
+
+# Graphics Drivers find and install
+gpu_type=$(lspci)
+if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
+    pacman -S --noconfirm --needed lib32-nvidia-utils
+    nvidia-xconfig
+elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
+    pacman -S --noconfirm --needed vulkan-radeon lib32-vulkan-radeon
+elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
+    pacman -S --noconfirm --needed lib32-vulkan-intel vulkan-intel 
+elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
+    pacman -S --needed --noconfirm lib32-vulkan-intel vulkan-intel 
 fi
 
-echo $sep && printf "%s" "Gaming (adds wine winetricks and lib32 libs) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+fi
+
+echo $sep && printf "%s" "Gaming (adds wine winetricks) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 pacman -S --needed --noconfirm wine-staging winetricks zenity lib32-sdl2
 fi
 
@@ -203,7 +215,7 @@ arch-chroot /mnt ./continue.sh
 clear
 df -h /mnt
 echo "
-                                       ▄▄▄▄▄▄   ▄▄▄▄▄▄       ▄▄    
+                                       ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
                   ▟█▙                  █        █    █       █    
                  ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
                 ▟█████▙                
