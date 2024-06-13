@@ -40,8 +40,11 @@ cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 genfstab -U /mnt > /mnt/etc/fstab
+
 ln -sf /mnt/usr/share/zoneinfo/$my_time_zone /mnt/etc/localtime
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
+echo  en > /mnt/etc/vconsole.conf
+
 echo $my_host_name > /mnt/etc/hostname
 echo $sep && printf "Make swap? (leave blank for NO) :" && read do_this && if [[ -z "$do_this" ]]; then 
 echo no swap
@@ -59,10 +62,9 @@ else
 fi
 export $test=$my_iso
 echo -ne '
+hwclock --systohc
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
-#localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_TIME="en_US.UTF-8"
-#localectl --no-ask-password set-keymap en
 pacman -Syy
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
 systemctl enable sshd && systemctl enable dhcpcd
