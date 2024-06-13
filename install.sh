@@ -166,8 +166,6 @@ fi
 
 fi
 
-
-
 echo $sep && printf "%s" "Extra packages :" && read do_reb && if [[ -z "$do_reb" ]]; then
 echo skiped
 else
