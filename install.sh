@@ -31,7 +31,7 @@ sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
 pacman -S --noconfirm archlinux-keyring
-pacstrap -K /mnt base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu --noconfirm --needed
+pacstrap -K /mnt base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
@@ -89,6 +89,13 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 " > /etc/systemd/system/getty@tty1.service.d/override.conf
 echo Autologin done
 fi
+
+echo $sep MINIMAL CONFIG DONE $sep OPTIONAL CONFIG $sep
+
+echo $sep && printf "%s" "Basic tools (mc htop ncdu) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm mc htop ncdu
+fi
+ 
 
 echo $sep && printf "%s" "Network manager (replaces dhcpcd not realy needed) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo skiped
