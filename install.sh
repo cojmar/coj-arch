@@ -106,7 +106,7 @@ fi
 echo $sep && printf "%s" "GUI (xorg xfce4 unzip graphicdrivers audiomixer) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo console only
 else
-pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol
+pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse
 
 #openGL Drivers
 pacman -S --needed --noconfirm  libva-utils lib32-mesa
@@ -161,7 +161,7 @@ pacman -S --needed --noconfirm chromium xfce4-goodies
 fi
 
 echo $sep && printf "%s" "Gaming (adds wine winetricks and lib32 libs) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-pacman -S --needed --noconfirm wine winetricks zenity lib32-alsa-plugins lib32-alsa-lib lib32-libpulse lib32-sdl2
+pacman -S --needed --noconfirm wine winetricks zenity lib32-sdl2
 fi
 
 fi
