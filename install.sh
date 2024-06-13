@@ -30,7 +30,8 @@ timedatectl set-ntp true
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
-pacstrap -K /mnt base linux linux-firmware grub efibootmgr openssh dhcpcd sudo vim mc htop ncdu xorg xfce4
+pacman -S --noconfirm archlinux-keyring
+pacstrap -K /mnt base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo vim mc htop ncdu --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
@@ -51,7 +52,10 @@ echo $sep && printf "Make swap? (leave blank for yes) :" && read do_this && if [
     echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
 fi
 echo -ne '
+pacman -Syy
+grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
 systemctl enable sshd && systemctl enable dhcpcd
+
 # determine processor type and install microcode
 proc_type=$(lscpu)
 if grep -E "GenuineIntel" <<< ${proc_type}; then
@@ -63,6 +67,7 @@ elif grep -E "AuthenticAMD" <<< ${proc_type}; then
     pacman -S --noconfirm --needed amd-ucode
     proc_ucode=amd-ucode.img
 fi
+
 # Graphics Drivers find and install
 gpu_type=$(lspci)
 if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
@@ -82,12 +87,16 @@ if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
     Xorg :0 -configure
     cp /root/xorg.conf.new /etc/X11/xorg.conf
 fi
-grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
+
 useradd -U $my_user
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
+
+echo $sep && printf "%s" "Add Xorg/Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm xorg xfce4
+
 echo $sep && printf "%s" "Autostart Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo -ne "
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
@@ -96,6 +105,16 @@ fi
 " > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
 echo AutostartX done
 fi
+
+echo $sep && printf "%s" "Optimise for desktop experience ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+systemctl disable dhcpcd
+systemctl stop dhcpcd
+pacman -S --needed --noconfirm chromium xfce4-goodies code networkmanager dhclient
+systemctl enable NetworkManager.service
+fi
+
+fi
+
 echo $sep && printf "%s" "Autologin ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
 echo -ne "
@@ -105,7 +124,7 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 " > /etc/systemd/system/getty@tty1.service.d/override.conf
 echo Autologin done
 fi
-pacman -Syy
+
 rm -rf continue.sh
 ' > /mnt/continue.sh
 chmod +x /mnt/continue.sh
