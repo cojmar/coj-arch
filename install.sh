@@ -90,7 +90,7 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 echo Autologin done
 fi
 
-echo $sep MINIMAL CONFIG DONE $sep OPTIONAL CONFIG $sep
+echo $sep MINIMAL CONFIG DONE (kernel dhcpd sudo ssh) $sep OPTIONAL CONFIG $sep
 
 echo $sep && printf "%s" "Basic tools (mc htop ncdu) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 pacman -S --needed --noconfirm mc htop ncdu
