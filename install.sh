@@ -92,7 +92,7 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 echo Autologin done
 fi
 
-echo -e $sep \n MINIMAL CONFIG DONE \n $sep OPTIONAL CONFIG \n 
+echo -en "$sep \n MINIMAL CONFIG DONE \n $sep OPTIONAL CONFIG \n" 
 
 echo $sep && printf "%s" "Network manager (replaces dhcpcd not realy needed) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo skiped
@@ -125,34 +125,7 @@ else
     systemctl enable vmtoolsd
 fi
 
-echo -ne "
-clear
-df -h /
-echo \"
-                                       ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
-                  ▟█▙                  █        █    █       █    
-                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
-                ▟█████▙                
-               ▟███████▙
-              ▂▔▀▜██████▙
-             ▟██▅▂▝▜█████▙
-            ▟█████████████▙
-           ▟███████████████▙
-          ▟█████████████████▙
-         ▟███████████████████▙
-        ▟█████████▛▀▀▜████████▙
-       ▟████████▛      ▜███████▙
-      ▟█████████        ████████▙
-     ▟██████████        █████▆▅▄▃▂
-    ▟██████████▛        ▜█████████▙
-   ▟██████▀▀▀              ▀▀██████▙
-  ▟███▀▘                       ▝▀███▙
- ▟▛▀                               ▀▜▙
 
- installed tools: mc htop ncdu
-\"
-
-" > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
 
 fi
 
