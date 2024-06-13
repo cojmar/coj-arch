@@ -158,7 +158,7 @@ pacman -S --needed --noconfirm chromium xfce4-goodies
 fi
 
 echo $sep && printf "%s" "Gaming (adds wine winetricks) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-pacman -S --needed --noconfirm wine winetricks
+pacman -S --needed --noconfirm wine winetricks zenity
 fi
 
 fi
