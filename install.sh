@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 umount -A --recursive /mnt
-export sep=$(echo -e "\n o====||:::::::::::::::::::::::>\n \n")
+export sep=$(echo -e "\n===========================\n \n")
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" && clear
 echo $sep && echo  Welcome to cojmar arch, please note this script is on progress and atm requires u to make partitions in advance && echo ''
 echo U can use cfdisk to make hdd GPT add 1 efi partition 1M and another linux system rest of the disk hf
