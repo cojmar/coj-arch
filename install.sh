@@ -184,8 +184,7 @@ fi
 echo AutostartX done
 fi
 
-echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies vulkan drivers) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-pacman -S --needed --noconfirm chromium xfce4-goodies
+echo $sep && printf "%s" "install bleeding edge drivers? (vulkan drivers) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
@@ -200,6 +199,10 @@ elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
     pacman -S --needed --noconfirm lib32-vulkan-intel vulkan-intel 
 fi
 
+fi
+
+echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm chromium xfce4-goodies
 fi
 
 echo $sep && printf "%s" "Gaming (adds wine winetricks) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
