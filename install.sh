@@ -94,7 +94,15 @@ chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
 
-echo $sep && printf "%s" "Add Xorg/Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+
+echo $sep && printf "%s" "Network manager (replaces dhcpcd) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm networkmanager dhclient
+systemctl disable dhcpcd
+systemctl stop dhcpcd
+systemctl enable NetworkManager.service
+fi
+
+echo $sep && printf "%s" "GUI (xorg xfce4) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 pacman -S --needed --noconfirm xorg xfce4
 
 echo $sep && printf "%s" "Autostart Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
@@ -106,11 +114,12 @@ fi
 echo AutostartX done
 fi
 
-echo $sep && printf "%s" "Optimise for desktop experience ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-systemctl disable dhcpcd
-systemctl stop dhcpcd
-pacman -S --needed --noconfirm chromium xfce4-goodies code networkmanager dhclient
-systemctl enable NetworkManager.service
+echo $sep && printf "%s" "Optimise for desktop experience (chromium xfce4-goodies code) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm chromium xfce4-goodies code
+fi
+
+echo $sep && printf "%s" "Gaming (adds wine winetricks) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm wine winetricks
 fi
 
 fi
