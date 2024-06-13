@@ -76,6 +76,17 @@ chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
 
+echo $sep && printf "%s" "Autologin ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo secure
+else
+mkdir -p /etc/systemd/system/getty@tty1.service.d/
+echo -ne "
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
+" > /etc/systemd/system/getty@tty1.service.d/override.conf
+echo Autologin done
+fi
 
 echo $sep && printf "%s" "Network manager (replaces dhcpcd) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo skiped
@@ -86,7 +97,9 @@ systemctl stop dhcpcd
 systemctl enable NetworkManager.service
 fi
 
-echo $sep && printf "%s" "GUI (xorg xfce4 graphicdrivers) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo $sep && printf "%s" "GUI (xorg xfce4 graphicdrivers) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo console only
+else
 pacman -S --needed --noconfirm xorg xfce4
 
 # Graphics Drivers find and install
@@ -128,15 +141,7 @@ fi
 
 fi
 
-echo $sep && printf "%s" "Autologin ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-mkdir -p /etc/systemd/system/getty@tty1.service.d/
-echo -ne "
-[Service]
-ExecStart=
-ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
-" > /etc/systemd/system/getty@tty1.service.d/override.conf
-echo Autologin done
-fi
+
 
 echo $sep && printf "%s" "Extra packages :" && read do_reb && if [[ -z "$do_reb" ]]; then
 echo skiped
