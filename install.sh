@@ -81,7 +81,7 @@ echo -ne "
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
     startxfce4
 fi
-" > /home/$my_user/bash_profile && chown $my_user /home/$my_user/bash_profile
+" > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
 echo AutostartX done
 fi
 echo $sep && printf "%s" "Autologin ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
