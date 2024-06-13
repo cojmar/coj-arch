@@ -39,7 +39,9 @@ genfstab -U /mnt > /mnt/etc/fstab
 ln -sf /mnt/usr/share/zoneinfo/$my_time_zone /mnt/etc/localtime
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo $my_host_name > /mnt/etc/hostname
-echo $sep && printf "Make swap? (leave blank for yes) :" && read do_this && if [[ -z "$do_this" ]]; then 
+echo $sep && printf "Make swap? (leave blank for NO) :" && read do_this && if [[ -z "$do_this" ]]; then 
+echo no swap
+else
     # Put swap into the actual system, not into RAM disk, otherwise there is no point in it, itll cache RAM into RAM. So, /mnt/ everything.
     mkdir -p /mnt/opt/swap # make a dir that we can apply NOCOW to to make it btrfs-friendly.
     chattr +C /mnt/opt/swap # apply NOCOW, btrfs needs that.
