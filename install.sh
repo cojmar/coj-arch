@@ -24,8 +24,7 @@ echo $my_iso
 echo $sep && printf "%s" "TimeZone (default $time_zone) : " && read my_time_zone && if [[ -z "$my_time_zone" ]]; then my_time_zone=$time_zone;fi &&echo $my_time_zone
 echo $sep && printf "%s" "Host name (default cojarch) : " && read my_host_name && if [[ -z "$my_host_name" ]]; then my_host_name=cojarch;fi
 echo $my_host_name && echo ''
-mkfs.fat $boot_part && mkfs.ext4 -F $sys_part
-sync
+mkfs.fat $boot_part && mkfs.ext4 -F $sys_part && sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 timedatectl set-ntp true
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
@@ -63,6 +62,13 @@ elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
     pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
 elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
     pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+else
+    pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
+    systemctl enable vmtoolsd
+fi
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+    Xorg :0 -configure
+    cp /root/xorg.conf.new /etc/X11/xorg.conf
 fi
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
 useradd -U $my_user
@@ -70,6 +76,13 @@ echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
+echo $sep && printf "%s" "Autostart Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo ne "
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+    startxfce4
+fi
+" > /home/$my_user/bash_profile && chown $my_user /home/$my_user/bash_profile
+fi
 rm -rf continue.sh
 ' > /mnt/continue.sh
 chmod +x /mnt/continue.sh
