@@ -165,10 +165,9 @@ export my_user = $my_user
 export my_disk = $my_disk
 arch-chroot /mnt ./continue.sh
 clear
+df -h /mnt
 echo "
-
-
-                                         ▄▆▅▄   ▆▅▄        █     
+                                        ▄▄▄▄▄▄   ▄▄▄▄▄▄       ▄▄    
                   ▟█▙                  █        █    █       █    
                  ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
                 ▟█████▙                
