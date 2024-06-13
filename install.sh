@@ -124,6 +124,36 @@ else
     pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
     systemctl enable vmtoolsd
 fi
+
+echo -ne "
+clear
+df -h /
+echo \"
+                                       ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
+                  ▟█▙                  █        █    █       █    
+                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
+                ▟█████▙                
+               ▟███████▙
+              ▂▔▀▜██████▙
+             ▟██▅▂▝▜█████▙
+            ▟█████████████▙
+           ▟███████████████▙
+          ▟█████████████████▙
+         ▟███████████████████▙
+        ▟█████████▛▀▀▜████████▙
+       ▟████████▛      ▜███████▙
+      ▟█████████        ████████▙
+     ▟██████████        █████▆▅▄▃▂
+    ▟██████████▛        ▜█████████▙
+   ▟██████▀▀▀              ▀▀██████▙
+  ▟███▀▘                       ▝▀███▙
+ ▟▛▀                               ▀▜▙
+
+ installed tools: mc htop ncdu
+\"
+
+" > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
+
 fi
 
 else
