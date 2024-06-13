@@ -183,4 +183,4 @@ echo "
   ▟███▀▘                       ▝▀███▙
  ▟▛▀                               ▀▜▙
 "
-printf "%s" "Arch installed, reboot? (default y) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
+printf "%s" "Arch installed, reboot? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
