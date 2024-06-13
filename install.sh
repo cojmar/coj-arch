@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 umount -A --recursive /mnt
-sep="
+export sep="
 
 -----------------
 "
@@ -72,12 +72,11 @@ useradd -U $my_user
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
-echo AllowUsers $my_user>> /etc/ssh/sshd_config && passwd $my_user
+echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
 rm -rf continue.sh
 ' > /mnt/continue.sh
 chmod +x /mnt/continue.sh
 export my_user = $my_user
 export my_disk = $my_disk
-clear
 arch-chroot /mnt ./continue.sh
 echo $sep && printf "%s" "Arch installed, reboot? (default y) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
