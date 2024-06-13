@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 umount -A --recursive /mnt
-export sep="
+export sep = echo -ne "
 
 )==|:::::::::::::::::::::::>
 
