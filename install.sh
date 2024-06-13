@@ -93,6 +93,7 @@ ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
 " > /etc/systemd/system/getty@tty1.service.d/override.conf
 echo Autologin done
 fi
+pacman -Syy
 rm -rf continue.sh
 ' > /mnt/continue.sh
 chmod +x /mnt/continue.sh
