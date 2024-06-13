@@ -82,6 +82,16 @@ if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
     startxfce4
 fi
 " > /home/$my_user/bash_profile && chown $my_user /home/$my_user/bash_profile
+echo AutostartX done
+fi
+echo $sep && printf "%s" "Autologin ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+mkdir -p /etc/systemd/system/getty@tty1.service.d/
+echo -ne "
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
+" > /etc/systemd/system/getty@tty1.service.d/override.conf
+echo Autologin done
 fi
 rm -rf continue.sh
 ' > /mnt/continue.sh
