@@ -68,6 +68,27 @@ elif grep -E "AuthenticAMD" <<< ${proc_type}; then
     proc_ucode=amd-ucode.img
 fi
 
+
+
+useradd -U $my_user
+echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
+chmod 0440 /etc/sudoers.d/$my_user
+mkdir /home/$my_user && chown $my_user /home/$my_user 
+echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
+
+
+echo $sep && printf "%s" "Network manager (replaces dhcpcd) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo skiped
+else
+pacman -S --needed --noconfirm networkmanager dhclient
+systemctl disable dhcpcd
+systemctl stop dhcpcd
+systemctl enable NetworkManager.service
+fi
+
+echo $sep && printf "%s" "GUI (xorg xfce4 graphicdrivers) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+pacman -S --needed --noconfirm xorg xfce4
+
 # Graphics Drivers find and install
 gpu_type=$(lspci)
 if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
@@ -87,25 +108,6 @@ if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
     Xorg :0 -configure
     cp /root/xorg.conf.new /etc/X11/xorg.conf
 fi
-
-useradd -U $my_user
-echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
-chmod 0440 /etc/sudoers.d/$my_user
-mkdir /home/$my_user && chown $my_user /home/$my_user 
-echo AllowUsers $my_user >> /etc/ssh/sshd_config && echo '' && echo $sep Seting Passward for $my_user && passwd $my_user
-
-
-echo $sep && printf "%s" "Network manager (replaces dhcpcd) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-echo skiped
-else
-pacman -S --needed --noconfirm networkmanager dhclient
-systemctl disable dhcpcd
-systemctl stop dhcpcd
-systemctl enable NetworkManager.service
-fi
-
-echo $sep && printf "%s" "GUI (xorg xfce4) ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
-pacman -S --needed --noconfirm xorg xfce4
 
 echo $sep && printf "%s" "Autostart Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo -ne "
