@@ -9,7 +9,7 @@ lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | 
 echo '' && printf "%s" "OS disk (default 1) : " && read my_disk && if [[ -z "$my_disk" ]]; then my_disk=1;fi
 my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'| awk 'NR=='$my_disk' {print $2}')
 echo $my_disk
-export my_disk = $my_disk
+export my_disk=$my_disk
 echo $sep && echo "Available partitions"
 lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
 echo '' && printf "%s" "Boot partition EFI (default 1) : " && read boot_part && if [[ -z "$boot_part" ]]; then boot_part=1;fi
@@ -20,7 +20,7 @@ sys_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" 
 echo $sys_part
 echo $sep && printf "%s" "Username (default cojmar) : " && read my_user && if [[ -z "$my_user" ]]; then my_user=cojmar;fi
 echo $my_user
-export my_user = $my_user
+export my_user=$my_user
 echo $sep && printf "%s" "Mirors (default $iso) : " && read my_iso && if [[ -z "$my_iso" ]]; then my_iso=$iso;fi
 echo $my_iso
 echo $sep && printf "%s" "TimeZone (default $time_zone) : " && read my_time_zone && if [[ -z "$my_time_zone" ]]; then my_time_zone=$time_zone;fi &&echo $my_time_zone
@@ -57,7 +57,7 @@ else
     # The line below is written to /mnt/ but doesnt contain /mnt/, since it s just / for the system itself.
     echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
 fi
-export $test = $my_iso
+export $test=$my_iso
 echo -ne '
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
