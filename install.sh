@@ -102,10 +102,10 @@ systemctl stop dhcpcd
 systemctl enable NetworkManager.service
 fi
 
-echo $sep && printf "%s" "GUI (xorg xfce4 unzip graphicdrivers) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
+echo $sep && printf "%s" "GUI (xorg xfce4 unzip graphicdrivers audiomixer) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo console only
 else
-pacman -S --needed --noconfirm xorg xfce4 unzip
+pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol
 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
@@ -126,6 +126,26 @@ if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
     Xorg :0 -configure
     cp /root/xorg.conf.new /etc/X11/xorg.conf
 fi
+
+#AUDIO
+useradd -d /var/run/pulse -s /usr/bin/nologin -G audio pulse
+usermod -aG bluetooth pulse
+groupadd pulse-access
+usermod -aG pulse-access root
+echo "
+[Unit]
+Description=Sound Service
+ 
+[Service]
+# Note that notify will only work if --daemonize=no
+Type=notify
+ExecStart=/usr/bin/pulseaudio --daemonize=no --exit-idle-time=-1 --disallow-exit=true --system --disallow-module-loading
+Restart=always
+ 
+[Install]
+WantedBy=default.target
+" > /etc/systemd/system/pulseaudio.service
+systemctl enable pulseaudio
 
 echo $sep && printf "%s" "Autostart Xfce4 ? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo -ne "
