@@ -26,6 +26,7 @@ echo $sep && printf "%s" "Host name (default cojarch) : " && read my_host_name &
 echo $my_host_name && echo ''
 mkfs.fat $boot_part && mkfs.ext4 -F $sys_part && sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
+genfstab -U /mnt > /mnt/etc/fstab
 echo $sep && printf "Make swap? (leave blank for yes) :" && read my_host_name && if [[ -z "$my_host_name" ]]; then 
     # Put swap into the actual system, not into RAM disk, otherwise there is no point in it, it'll cache RAM into RAM. So, /mnt/ everything.
     mkdir -p /mnt/opt/swap # make a dir that we can apply NOCOW to to make it btrfs-friendly.
@@ -46,7 +47,6 @@ pacstrap -K /mnt base linux linux-firmware grub efibootmgr openssh dhcpcd sudo v
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
-genfstab -U /mnt > /mnt/etc/fstab
 ln -sf /mnt/usr/share/zoneinfo/$my_time_zone /mnt/etc/localtime
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo $my_host_name > /mnt/etc/hostname
