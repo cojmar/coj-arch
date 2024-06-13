@@ -31,7 +31,7 @@ sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
 pacman -S --noconfirm archlinux-keyring
-pacstrap -K /mnt base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim --noconfirm --needed
+pacstrap -K /mnt base --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
@@ -53,6 +53,7 @@ else
     # The line below is written to /mnt/ but doesnt contain /mnt/, since it s just / for the system itself.
     echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
 fi
+pacstrap -K /mnt base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim --noconfirm --needed
 echo -ne '
 pacman -Syy
 grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
