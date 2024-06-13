@@ -105,7 +105,7 @@ fi
 echo $sep && printf "%s" "GUI (xorg xfce4 unzip graphicdrivers audiomixer) ? (leave blank for NO) : " && read do_reb && if [[ -z "$do_reb" ]]; then
 echo console only
 else
-pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol
+pacman -S --needed --noconfirm xorg xfce4 unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol
 
 # Graphics Drivers find and install
 gpu_type=$(lspci)
