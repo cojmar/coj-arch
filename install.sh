@@ -24,7 +24,7 @@ echo $my_iso
 echo $sep && printf "%s" "TimeZone (default $time_zone) : " && read my_time_zone && if [[ -z "$my_time_zone" ]]; then my_time_zone=$time_zone;fi &&echo $my_time_zone
 echo $sep && printf "%s" "Host name (default cojarch) : " && read my_host_name && if [[ -z "$my_host_name" ]]; then my_host_name=cojarch;fi
 echo $my_host_name && echo ''
-mkfs.fat -F $boot_part && mkfs.ext4 -F $sys_part
+mkfs.fat $boot_part && mkfs.ext4 -F $sys_part
 sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 timedatectl set-ntp true
