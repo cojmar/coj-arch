@@ -130,6 +130,7 @@ elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
 else
     pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
     systemctl enable vmtoolsd
+    systemctl enable vmware-vmblock-fuse
 fi
 
 
@@ -153,6 +154,7 @@ elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
 else
     pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
     systemctl enable vmtoolsd
+    systemctl enable vmware-vmblock-fuse
 fi
 
 #AUDIO
