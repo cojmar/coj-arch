@@ -49,6 +49,7 @@ get_part() { # manualy select partitions
     echo $sys_part 
 }
 set_disk() { # runs all disk settings
+    umount -A --recursive /mnt
     echo $sep
     echo Disk Operations    
     get_disk
@@ -102,7 +103,7 @@ make_swap(){
 
 
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" 
-umount -A --recursive /mnt
+
 clear 
 echo $sep && echo  Welcome to cojmar arch
 set_disk
@@ -138,3 +139,59 @@ if [ "$my_make_swap" = "n" ]; then
 else
     make_swap
 fi
+
+echo -ne '
+hwclock --systohc
+sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
+locale-gen
+pacman -Syy
+grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
+systemctl enable sshd && systemctl enable dhcpcd
+
+# determine processor type and install microcode
+proc_type=$(lscpu)
+if grep -E "GenuineIntel" <<< ${proc_type}; then
+    echo "Installing Intel microcode"
+    pacman -S --noconfirm --needed intel-ucode
+    proc_ucode=intel-ucode.img
+elif grep -E "AuthenticAMD" <<< ${proc_type}; then
+    echo "Installing AMD microcode"
+    pacman -S --noconfirm --needed amd-ucode
+    proc_ucode=amd-ucode.img
+fi
+
+useradd -U $my_user
+echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
+chmod 0440 /etc/sudoers.d/$my_user
+mkdir /home/$my_user && chown $my_user /home/$my_user 
+echo AllowUsers $my_user >> /etc/ssh/sshd_config
+echo "$my_user:$my_pass" | chpasswd
+' > /mnt/post.sh
+
+
+
+echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
+clear
+df -h /mnt
+echo "
+                                       ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
+                  ▟█▙                  █        █    █       █    
+                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
+                ▟█████▙                
+               ▟███████▙
+              ▂▔▀▜██████▙
+             ▟██▅▂▝▜█████▙
+            ▟█████████████▙
+           ▟███████████████▙
+          ▟█████████████████▙
+         ▟███████████████████▙
+        ▟█████████▛▀▀▜████████▙
+       ▟████████▛      ▜███████▙
+      ▟█████████        ████████▙
+     ▟██████████        █████▆▅▄▃▂
+    ▟██████████▛        ▜█████████▙
+   ▟██████▀▀▀              ▀▀██████▙
+  ▟███▀▘                       ▝▀███▙
+ ▟▛▀                               ▀▜▙
+"
+printf "%s" "Arch installed, reboot? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
