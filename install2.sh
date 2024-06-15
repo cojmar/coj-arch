@@ -118,7 +118,7 @@ echo $my_host_name
 mkfs.fat $boot_part && mkfs.ext4 -F $sys_part
 
 if [ "$my_file_system" = "1" ]; then
-    mkfs.btrfs -F $sys_part
+    mkfs.btrfs -f $sys_part
 else
     mkfs.ext4 -F $sys_part
 fi
