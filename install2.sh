@@ -182,7 +182,6 @@ echo Autologin done
 ' >> /mnt/post.sh 
 fi
 
-
 echo -ne '
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
 echo -ne "
