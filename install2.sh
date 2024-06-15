@@ -168,6 +168,21 @@ echo AllowUsers $my_user >> /etc/ssh/sshd_config
 echo "$my_user:$my_pass" | chpasswd
 ' > /mnt/post.sh
 
+if [ "$my_user_autologin" = "n" ]; then
+    echo no autologin
+else
+echo -ne '
+mkdir -p /etc/systemd/system/getty@tty1.service.d/
+echo -ne "
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
+" > /etc/systemd/system/getty@tty1.service.d/override.conf
+echo Autologin done
+' >> /mnt/post.sh 
+fi
+
+
 echo -ne '
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
 echo -ne "
