@@ -60,8 +60,8 @@ set_disk() { # runs all disk settings
     else 
         get_part
     fi
-    #get_opt "File system type [1:btrfs 2:ext4]" "1"
-    #export my_file_system=$my_opt
+    get_opt "File system type [1:btrfs 2:ext4]" "1"
+    export my_file_system=$my_opt
     get_opt "Make Swap?" "n"
     my_make_swap=$my_opt
 }
@@ -116,6 +116,13 @@ my_host_name=$my_opt
 echo $my_host_name
 
 mkfs.fat $boot_part && mkfs.ext4 -F $sys_part
+
+if [ "$my_file_system" = "1" ]; then
+    mkfs.btrfs -F $sys_part
+else
+    mkfs.ext4 -F $sys_part
+fi
+
 sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 
@@ -133,7 +140,7 @@ ln -sf /mnt/usr/share/zoneinfo/$time_zone /mnt/etc/localtime
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo  en > /mnt/etc/vconsole.conf
 echo $my_host_name > /mnt/etc/hostname
-echo $my_make_swap
+
 if [ "$my_make_swap" = "n" ]; then
     echo no swap
 else
