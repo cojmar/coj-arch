@@ -168,7 +168,16 @@ echo AllowUsers $my_user >> /etc/ssh/sshd_config
 echo "$my_user:$my_pass" | chpasswd
 ' > /mnt/post.sh
 
-
+echo -ne '
+mkdir -p /etc/systemd/system/getty@tty1.service.d/
+echo -ne "
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
+" > /etc/systemd/system/getty@tty1.service.d/override.conf
+echo Autologin done
+' >> /mnt/post.sh 
+ 
 
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 clear
