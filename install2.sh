@@ -5,7 +5,7 @@ export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr op
 get_opt() {   
     echo -ne '\n' 
     printf "%s" "$1 (default $2) : " && read my_opt && if [[ -z "$my_opt" ]]; then my_opt=$2;fi    
-    echo $my_opt
+    # echo $my_opt
 }
 get_opt_sep() {
     echo $sep
