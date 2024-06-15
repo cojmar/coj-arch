@@ -2,17 +2,17 @@
 #INIT
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim)
-get_opt() {   
+function get_opt() {   
     echo -ne '\n' 
     printf "%s" "$1 (default $2) : " && read my_opt && if [[ -z "$my_opt" ]]; then my_opt=$2;fi    
     # echo $my_opt
 }
-get_opt_sep() {
+function get_opt_sep() {
     echo $sep
     get_opt $1 $2
 }
 #DISK
-get_disk() { # gets install disk
+function get_disk() { # gets install disk
     echo $sep && echo "Available disks"
     lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
     get_opt "Install on disk" "1"
@@ -20,7 +20,7 @@ get_disk() { # gets install disk
     export my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$my_opt' {print $2}')
     echo $my_disk
 }
-make_part() { # makes partitions on install disk
+function make_part() { # makes partitions on install disk
     # disk prep
     sgdisk -Z ${my_disk} # zap all on disk
     sgdisk -a 2048 -o ${my_disk} # new gpt disk 2048 alignment
@@ -29,14 +29,14 @@ make_part() { # makes partitions on install disk
     sgdisk -n 3::-0 --typecode=3:8300:'ROOT' ${my_disk} # partition 2 (OS) 
     partprobe ${my_disk} 
 }
-get_part_auto() { # get partitions automaticaly based on selected disk
+function get_part_auto() { # get partitions automaticaly based on selected disk
     boot_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk -v var="$my_disk" '$1 ~ var {print $0}' | awk '{print NR,$0}' | awk 'NR=='1' {print $2}')
     echo BOOT $boot_part   
 
     sys_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk -v var="$my_disk" '$1 ~ var {print $0}' | awk '{print NR,$0}' | awk 'NR=='2' {print $2}')
     echo OS $sys_part
 }
-get_part() { # manualy select partitions
+function get_part() { # manualy select partitions
     echo $sep && echo "Available partitions"
     lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
     
@@ -48,7 +48,7 @@ get_part() { # manualy select partitions
     sys_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$my_opt' {print $2}')
     echo $sys_part 
 }
-set_disk() { # runs all disk settings
+function set_disk() { # runs all disk settings
     umount -A --recursive /mnt
     echo $sep
     echo Disk Operations    
@@ -66,7 +66,7 @@ set_disk() { # runs all disk settings
     my_make_swap=$my_opt
 }
 # USER
-get_password() { # gets password to be used
+function get_password() { # gets password to be used
     get_opt "Please enter password: " "asd"
     pass1=$my_opt
     get_opt "Please re-enter password: " "asd"
@@ -78,7 +78,7 @@ get_password() { # gets password to be used
         get_password
     fi
 }
-set_user() { # runs all the user settings
+function set_user() { # runs all the user settings
     echo $sep
     echo User
     get_opt "Username" "cojmar"
@@ -88,7 +88,7 @@ set_user() { # runs all the user settings
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
 }
-make_swap(){
+function make_swap(){
     # Put swap into the actual system, not into RAM disk, otherwise there is no point in it, itll cache RAM into RAM. So, /mnt/ everything.
     mkdir -p /mnt/opt/swap # make a dir that we can apply NOCOW to to make it btrfs-friendly.
     chattr +C /mnt/opt/swap # apply NOCOW, btrfs needs that.
