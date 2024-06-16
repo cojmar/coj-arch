@@ -165,10 +165,6 @@ get_opt "Extra packages" ""
 export my_extra=$my_opt
 echo $my_extra
 
-if [ "$my_aur" != "y" ]; then
-    my_pacman+=("${my_extra}")
-fi
-
 if [ "$my_auto_part" = "y" ]; then
     make_part
     get_part_auto
@@ -208,13 +204,11 @@ echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo  en > /mnt/etc/vconsole.conf
 echo $my_host_name > /mnt/etc/hostname
 
-if [ "$my_make_swap" = "n" ]; then
-    echo ================= BASE INSTALL DONE
-else
-    make_swap
-    echo ================= BASE INSTALL DONE
+if [ "$my_make_swap" = "y" ]; then
+    make_swap   
 fi
-export my_def_cmd=(mc htop ncdu vim sudo)
+
+echo ================= BASE INSTALL DONE
 
 echo -ne '
 hwclock --systohc
@@ -295,10 +289,6 @@ echo Autologin done
 ' >> /mnt/post.sh 
 fi
 
-if [ "$my_aur" = "y" ]; then
-    my_def_cmd+=(yay pacseek)
-fi
-
 if [ "$my_gui_autostart" = "y" ]; then
 echo -ne '
 echo -ne "
@@ -346,6 +336,10 @@ sudo pacman -S --needed --noconfirm git base-devel && git clone https://aur.arch
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay
 yay -Syu --noconfirm pacseek ${my_extra} && yay -Yc --noconfirm
+'
+else
+arch-chroot /mnt /bin/sh -c '
+pacman -S --needed --noconfirm ${my_extra}
 '
 fi
 
