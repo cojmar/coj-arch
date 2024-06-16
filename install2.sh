@@ -102,7 +102,7 @@ function set_gui(){
     get_opt 'GUI (xorg xfce4 unzip graphicdrivers audiomixer)' "n"
     if [ "$my_opt" = "n" ]; then
         export my_gui=0
-        get_opt 'Install Video drivers ?' "y"
+        get_opt 'Install Video drivers ?' "n"
         if [ "$my_opt" = "y" ]; then
             export my_drivers=1    
         fi
@@ -153,12 +153,12 @@ else
     mkfs.ext4 -F $sys_part
 fi
 
-if [ "$my_gui" = "1" ]; then
+if [ "$my_gui" != "0" ]; then
    my_pacman+=(xorg xfce4 xfce4-taskmanager unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse)
 fi
 
 if [ "$my_gui" = "2" ]; then
-   my_pacman+=(xorg xfce4 xfce4-taskmanager unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse chromium xfce4-goodies)
+   my_pacman+=(chromium xfce4-goodies)
 fi
 
 sync
@@ -180,9 +180,10 @@ echo  en > /mnt/etc/vconsole.conf
 echo $my_host_name > /mnt/etc/hostname
 
 if [ "$my_make_swap" = "n" ]; then
-    echo no swap
+    echo disk done
 else
     make_swap
+    echo disk done
 fi
 
 echo -ne '
@@ -215,6 +216,38 @@ echo "$my_user:$my_pass" | chpasswd
 systemctl disable dhcpcd
 systemctl stop dhcpcd
 systemctl enable NetworkManager.service
+
+TOTAL_MEM=$(cat /proc/meminfo | grep -i 'memtotal' | grep -o '[[:digit:]]*')
+if [[  $TOTAL_MEM -gt 8000000 ]]; then
+sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j$nc\"/g" /etc/makepkg.conf
+sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g" /etc/makepkg.conf
+fi
+
+if [ "$my_drivers" != "0" ]; then
+    #VIDEO
+    if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
+        pacman -S --noconfirm --needed nvidia
+        nvidia-xconfig
+    elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
+        pacman -S --noconfirm --needed xf86-video-amdgpu
+    elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
+        pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+    elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
+        pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+    else
+        pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
+        systemctl enable vmtoolsd
+        systemctl enable vmware-vmblock-fuse    
+    fi
+
+    #AUDIO
+    pacman -S --noconfirm --needed alsa-utils
+
+fi
+
+if [ "$my_drivers" = "2" ]; then
+   my_pacman+=(chromium xfce4-goodies)
+fi
 
 ' > /mnt/post.sh
 
