@@ -305,7 +305,7 @@ echo \"
                  ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
                 ▟█████▙                
                ▟███████▙               Default commands: mc htop ncdu vim sudo
-              ▂▔▀▜██████▙
+              ▂▔▀▜██████▙            If u installed AUR: yay pacseek
              ▟██▅▂▝▜█████▙
             ▟█████████████▙
            ▟███████████████▙
