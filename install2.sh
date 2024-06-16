@@ -111,7 +111,7 @@ set_user
 echo $sep
 echo Base config
 # HOST
-get_opt_sep "Host name" "cojarch"
+get_opt_sep "Host" "cojarch"
 my_host_name=$my_opt
 echo $my_host_name
 
@@ -131,7 +131,7 @@ sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
 pacman -S --noconfirm archlinux-keyring
-pacstrap -K /mnt ${my_pacman} --noconfirm --needed
+pacstrap -K /mnt "${my_pacman[@]}" --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
@@ -201,7 +201,7 @@ echo Autologin done
  
 
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
-clear
+# clear
 df -h /mnt
 echo "
                                        ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
