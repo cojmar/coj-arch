@@ -341,7 +341,7 @@ arch-chroot /mnt /bin/sh -c '
 rm -rf /var/cache
 chown -R root /root
 '
-
+sync
 # clear
 df -h /mnt
 echo "
