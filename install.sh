@@ -65,7 +65,13 @@ function set_disk() { # runs all disk settings
         echo ext4
     fi
 
-    get_opt "Make Swap?" "n"
+    my_def_swap_opt=n 
+    TOTAL_MEM=$(cat /proc/meminfo | grep -i 'memtotal' | grep -o '[[:digit:]]*')
+    if [[  $TOTAL_MEM -lt 4000000 ]]; then
+        my_def_swap_opt=n 
+    fi
+
+    get_opt "Make Swap?" $my_def_swap_opt
     my_make_swap=$my_opt
     echo $my_make_swap
 }
@@ -150,13 +156,17 @@ my_host_name=$my_opt
 echo $my_host_name
 set_user
 echo $sep
-get_opt "AUR (adds yay and pacseek aur helpers)" "y"
-export my_aur=$my_opt
-echo $my_aur
-echo $sep
 echo Optional config
 echo $sep
 set_gui
+echo $sep
+my_def_aur_opt=n
+if [ "$my_gui" != "0" ]; then
+    my_def_aur_opt=y
+fi
+get_opt "AUR (adds yay and pacseek aur helpers)" $my_def_aur_opt
+export my_aur=$my_opt
+echo $my_aur
 echo $sep
 if [ "$my_aur" = "y" ]; then
     echo AUR detected, you can typein AUR packages too, example: brave
@@ -164,6 +174,14 @@ fi
 get_opt "Extra packages" ""
 export my_extra=$my_opt
 echo $my_extra
+echo ""
+echo $sep
+echo Config done!
+echo $sep
+get_opt "Start install?" y
+if [ "$my_opt" != "y" ]; then
+    exit 1
+fi
 
 if [ "$my_auto_part" = "y" ]; then
     make_part
@@ -186,7 +204,6 @@ if [ "$my_gui" = "2" ]; then
    my_pacman+=(chromium xfce4-goodies)
 fi
 
-sync
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 
 timedatectl set-ntp true
@@ -339,7 +356,7 @@ yay -Syu --noconfirm pacseek ${my_extra} && yay -Yc --noconfirm
 '
 else
 arch-chroot /mnt /bin/sh -c '
-pacman -S --needed --noconfirm ${my_extra}
+pacman -Syu --needed --noconfirm ${my_extra}
 '
 fi
 
