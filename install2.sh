@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 #INIT
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim)
+export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient)
 function get_opt() {   
     echo -ne '\n' 
     printf "%s" "$1 (default $2) : " && read my_opt && if [[ -z "$my_opt" ]]; then my_opt=$2;fi    
     # echo $my_opt
-}
-function get_opt_sep() {
-    echo $sep
-    get_opt $1 $2
 }
 #DISK
 function get_disk() { # gets install disk
@@ -54,9 +50,9 @@ function set_disk() { # runs all disk settings
     echo Disk Operations    
     get_disk
     get_opt "Auto partition the disk?" "y"
+    my_auto_part=n
     if [ $my_opt = 'y' ];then 
-        make_part
-        get_part_auto
+        my_auto_part=y       
     else 
         get_part
     fi
@@ -79,8 +75,7 @@ function get_password() { # gets password to be used
     fi
 }
 function set_user() { # runs all the user settings
-    echo $sep
-    echo User
+    echo $sep  
     get_opt "Username" "cojmar"
     export my_user=$my_opt
     echo $my_user
@@ -100,20 +95,55 @@ function make_swap(){
     # The line below is written to /mnt/ but doesnt contain /mnt/, since it s just / for the system itself.
     echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
 }
-
+# GUI
+function set_gui(){
+    export my_gui_autostart=n
+    export my_drivers=0
+    get_opt 'GUI (xorg xfce4 unzip graphicdrivers audiomixer)' "n"
+    if [ "$my_opt" = "n" ]; then
+        export my_gui=0
+        get_opt 'Install Video drivers ?' "y"
+        if [ "$my_opt" = "y" ]; then
+            export my_drivers=1    
+        fi
+    else
+        export my_gui=1
+        export my_drivers=1
+        get_opt 'Autostart GUI ?' "y"        
+        export my_gui_autostart=$my_opt      
+        get_opt 'Optimise for desktop experience (chromium xfce4-goodies) ?' "y"
+        if [ "$my_opt" = "y" ]; then
+            export my_gui=2      
+        fi
+        get_opt 'Optimise for Gaming ?' "y"
+        if [ "$my_opt" = "y" ]; then
+            export my_drivers=2      
+        fi        
+    fi
+}
 
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" 
 
 clear 
 echo $sep && echo  Welcome to cojmar arch
 set_disk
-set_user
+
 echo $sep
 echo Base config
-# HOST
-get_opt_sep "Host" "cojarch"
+echo $sep
+get_opt "Host name" "cojarch"
 my_host_name=$my_opt
 echo $my_host_name
+set_user
+echo $sep
+echo Optional config
+echo $sep
+set_gui
+
+if [ "$my_auto_part" = "y" ]; then
+    make_part
+    get_part_auto
+fi
 
 mkfs.fat $boot_part && mkfs.ext4 -F $sys_part
 
@@ -121,6 +151,14 @@ if [ "$my_file_system" = "1" ]; then
     mkfs.btrfs -f $sys_part
 else
     mkfs.ext4 -F $sys_part
+fi
+
+if [ "$my_gui" = "1" ]; then
+   my_pacman+=(xorg xfce4 xfce4-taskmanager unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse)
+fi
+
+if [ "$my_gui" = "2" ]; then
+   my_pacman+=(xorg xfce4 xfce4-taskmanager unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse chromium xfce4-goodies)
 fi
 
 sync
@@ -173,11 +211,14 @@ chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo AllowUsers $my_user >> /etc/ssh/sshd_config
 echo "$my_user:$my_pass" | chpasswd
+
+systemctl disable dhcpcd
+systemctl stop dhcpcd
+systemctl enable NetworkManager.service
+
 ' > /mnt/post.sh
 
-if [ "$my_user_autologin" = "n" ]; then
-    echo no autologin
-else
+if [ "$my_user_autologin" = "y" ]; then
 echo -ne '
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
 echo -ne "
@@ -189,16 +230,42 @@ echo Autologin done
 ' >> /mnt/post.sh 
 fi
 
+if [ "$my_gui_autostart" = "y" ]; then
 echo -ne '
-mkdir -p /etc/systemd/system/getty@tty1.service.d/
 echo -ne "
-[Service]
-ExecStart=
-ExecStart=-/usr/bin/agetty -a $my_user - \$TERM
-" > /etc/systemd/system/getty@tty1.service.d/override.conf
-echo Autologin done
-' >> /mnt/post.sh 
- 
+if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
+    startxfce4
+fi
+" > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
+' >> /mnt/post.sh
+else
+ echo -ne '
+echo -ne "
+df -h /
+echo \"
+                                       ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
+                  ▟█▙                  █        █    █       █    
+                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
+                ▟█████▙                
+               ▟███████▙               Default commands: mc htop ncdu vim sudo
+              ▂▔▀▜██████▙
+             ▟██▅▂▝▜█████▙
+            ▟█████████████▙
+           ▟███████████████▙
+          ▟█████████████████▙
+         ▟███████████████████▙
+        ▟█████████▛▀▀▜████████▙
+       ▟████████▛      ▜███████▙
+      ▟█████████        ████████▙
+     ▟██████████        █████▆▅▄▃▂
+    ▟██████████▛        ▜█████████▙
+   ▟██████▀▀▀              ▀▀██████▙
+  ▟███▀▘                       ▝▀███▙
+ ▟▛▀                               ▀▜▙
+\"
+" > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
+' >> /mnt/post.sh
+fi
 
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 # clear
