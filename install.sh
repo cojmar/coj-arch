@@ -157,6 +157,14 @@ echo $sep
 echo Optional config
 echo $sep
 set_gui
+echo $sep
+get_opt "Extra packages" ""
+export my_extra=$my_opt
+echo $my_extra
+
+if [ "$my_aur" != "y" ]; then
+    my_pacman+=("${my_extra}")
+fi
 
 if [ "$my_auto_part" = "y" ]; then
     make_part
@@ -333,7 +341,7 @@ cd /home/$my_user
 sudo pacman -S --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git 
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay
-yay -Syu --noconfirm pacseek && yay -Yc --noconfirm
+yay -Syu --noconfirm pacseek ${my_extra} && yay -Yc --noconfirm
 '
 fi
 
