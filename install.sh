@@ -68,7 +68,7 @@ function set_disk() { # runs all disk settings
     my_def_swap_opt=n 
     TOTAL_MEM=$(cat /proc/meminfo | grep -i 'memtotal' | grep -o '[[:digit:]]*')
     if [[  $TOTAL_MEM -lt 4000000 ]]; then
-        my_def_swap_opt=n 
+        my_def_swap_opt=y 
     fi
 
     get_opt "Make Swap?" $my_def_swap_opt
