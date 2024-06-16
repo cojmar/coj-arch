@@ -158,6 +158,9 @@ echo Optional config
 echo $sep
 set_gui
 echo $sep
+if [ "$my_aur" = "y" ]; then
+    echo AUR detected, you can typein AUR packages too, example: brave
+fi
 get_opt "Extra packages" ""
 export my_extra=$my_opt
 echo $my_extra
