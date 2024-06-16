@@ -338,8 +338,8 @@ yay -Syu --noconfirm pacseek && yay -Yc --noconfirm
 fi
 
 arch-chroot /mnt /bin/sh -c '
-rm -rf /var/.cache
-chown root /root
+rm -rf /var/cache
+chown -R root /root
 '
 
 # clear
