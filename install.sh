@@ -229,6 +229,7 @@ useradd -U $my_user
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
+mkdir /home/$my_user/.cache && chown $my_user /home/$my_user/.cache
 echo AllowUsers $my_user >> /etc/ssh/sshd_config
 echo "$my_user:$my_pass" | chpasswd
 
@@ -331,6 +332,7 @@ arch-chroot -u $my_user /mnt /bin/sh -c '
 cd /home/$my_user
 sudo pacman -S --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git 
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
+yay -Syu --noconfirm pacseek && yay -Yc --noconfirm
 '
 fi
 
