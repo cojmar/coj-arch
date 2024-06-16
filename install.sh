@@ -273,8 +273,9 @@ if [ "$my_drivers" != "0" ]; then
 
 fi
 
+
 if [ "$my_drivers" = "2" ]; then
-   my_pacman+=(chromium xfce4-goodies)
+   pacman -S --noconfirm --needed wine libva-utils lib32-mesa
 fi
 
 ' > /mnt/post.sh
