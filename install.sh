@@ -198,10 +198,10 @@ echo  en > /mnt/etc/vconsole.conf
 echo $my_host_name > /mnt/etc/hostname
 
 if [ "$my_make_swap" = "n" ]; then
-    echo disk done
+    echo ================= BASE INSTALL DONE
 else
     make_swap
-    echo disk done
+    echo ================= BASE INSTALL DONE
 fi
 export my_def_cmd=(mc htop ncdu vim sudo)
 
@@ -229,7 +229,7 @@ useradd -U $my_user
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
-mkdir /home/$my_user/.cache && chown $my_user /home/$my_user/.cache
+chown $my_user /root
 echo AllowUsers $my_user >> /etc/ssh/sshd_config
 echo "$my_user:$my_pass" | chpasswd
 
@@ -336,6 +336,11 @@ yay
 yay -Syu --noconfirm pacseek && yay -Yc --noconfirm
 '
 fi
+
+arch-chroot /mnt /bin/sh -c '
+rm -rf /var/.cache
+chown root /root
+'
 
 # clear
 df -h /mnt
