@@ -275,7 +275,7 @@ fi
 
 
 if [ "$my_drivers" = "2" ]; then
-   pacman -S --noconfirm --needed wine libva-utils lib32-mesa
+   pacman -S --noconfirm --needed wine winetricks libva-utils lib32-mesa
 fi
 
 ' > /mnt/post.sh
