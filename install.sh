@@ -59,7 +59,7 @@ function set_disk() { # runs all disk settings
     fi
     get_opt "File system type [1:btrfs 2:ext4]" "1"
     export my_file_system=$my_opt
-     if [ $my_file_system = '1' ];then 
+     if [ $my_file_system = '2' ];then 
         echo btrfs 
     else 
         echo ext4
