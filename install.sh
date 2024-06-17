@@ -251,7 +251,6 @@ useradd -U $my_user
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
-chown $my_user /root
 echo AllowUsers $my_user >> /etc/ssh/sshd_config
 echo "$my_user:$my_pass" | chpasswd
 
@@ -345,25 +344,29 @@ fi
 
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
+# adding AUR if case EXTRA and cleaning 
+
 if [ "$my_aur" = "y" ]; then
 # my_user=cojmar
 arch-chroot -u $my_user /mnt /bin/sh -c '
+sudo mkdir /root/.cache
+sudo chown -R $my_user /root
 cd /home/$my_user
 sudo pacman -S --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git 
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
-yay
+yay --noconfirm 
 yay -Syu --noconfirm pacseek ${my_extra} && yay -Yc --noconfirm
+sudo rm -rf /var/cache
+sudo rm -rf /root/.cache
+sudo chown -R root /root
 '
 else
 arch-chroot /mnt /bin/sh -c '
 pacman -Syu --needed --noconfirm ${my_extra}
+rm -rf /var/cache
+rm -rf /root/.cache
 '
 fi
-
-arch-chroot /mnt /bin/sh -c '
-rm -rf /var/cache
-chown -R root /root
-'
 sync
 # clear
 df -h /mnt
