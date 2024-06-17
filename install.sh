@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-#INIT
+#INIT 
+#DEV bash <(curl -L http://192.168.0.101:5500/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient)
 function get_opt() {   
@@ -93,10 +94,7 @@ function set_user() { # runs all the user settings
     get_opt "Username" "cojmar"
     export my_user=$my_opt
     echo $my_user
-    get_password
-    get_opt "Autologin" "n"
-    export my_user_autologin=$my_opt
-    echo $my_user_autologin
+    get_password    
 }
 function make_swap(){
     # Put swap into the actual system, not into RAM disk, otherwise there is no point in it, itll cache RAM into RAM. So, /mnt/ everything.
@@ -160,6 +158,9 @@ echo -ne "1:custom\n2:server\n3:desktop "
 get_opt "Template:" "1"
 
 if [ "$my_opt" = "1" ]; then
+    get_opt "Autologin" "n"
+    export my_user_autologin=$my_opt
+    echo $my_user_autologin
     echo $sep
     echo Optional config
     echo $sep
