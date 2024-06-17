@@ -149,7 +149,7 @@ set_disk
 echo $sep
 echo Base config
 echo $sep
-get_opt "Host name" "cojarch"
+get_opt "Host name (computer name)" "cojarch"
 my_host_name=$my_opt
 echo $my_host_name
 set_user    
