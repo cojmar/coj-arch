@@ -149,17 +149,17 @@ clear
 echo $sep && echo  Welcome to cojmar arch
 set_disk
 echo $sep
+echo Base config
+echo $sep
+get_opt "Host name" "cojarch"
+my_host_name=$my_opt
+echo $my_host_name
+set_user    
+echo $sep
 echo -ne "1:custom\n2:server\n3:desktop "
 get_opt "Template:" "1"
 
 if [ "$my_opt" = "1" ]; then
-    echo $sep
-    echo Base config
-    echo $sep
-    get_opt "Host name" "cojarch"
-    my_host_name=$my_opt
-    echo $my_host_name
-    set_user
     echo $sep
     echo Optional config
     echo $sep
