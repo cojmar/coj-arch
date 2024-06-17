@@ -148,44 +148,59 @@ iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi
 clear 
 echo $sep && echo  Welcome to cojmar arch
 set_disk
+echo $sep
+echo -ne "1:custom\n2:server\n3:desktop "
+get_opt "Template:" "1"
 
-echo $sep
-echo Base config
-echo $sep
-get_opt "Host name" "cojarch"
-my_host_name=$my_opt
-echo $my_host_name
-set_user
-echo $sep
-echo Optional config
-echo $sep
-set_gui
-echo $sep
-my_def_aur_opt=n
-if [ "$my_gui" != "0" ]; then
-    my_def_aur_opt=y
-fi
-get_opt "AUR (adds git, yay and pacseek aur helpers)" $my_def_aur_opt
-export my_aur=$my_opt
-echo $my_aur
-echo $sep
-extra=""
-if [ "$my_aur" = "y" ]; then
-    echo AUR detected, you can typein AUR packages too, example: brave
-    if [ "$my_gui" = "1" ]; then
-    extra=brave
+if [ "$my_opt" = "1" ]; then
+    echo $sep
+    echo Base config
+    echo $sep
+    get_opt "Host name" "cojarch"
+    my_host_name=$my_opt
+    echo $my_host_name
+    set_user
+    echo $sep
+    echo Optional config
+    echo $sep
+    set_gui
+    echo $sep
+    my_def_aur_opt=n
+    if [ "$my_gui" != "0" ]; then
+        my_def_aur_opt=y
     fi
-fi
-get_opt "Extra packages" $extra
-export my_extra=$my_opt
-echo $my_extra
-echo ""
-echo $sep
-echo Config done!
-echo $sep
-get_opt "Start install?" y
-if [ "$my_opt" != "y" ]; then
-    exit 1
+    get_opt "AUR (adds git, yay and pacseek aur helpers)" $my_def_aur_opt
+    export my_aur=$my_opt
+    echo $my_aur
+    echo $sep
+    extra=""
+    if [ "$my_aur" = "y" ]; then
+        echo AUR detected, you can typein AUR packages too, example: brave
+        if [ "$my_gui" = "1" ]; then
+        extra=brave
+        fi
+    fi
+    get_opt "Extra packages" $extra
+    export my_extra=$my_opt
+    echo $my_extra
+    echo ""
+    echo $sep
+    echo Config done!
+    echo $sep
+
+    get_opt "Start install?" y
+    if [ "$my_opt" != "y" ]; then
+        exit 1
+    fi
+elif [ "$my_opt" = "2" ]; then
+export my_host_name="cojarch"
+export my_user=cojmar   
+export my_user_autologin=y
+export my_pass=asd
+export my_drivers=0
+export my_gui=0
+export my_def_aur_opt=y
+export my_extra=""
 fi
 
 if [ "$my_auto_part" = "y" ]; then
