@@ -154,7 +154,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1:custom\n2:server\n3:desktop"
+echo -ne "1: custom\n2: server\n3: desktop"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
