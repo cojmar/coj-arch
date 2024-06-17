@@ -276,7 +276,7 @@ if [ "$my_drivers" != "0" ]; then
     elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
         pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
     else
-        pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse
+        pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa
         systemctl enable vmtoolsd
         systemctl enable vmware-vmblock-fuse    
     fi
@@ -288,7 +288,6 @@ fi
 
 
 if [ "$my_drivers" = "2" ]; then
-   # pacman -S --noconfirm --needed wine winetricks libva-utils lib32-mesa
    pacman -S --noconfirm --needed wine winetricks gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
 fi
 
