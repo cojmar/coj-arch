@@ -196,20 +196,18 @@ if [ "$my_opt" = "1" ]; then
         exit 1
     fi
 elif [ "$my_opt" = "2" ]; then
-export my_user_autologin=y
-export my_pass=asd
-export my_drivers=0
-export my_gui=0
-export my_aur=y
-export my_extra=""
+    export my_user_autologin=y    
+    export my_drivers=0
+    export my_gui=0
+    export my_aur=y
+    export my_extra=""
 elif [ "$my_opt" = "3" ]; then
-export my_user_autologin=y
-export my_pass=asd
-export my_drivers=2
-export my_gui=1
-export my_aur=y
-export my_gui_autostart=y
-export my_extra="brave"
+    export my_user_autologin=y    
+    export my_drivers=2
+    export my_gui=1
+    export my_aur=y
+    export my_gui_autostart=y
+    export my_extra="brave"
 fi
 
 if [ "$my_auto_part" = "y" ]; then
