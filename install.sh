@@ -134,7 +134,7 @@ function set_gui(){
         if [ "$my_opt" = "y" ]; then
             export my_gui=2      
         fi
-        get_opt 'Optimise for Gaming ?' "y"
+        get_opt 'Optimise for Gaming ? adds [wine winetricks gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools] ' "y"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_drivers=2      
@@ -164,7 +164,7 @@ my_def_aur_opt=n
 if [ "$my_gui" != "0" ]; then
     my_def_aur_opt=y
 fi
-get_opt "AUR (adds yay and pacseek aur helpers)" $my_def_aur_opt
+get_opt "AUR (adds git, yay and pacseek aur helpers)" $my_def_aur_opt
 export my_aur=$my_opt
 echo $my_aur
 echo $sep
@@ -288,7 +288,8 @@ fi
 
 
 if [ "$my_drivers" = "2" ]; then
-   pacman -S --noconfirm --needed wine winetricks libva-utils lib32-mesa
+   # pacman -S --noconfirm --needed wine winetricks libva-utils lib32-mesa
+   pacman -S --noconfirm --needed wine winetricks gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
 fi
 
 ' > /mnt/post.sh
@@ -323,7 +324,7 @@ echo \"
                  ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
                 ▟█████▙                
                ▟███████▙               Default commands: mc htop ncdu vim sudo
-              ▂▔▀▜██████▙            If u installed AUR: yay pacseek
+              ▂▔▀▜██████▙            If u installed AUR: git yay pacseek
              ▟██▅▂▝▜█████▙
             ▟█████████████▙
            ▟███████████████▙
