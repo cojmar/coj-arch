@@ -129,12 +129,13 @@ function set_gui(){
         get_opt 'Autostart GUI ?' "y"  
         echo $my_opt      
         export my_gui_autostart=$my_opt      
-        get_opt 'Optimise for desktop experience (chromium xfce4-goodies) ?' "y"
+        get_opt 'Optimise for desktop experience (chromium xfce4-goodies) ?' "n"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_gui=2      
         fi
-        get_opt 'Optimise for Gaming ? adds [wine winetricks gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools] ' "y"
+        echo adds wine winetricks lutris gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
+        get_opt 'Optimise for Gaming ?' "y"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_drivers=2      
@@ -168,10 +169,14 @@ get_opt "AUR (adds git, yay and pacseek aur helpers)" $my_def_aur_opt
 export my_aur=$my_opt
 echo $my_aur
 echo $sep
+extra=""
 if [ "$my_aur" = "y" ]; then
     echo AUR detected, you can typein AUR packages too, example: brave
+    if [ "$my_gui" = "1" ]; then
+    extra=brave
+    fi
 fi
-get_opt "Extra packages" ""
+get_opt "Extra packages" $extra
 export my_extra=$my_opt
 echo $my_extra
 echo ""
