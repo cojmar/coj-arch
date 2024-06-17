@@ -154,6 +154,8 @@ my_host_name=$my_opt
 echo $my_host_name
 set_user    
 echo $sep
+echo Template
+echo $sep
 echo -ne "1:custom\n2:server\n3:desktop "
 get_opt "Template:" "1"
 
