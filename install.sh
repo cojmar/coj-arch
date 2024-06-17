@@ -200,7 +200,7 @@ export my_user_autologin=y
 export my_pass=asd
 export my_drivers=0
 export my_gui=0
-export my_def_aur_opt=y
+export my_aur=y
 export my_extra=""
 fi
 
