@@ -72,9 +72,7 @@ function set_disk() { # runs all disk settings
         my_def_swap_opt=y 
     fi
 
-    get_opt "Make Swap?" $my_def_swap_opt
-    my_make_swap=$my_opt
-    echo $my_make_swap
+    
 }
 # USER
 function get_password() { # gets password to be used
@@ -165,6 +163,10 @@ if [ "$my_opt" = "1" ]; then
     export my_user_autologin=$my_opt
     echo $my_user_autologin
     echo $sep
+    get_opt "Make Swap?" $my_def_swap_opt
+    my_make_swap=$my_opt
+    echo $my_make_swap
+    echo $sep
     echo Optional config
     echo $sep
     set_gui
@@ -197,12 +199,14 @@ if [ "$my_opt" = "1" ]; then
         exit 1
     fi
 elif [ "$my_opt" = "2" ]; then
+    export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y    
     export my_drivers=0
     export my_gui=0
     export my_aur=y
     export my_extra=""
 elif [ "$my_opt" = "3" ]; then
+    export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y    
     export my_drivers=2
     export my_gui=1
