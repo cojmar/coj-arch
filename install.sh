@@ -127,7 +127,7 @@ function set_gui(){
         get_opt 'Autostart GUI ?' "y"  
         echo $my_opt      
         export my_gui_autostart=$my_opt      
-        get_opt 'Optimise for desktop experience (chromium xfce4-goodies) ?' "n"
+        get_opt 'Optimise for desktop experience (chromium xfce4-goodies) ?' "y"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_gui=2      
@@ -202,6 +202,14 @@ export my_drivers=0
 export my_gui=0
 export my_aur=y
 export my_extra=""
+elif [ "$my_opt" = "3" ]; then
+export my_user_autologin=y
+export my_pass=asd
+export my_drivers=2
+export my_gui=1
+export my_aur=y
+export my_gui_autostart=y
+export my_extra="brave"
 fi
 
 if [ "$my_auto_part" = "y" ]; then
