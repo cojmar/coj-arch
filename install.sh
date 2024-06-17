@@ -357,6 +357,8 @@ cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay --noconfirm 
 yay -Syu --noconfirm pacseek ${my_extra} && yay -Yc --noconfirm
 sudo rm -rf /var/cache
+sudo rm -rf /var/log
+sudo mkdir /var/log
 sudo rm -rf /root/.cache
 sudo chown -R root /root
 '
@@ -364,6 +366,8 @@ else
 arch-chroot /mnt /bin/sh -c '
 pacman -Syu --needed --noconfirm ${my_extra}
 rm -rf /var/cache
+rm -rf /var/log
+mkdir /var/log
 rm -rf /root/.cache
 '
 fi
