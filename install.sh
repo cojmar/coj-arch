@@ -138,10 +138,10 @@ function set_gui(){
         fi        
     fi
 }
-
+# detecting country and timezone
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" 
-
 clear 
+# minimal config
 echo $sep && echo  Welcome to cojmar arch
 set_disk
 echo $sep
@@ -157,7 +157,7 @@ echo $sep
 echo -ne "1:custom\n2:server\n3:desktop"
 get_opt "Template:" "1"
 export my_template=$my_opt
-
+# templates
 if [ "$my_opt" = "1" ]; then
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
@@ -211,7 +211,7 @@ elif [ "$my_opt" = "3" ]; then
     export my_gui_autostart=y
     export my_extra="brave"
 fi
-
+# start the install
 if [ "$my_auto_part" = "y" ]; then
     make_part
     get_part_auto
