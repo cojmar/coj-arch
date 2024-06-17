@@ -181,10 +181,7 @@ if [ "$my_opt" = "1" ]; then
     echo $sep
     extra=""
     if [ "$my_aur" = "y" ]; then
-        echo AUR detected, you can typein AUR packages too, example: brave
-        if [ "$my_gui" = "1" ]; then
-        extra=brave
-        fi
+        echo AUR detected, you can typein AUR packages too, example: brave        
     fi
     get_opt "Extra packages" $extra
     export my_extra=$my_opt
