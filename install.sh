@@ -293,7 +293,7 @@ fi
 
 
 if [ "$my_drivers" = "2" ]; then
-   pacman -S --noconfirm --needed wine winetricks gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
+   pacman -S --noconfirm --needed wine winetricks lutris gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
 fi
 
 ' > /mnt/post.sh
