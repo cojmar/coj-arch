@@ -158,6 +158,7 @@ echo Template
 echo $sep
 echo -ne "1:custom\n2:server\n3:desktop "
 get_opt "Template:" "1"
+export my_template=$my_opt
 
 if [ "$my_opt" = "1" ]; then
     get_opt "Autologin" "n"
@@ -399,7 +400,7 @@ rm -rf /root/.cache
 '
 fi
 sync
-# clear
+if [ "$my_template" = "1" ]; then
 df -h /mnt
 echo "
                                        ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
@@ -423,3 +424,6 @@ echo "
  ▟▛▀                               ▀▜▙
 "
 printf "%s" "Arch installed, reboot? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
+else
+reboot
+fi
