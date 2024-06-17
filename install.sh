@@ -116,7 +116,7 @@ function set_gui(){
     echo $my_opt
     if [ "$my_opt" = "n" ]; then
         export my_gui=0
-        get_opt 'Install Video drivers ?' "n"
+        get_opt 'Install Video drivers and alsa-utils for alsamixer ?' "n"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_drivers=1    
