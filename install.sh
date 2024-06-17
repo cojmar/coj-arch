@@ -196,8 +196,6 @@ if [ "$my_opt" = "1" ]; then
         exit 1
     fi
 elif [ "$my_opt" = "2" ]; then
-export my_host_name="cojarch"
-export my_user=cojmar   
 export my_user_autologin=y
 export my_pass=asd
 export my_drivers=0
