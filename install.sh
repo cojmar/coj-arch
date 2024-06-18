@@ -142,11 +142,14 @@ function set_gui(){
         echo $sep
         echo Desktop Env
         echo $sep
-        echo -ne "1: none\n2: xfce4\n"
+        echo -ne "1: none\n2: xfce4\n3: plasma\n"
         get_opt 'Desktop Env: ' "1"
         if [ "$my_opt" = "2" ]; then
-            export my_gui=2
+            export my_gui=$my_opt
             echo xfce4
+        elif [ "$my_opt" = "3" ]; then
+            export my_gui=$my_opt
+            echo plasma
         else        
         echo 'none'
         get_opt 'Autostart GUI app? (app name or n for no) :' "n"  
@@ -180,7 +183,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: server\n3: desktop\n"
+echo -ne "1: custom\n2: server\n3: desktop-xfce\n4: plasma\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
@@ -228,6 +231,13 @@ elif [ "$my_opt" = "3" ]; then
     export my_drivers=2
     export my_gui=2    
     export my_extra+="brave "
+elif [ "$my_opt" = "4" ]; then
+    export my_make_swap=$my_def_swap_opt
+    export my_user_autologin=y
+    
+    export my_drivers=2
+    export my_gui=3    
+    export my_extra+="brave "    
 fi
 # start the install
 if [ "$my_auto_part" = "y" ]; then
@@ -250,6 +260,11 @@ fi
 if [ "$my_gui" = "2" ]; then
     export my_gui_autostart="startxfce4"
     my_pacman+=(xfce4 xfce4-taskmanager alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse)
+fi
+
+if [ "$my_gui" = "3" ]; then
+    export my_gui_autostart="startplasma-x11"
+    my_pacman+=(plasma-meta konsole dolphin)
 fi
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
