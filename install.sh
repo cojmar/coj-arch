@@ -279,7 +279,7 @@ if [ "$my_gui" = "3" ]; then
         gtk-sound-theme-name="ocean"
         gtk-icon-theme-name="breeze-dark"
         gtk-font-name="Nano Sans, 10"
-    " > ~/gtkrc-2.0
+    " > ~/.gtkrc-2.0
     '
 fi
 
