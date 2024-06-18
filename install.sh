@@ -267,6 +267,20 @@ fi
 if [ "$my_gui" = "3" ]; then
     export my_gui_autostart="startplasma-x11"
     my_pacman+=(plasma-meta konsole dolphin)
+    export my_after='
+    echo "
+        gtk-enable-animations=1
+        gtk-theme-name="Breeze-Dark"
+        gtk-primary-button-wraps-slider=1
+        gtk-toolbar-style=3
+        gtk-menu-images=1
+        gtk-cursor-theme-size=24
+        gtk-cursor-theme-name="breeze_cursors"
+        gtk-sound-theme-name="ocean"
+        gtk-icon-theme-name="breeze-dark"
+        gtk-font-name="Nano Sans, 10"
+    " > /home/gtkrc-2.0
+    '
 fi
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
