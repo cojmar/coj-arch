@@ -63,7 +63,8 @@ function set_disk() { # runs all disk settings
     else 
         get_part
     fi
-    get_opt "File system type [1:ext4 2:btrfs]" "1"
+    echo -ne "1: ext4\n2: btrfs\n"
+    get_opt "File system type" "1"
     export my_file_system=$my_opt
      if [ $my_file_system = '2' ];then 
         echo btrfs 
@@ -133,19 +134,22 @@ function set_gui(){
         fi
         echo $my_opt
         echo $sep
-        echo -ne "1: none\n2: xfce4"
+        echo -ne "1: none\n2: xfce4\n"
         get_opt 'Desktop Env: ' "1"
         if [ "$my_opt" = "2" ]; then
             export my_gui=2
+            echo xfce4
         else        
+        echo 'none'
         get_opt 'Autostart GUI app? (app name or n for no) :' "n"  
         echo $my_opt
         export my_gui_autostart=$my_opt
         fi
         echo $sep
-        echo 'Optimise for Gaming ?'
+        echo 'Gaming'
+        echo $sep
         echo adds wine winetricks lutris gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
-        get_opt '' "y"
+        get_opt 'Optimise for Gaming ?' "y"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_drivers=2      
@@ -168,7 +172,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: server\n3: desktop"
+echo -ne "1: custom\n2: server\n3: desktop\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
