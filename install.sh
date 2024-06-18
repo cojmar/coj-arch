@@ -63,6 +63,9 @@ function set_disk() { # runs all disk settings
     else 
         get_part
     fi
+    echo $sep
+    echo File system type
+    echo $sep
     echo -ne "1: ext4\n2: btrfs\n"
     get_opt "File system type" "1"
     export my_file_system=$my_opt
@@ -128,11 +131,16 @@ function set_gui(){
     else
         export my_gui=1
         export my_drivers=1
+        if [ "$my_aur" = "y" ]; then
+        echo AUR detected, you can typein AUR browsers too, example: brave        
+        fi
         get_opt 'Add Browser? (browser name or n for no) :' "chromium"
         if [ "$my_opt" != "n" ]; then        
         export my_extra+="${my_opt} "
         fi
         echo $my_opt
+        echo $sep
+        echo Desktop Env
         echo $sep
         echo -ne "1: none\n2: xfce4\n"
         get_opt 'Desktop Env: ' "1"
@@ -144,8 +152,8 @@ function set_gui(){
         get_opt 'Autostart GUI app? (app name or n for no) :' "n"  
         echo $my_opt
         export my_gui_autostart=$my_opt
-        fi
-        echo $sep
+        fi        
+        echo $sep        
         echo 'Gaming'
         echo $sep
         echo adds wine winetricks lutris gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
@@ -184,18 +192,17 @@ if [ "$my_opt" = "1" ]; then
     get_opt "Make Swap?" $my_def_swap_opt
     my_make_swap=$my_opt
     echo $my_make_swap
-    echo $sep   
-    get_opt "AUR (adds git, yay and pacseek aur helpers)" "y"
-    export my_aur=$my_opt
-    echo $my_aur
     echo $sep
     echo Optional config    
-    echo $sep
+    echo $sep  
+    get_opt "AUR (adds git, yay and pacseek aur helpers)" "y"
+    export my_aur=$my_opt
+    echo $my_aur 
     set_gui    
     echo $sep
     extra=""
     if [ "$my_aur" = "y" ]; then
-        echo AUR detected, you can typein AUR packages too, example: brave        
+        echo AUR detected, you can typein AUR packages too        
     fi
     get_opt "Extra packages" $extra
     export my_extra+="${my_opt} "
