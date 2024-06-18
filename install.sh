@@ -8,6 +8,7 @@ export my_gui_autostart=n
 export my_drivers=0
 export my_gui=0
 export my_aur=y
+export my_after="echo done"
 function get_opt() {   
     echo -ne '\n' 
     printf "%s" "$1 (default $2) : " && read my_opt && if [[ -z "$my_opt" ]]; then my_opt=$2;fi    
@@ -433,6 +434,10 @@ arch-chroot /mnt /bin/sh -c '
 pacman -Syu --needed --noconfirm ${my_extra}
 '
 fi
+#my after
+arch-chroot -u $my_user /mnt /bin/sh -c '
+${my_after}
+'
 # making bootloader and cleaning
 arch-chroot /mnt /bin/sh -c '
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
