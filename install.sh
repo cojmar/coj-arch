@@ -2,7 +2,12 @@
 #INIT 
 #DEV bash <(curl -L http://192.168.0.101:5500/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient)
+export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip)
+export my_extra=" "
+export my_gui_autostart=n
+export my_drivers=0
+export my_gui=0
+export my_aur=y
 function get_opt() {   
     echo -ne '\n' 
     printf "%s" "$1 (default $2) : " && read my_opt && if [[ -z "$my_opt" ]]; then my_opt=$2;fi    
@@ -110,7 +115,7 @@ function make_swap(){
 function set_gui(){
     export my_gui_autostart=n
     export my_drivers=0
-    get_opt 'GUI (xorg xfce4 unzip graphicdrivers audiomixer)' "n"
+    get_opt 'GUI (xorg xorg-xinit graphicdrivers)' "n"
     echo $my_opt
     if [ "$my_opt" = "n" ]; then
         export my_gui=0
@@ -122,16 +127,25 @@ function set_gui(){
     else
         export my_gui=1
         export my_drivers=1
-        get_opt 'Autostart GUI ?' "y"  
-        echo $my_opt      
-        export my_gui_autostart=$my_opt      
-        get_opt 'Optimise for desktop experience (chromium xfce4-goodies) ?' "y"
-        echo $my_opt
-        if [ "$my_opt" = "y" ]; then
-            export my_gui=2      
+        get_opt 'Add Browser? (browser name or n for no) :' "chromium"
+        if [ "$my_opt" != "n" ]; then        
+        export my_extra+="${my_opt} "
         fi
+        echo $my_opt
+        echo $sep
+        echo -ne "1: none\n2: xfce4"
+        get_opt 'Desktop Env: ' "1"
+        if [ "$my_opt" = "2" ]; then
+            export my_gui=2
+        else        
+        get_opt 'Autostart GUI app? (app name or n for no) :' "n"  
+        echo $my_opt
+        export my_gui_autostart=$my_opt
+        fi
+        echo $sep
+        echo 'Optimise for Gaming ?'
         echo adds wine winetricks lutris gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
-        get_opt 'Optimise for Gaming ?' "y"
+        get_opt '' "y"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_drivers=2      
@@ -166,25 +180,21 @@ if [ "$my_opt" = "1" ]; then
     get_opt "Make Swap?" $my_def_swap_opt
     my_make_swap=$my_opt
     echo $my_make_swap
-    echo $sep
-    echo Optional config
-    echo $sep
-    set_gui
-    echo $sep
-    my_def_aur_opt=n
-    if [ "$my_gui" != "0" ]; then
-        my_def_aur_opt=y
-    fi
-    get_opt "AUR (adds git, yay and pacseek aur helpers)" $my_def_aur_opt
+    echo $sep   
+    get_opt "AUR (adds git, yay and pacseek aur helpers)" "y"
     export my_aur=$my_opt
     echo $my_aur
+    echo $sep
+    echo Optional config    
+    echo $sep
+    set_gui    
     echo $sep
     extra=""
     if [ "$my_aur" = "y" ]; then
         echo AUR detected, you can typein AUR packages too, example: brave        
     fi
     get_opt "Extra packages" $extra
-    export my_extra=$my_opt
+    export my_extra+="${my_opt} "
     echo $my_extra
     echo ""
     echo $sep
@@ -198,18 +208,15 @@ if [ "$my_opt" = "1" ]; then
 elif [ "$my_opt" = "2" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y    
-    export my_drivers=0
-    export my_gui=0
-    export my_aur=y
+    
     export my_extra=""
 elif [ "$my_opt" = "3" ]; then
     export my_make_swap=$my_def_swap_opt
-    export my_user_autologin=y    
+    export my_user_autologin=y
+    
     export my_drivers=2
-    export my_gui=1
-    export my_aur=y
-    export my_gui_autostart=y
-    export my_extra="brave"
+    export my_gui=2    
+    export my_extra+="brave "
 fi
 # start the install
 if [ "$my_auto_part" = "y" ]; then
@@ -226,11 +233,12 @@ else
 fi
 
 if [ "$my_gui" != "0" ]; then
-   my_pacman+=(xorg xfce4 xfce4-taskmanager unzip alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse)
+    my_pacman+=(xorg xorg-xinit)
 fi
 
 if [ "$my_gui" = "2" ]; then
-   my_pacman+=(chromium xfce4-goodies)
+    export my_gui_autostart="startxfce4"
+    my_pacman+=(xfce4 xfce4-taskmanager alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse)
 fi
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
@@ -334,13 +342,19 @@ echo Autologin done
 ' >> /mnt/post.sh 
 fi
 
-if [ "$my_gui_autostart" = "y" ]; then
+if [ "$my_gui_autostart" != "n" ]; then
 echo -ne '
 echo -ne "
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
-    startxfce4
+    startx
 fi
 " > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
+
+echo -ne "
+${my_gui_autostart}    
+fi
+" > /home/$my_user/.xinitrc && chown $my_user /home/$my_user/.xinitrc
+
 ' >> /mnt/post.sh
 else
  echo -ne '
@@ -351,7 +365,7 @@ echo \"
                   ▟█▙                  █        █    █       █    
                  ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
                 ▟█████▙                
-               ▟███████▙               Default commands: mc htop ncdu vim sudo
+               ▟███████▙               Default commands: mc htop ncdu vim sudo unzip
               ▂▔▀▜██████▙            If u installed AUR: git yay pacseek
              ▟██▅▂▝▜█████▙
             ▟█████████████▙
