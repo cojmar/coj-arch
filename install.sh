@@ -280,7 +280,6 @@ hwclock --systohc
 sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
 locale-gen
 pacman -Syy
-grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
 systemctl enable sshd && systemctl enable dhcpcd
 
 # determine processor type and install microcode
@@ -410,21 +409,22 @@ sudo pacman -S --needed --noconfirm git base-devel && git clone https://aur.arch
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay --noconfirm 
 yay -Syu --noconfirm pacseek ${my_extra} && yay -Yc --noconfirm
-sudo rm -rf /var/cache
-sudo rm -rf /var/log
-sudo mkdir /var/log
-sudo rm -rf /root/.cache
-sudo chown -R root /root
 '
 else
 arch-chroot /mnt /bin/sh -c '
 pacman -Syu --needed --noconfirm ${my_extra}
-rm -rf /var/cache
-rm -rf /var/log
-mkdir /var/log
-rm -rf /root/.cache
 '
 fi
+
+arch-chroot /mnt /bin/sh -c '
+    grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
+    pacman -R grub efibootmgr --noconfirm
+    rm -rf /var/cache
+    rm -rf /var/log
+    mkdir /var/log
+    rm -rf /root/.cache
+'
+
 sync
 if [ "$my_template" = "1" ]; then
 df -h /mnt
