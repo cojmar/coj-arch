@@ -85,9 +85,10 @@ function set_disk() { # runs all disk settings
 }
 # USER
 function get_password() { # gets password to be used
-    get_opt "Please enter password: " "asd"
+    my_rand_pass=openssl rand -base64 12
+    get_opt "Please enter password: " $my_rand_pass
     pass1=$my_opt
-    get_opt "Please re-enter password: " "asd"
+    get_opt "Please re-enter password: " $my_rand_pass
     pass2=$my_opt   
     if [[ "$pass1" == "$pass2" ]]; then
         export my_pass=$pass1        
