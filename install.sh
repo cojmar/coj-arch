@@ -305,6 +305,7 @@ systemctl disable dhcpcd
 systemctl stop dhcpcd
 systemctl enable NetworkManager.service
 
+nc=$(grep -c ^processor /proc/cpuinfo)
 TOTAL_MEM=$(cat /proc/meminfo | grep -i 'memtotal' | grep -o '[[:digit:]]*')
 if [[  $TOTAL_MEM -gt 8000000 ]]; then
 sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j$nc\"/g" /etc/makepkg.conf
@@ -397,7 +398,7 @@ fi
 
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
-# adding AUR if case EXTRA and cleaning 
+# adding AUR if case and EXTRA
 
 if [ "$my_aur" = "y" ]; then
 # my_user=cojmar
@@ -415,7 +416,7 @@ arch-chroot /mnt /bin/sh -c '
 pacman -Syu --needed --noconfirm ${my_extra}
 '
 fi
-
+# making bootloader and cleaning
 arch-chroot /mnt /bin/sh -c '
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
     pacman -R grub efibootmgr --noconfirm
@@ -424,7 +425,7 @@ arch-chroot /mnt /bin/sh -c '
     mkdir /var/log
     rm -rf /root/.cache
 '
-
+var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /mnt/boot/grub/grub.cfg
 sync
 if [ "$my_template" = "1" ]; then
 df -h /mnt
