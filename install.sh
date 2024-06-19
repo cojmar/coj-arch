@@ -144,7 +144,7 @@ function set_gui(){
         echo $sep
         echo Desktop Env
         echo $sep
-        echo -ne "1: none\n2: xfce4\n3: plasma\n"
+        echo -ne "1: none\n2: xfce4\n3: plasma\n4: cinnamon\n"
         get_opt 'Desktop Env: ' "1"
         if [ "$my_opt" = "2" ]; then
             export my_gui=$my_opt
@@ -214,7 +214,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_user_autologin=y
     
     export my_drivers=1
-    export my_gui=3    
+    export my_gui=4
     export my_aur=n
 else #default 1
     get_opt "Autologin" "n"
@@ -276,6 +276,12 @@ if [ "$my_gui" = "3" ]; then
     export my_gui_autostart="startplasma-x11"
     my_pacman+=(plasma-meta konsole dolphin)    
 fi
+
+if [ "$my_gui" = "4" ]; then
+    export my_gui_autostart="cinnamon-session"
+    my_pacman+=(cinnamon)    
+fi
+
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 
