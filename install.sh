@@ -189,7 +189,34 @@ echo -ne "1: custom\n2: server\n3: desktop-xfce\n4: plasma\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
-if [ "$my_opt" = "1" ]; then
+
+if [ "$my_opt" = "2" ]; then
+    export my_make_swap=$my_def_swap_opt
+    export my_user_autologin=y    
+    
+    export my_extra=""
+elif [ "$my_opt" = "3" ]; then
+    export my_make_swap=$my_def_swap_opt
+    export my_user_autologin=y
+    
+    export my_drivers=2
+    export my_gui=2    
+    export my_extra+="brave "
+elif [ "$my_opt" = "4" ]; then
+    export my_make_swap=$my_def_swap_opt
+    export my_user_autologin=y
+    
+    export my_drivers=2
+    export my_gui=3    
+    export my_extra+="brave "    
+elif [ "$my_opt" = "5" ]; then
+    export my_make_swap=$my_def_swap_opt
+    export my_user_autologin=y
+    
+    export my_drivers=1
+    export my_gui=3    
+    export my_aur=n
+else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
     echo $my_user_autologin
@@ -221,25 +248,6 @@ if [ "$my_opt" = "1" ]; then
     if [ "$my_opt" != "y" ]; then
         exit 1
     fi
-elif [ "$my_opt" = "2" ]; then
-    export my_make_swap=$my_def_swap_opt
-    export my_user_autologin=y    
-    
-    export my_extra=""
-elif [ "$my_opt" = "3" ]; then
-    export my_make_swap=$my_def_swap_opt
-    export my_user_autologin=y
-    
-    export my_drivers=2
-    export my_gui=2    
-    export my_extra+="brave "
-elif [ "$my_opt" = "4" ]; then
-    export my_make_swap=$my_def_swap_opt
-    export my_user_autologin=y
-    
-    export my_drivers=2
-    export my_gui=3    
-    export my_extra+="brave "    
 fi
 # start the install
 if [ "$my_auto_part" = "y" ]; then
@@ -382,7 +390,6 @@ fi
 
 echo -ne "
 ${my_gui_autostart}    
-fi
 " > /home/$my_user/.xinitrc && chown $my_user /home/$my_user/.xinitrc
 
 ' >> /mnt/post.sh
@@ -415,22 +422,17 @@ echo \"
 ' >> /mnt/post.sh
 fi
 
-#dark thems
-if [ "$my_gui" = "3" ]; then
-echo -ne '   
-echo -ne "gtk-enable-animations=1
-gtk-theme-name=\"Breeze-Dark\"
-gtk-primary-button-wraps-slider=1
-gtk-toolbar-style=3
-gtk-menu-images=1
-gtk-cursor-theme-size=24
-gtk-cursor-theme-name=\"breeze_cursors\"
-gtk-sound-theme-name=\"ocean\"
-gtk-icon-theme-name=\"breeze-dark\"
-gtk-font-name=\"Nano Sans, 10\"
-" > /home/$my_user/.gtkrc-2.0 && chown $my_user /home/$my_user/.gtkrc-2.0
+#init xorg if display 
+
+if [ "$my_gui" != "0" ]; then
+if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
+echo -ne '
+X -configure
+cp /root/xorg.conf.new /etc/X11/xorg.conf
 ' >> /mnt/post.sh
 fi
+fi
+
 
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
@@ -455,6 +457,7 @@ fi
 
 # making bootloader and cleaning
 arch-chroot /mnt /bin/sh -c '   
+    chown -R $my_user /home/$my_user/
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
     pacman -R grub efibootmgr --noconfirm
     rm -rf /var/cache
