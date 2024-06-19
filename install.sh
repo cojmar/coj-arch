@@ -202,23 +202,23 @@ elif [ "$my_opt" = "3" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
     
-    export my_drivers=1
+    export my_drivers=2
     export my_gui=2    
-    # export my_extra+="brave "
+    export my_extra+="brave "
 elif [ "$my_opt" = "4" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
     
-    export my_drivers=1
+    export my_drivers=2
     export my_gui=3    
-    # export my_extra+="brave "    
+    export my_extra+="brave "    
 elif [ "$my_opt" = "5" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
     
-    export my_drivers=1
+    export my_drivers=2
     export my_gui=4
-    # export my_extra+="brave "
+    export my_extra+="brave "
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
