@@ -2,7 +2,7 @@
 #INIT 
 #DEV bash <(curl -L http://192.168.0.101:5500/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip)
+export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip neofetch)
 export my_extra=" "
 export my_gui_autostart=n
 export my_drivers=0
@@ -188,7 +188,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: AUR server\n3: AUR desktop KDE Plasma \n4: AUR dektop xfce4\n5: AUR desktop cinnamon\n"
+echo -ne "1: custom\n2: AUR server\n3: AUR desktop\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
@@ -201,24 +201,15 @@ if [ "$my_opt" = "2" ]; then
 elif [ "$my_opt" = "3" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
-    
-    export my_drivers=2
-    export my_gui=2    
     export my_extra+="brave "
-elif [ "$my_opt" = "4" ]; then
-    export my_make_swap=$my_def_swap_opt
-    export my_user_autologin=y
-    
     export my_drivers=2
-    export my_gui=3    
-    export my_extra+="brave "    
-elif [ "$my_opt" = "5" ]; then
-    export my_make_swap=$my_def_swap_opt
-    export my_user_autologin=y
-    
-    export my_drivers=2
-    export my_gui=4
-    export my_extra+="brave "
+
+    echo $sep
+    echo DESKTOP ENV
+    echo $sep
+    echo -ne "1: KDE plasma \n2: xfce4\n3: cinnamon\n"
+    get_opt "DESKTOP ENV:" "1"
+    export my_gui=$(($my_opt + 1))
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
@@ -298,7 +289,7 @@ sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2/g" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
-pacman -S --noconfirm archlinux-keyring
+pacman -S --noconfirm archlinux-keyring neofetch
 pacstrap -K /mnt "${my_pacman[@]}" --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
@@ -398,38 +389,23 @@ fi
 " > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
 
 echo -ne "
-${my_gui_autostart}    
+${my_gui_autostart}
 " > /home/$my_user/.xinitrc && chown $my_user /home/$my_user/.xinitrc
 
 ' >> /mnt/post.sh
-else
- echo -ne '
-echo -ne "
-df -h /
-echo \"
-                                       ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
-                  ▟█▙                  █        █    █       █    
-                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
-                ▟█████▙                
-               ▟███████▙               Default commands: mc htop ncdu vim sudo unzip
-              ▂▔▀▜██████▙            If u installed AUR: git yay pacseek
-             ▟██▅▂▝▜█████▙
-            ▟█████████████▙
-           ▟███████████████▙
-          ▟█████████████████▙
-         ▟███████████████████▙
-        ▟█████████▛▀▀▜████████▙
-       ▟████████▛      ▜███████▙
-      ▟█████████        ████████▙
-     ▟██████████        █████▆▅▄▃▂
-    ▟██████████▛        ▜█████████▙
-   ▟██████▀▀▀              ▀▀██████▙
-  ▟███▀▘                       ▝▀███▙
- ▟▛▀                               ▀▜▙
-\"
-" > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
-' >> /mnt/post.sh
 fi
+
+echo -ne '
+echo -ne "
+neofetch
+df -h / 
+echo \"
+  Default commands: mc htop ncdu vim sudo unzip
+If u installed AUR: git yay pacseek
+\"
+" >> /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
+' >> /mnt/post.sh
+
 
 #init xorg if display 
 
@@ -477,27 +453,11 @@ arch-chroot /mnt /bin/sh -c '
 var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /mnt/boot/grub/grub.cfg
 sync
 if [ "$my_template" = "1" ]; then
-df -h /mnt
+neofetch
+df -h / 
 echo "
-                                       ▄▄▄▄▄▄   ▄▄▄▄▄▄      ▄▄    
-                  ▟█▙                  █        █    █       █    
-                 ▟███▙                 █▄▄▄▄▄   █▄▄▄▄█   █▄▄▄█    
-                ▟█████▙                
-               ▟███████▙
-              ▂▔▀▜██████▙
-             ▟██▅▂▝▜█████▙
-            ▟█████████████▙
-           ▟███████████████▙
-          ▟█████████████████▙
-         ▟███████████████████▙
-        ▟█████████▛▀▀▜████████▙
-       ▟████████▛      ▜███████▙
-      ▟█████████        ████████▙
-     ▟██████████        █████▆▅▄▃▂
-    ▟██████████▛        ▜█████████▙
-   ▟██████▀▀▀              ▀▀██████▙
-  ▟███▀▘                       ▝▀███▙
- ▟▛▀                               ▀▜▙
+  Default commands: mc htop ncdu vim sudo unzip
+If u installed AUR: git yay pacseek
 "
 printf "%s" "Arch installed, reboot? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
 else
