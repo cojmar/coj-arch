@@ -290,7 +290,7 @@ sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2/g" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
-pacman -S --noconfirm archlinux-keyring neofetch
+pacman -S --noconfirm archlinux-keyring neofetch unzip
 pacstrap -K /mnt "${my_pacman[@]}" --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
@@ -420,13 +420,6 @@ fi
 fi
 
 
-if [[ -z "$my_use_template" ]]; then 
-echo no custom templates
-else
-echo $my_use_template
-fi 
-
-
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
 # adding AUR if case and EXTRA
@@ -447,6 +440,18 @@ arch-chroot /mnt /bin/sh -c '
 pacman -Syu --needed --noconfirm ${my_extra}
 '
 fi
+
+
+if [[ -z "$my_use_template" ]]; then 
+echo no custom templates
+else
+echo $my_use_template
+curl -L https://github.com/cojmar/coj-arch/raw/main/gui_templates/${my_use_template}.zip > home.zip
+cp home.zip /mnt/home/$my_user/home.zip
+cd /mnt/home/${my_user}
+unzip -o home.zip
+rm -rf home.zip
+fi 
 
 # making bootloader and cleaning
 arch-chroot /mnt /bin/sh -c '   
