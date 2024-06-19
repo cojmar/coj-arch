@@ -202,7 +202,7 @@ elif [ "$my_opt" = "3" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
     export my_extra+="brave "
-    export my_drivers=2
+    export my_drivers=2    
 
     echo $sep
     echo DESKTOP ENV
@@ -210,6 +210,7 @@ elif [ "$my_opt" = "3" ]; then
     echo -ne "1: KDE plasma \n2: xfce4\n3: cinnamon\n"
     get_opt "DESKTOP ENV:" "1"
     export my_gui=$(($my_opt + 1))
+    export my_use_template=$my_gui
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
