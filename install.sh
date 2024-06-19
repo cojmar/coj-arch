@@ -420,6 +420,13 @@ fi
 fi
 
 
+if [[ -z "$my_use_template" ]]; then 
+echo no custom templates
+else
+echo $my_use_template
+fi 
+
+
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
 # adding AUR if case and EXTRA
