@@ -273,7 +273,7 @@ fi
 
 if [ "$my_gui" = "4" ]; then
     export my_gui_autostart="cinnamon-session"
-    my_pacman+=(cinnamon gnome-shell)
+    my_pacman+=(cinnamon konsole)
 fi
 
 
