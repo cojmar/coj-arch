@@ -418,8 +418,7 @@ fi
 #dark thems
 if [ "$my_gui" = "3" ]; then
 echo -ne '   
-echo -ne "
-gtk-enable-animations=1
+echo -ne "gtk-enable-animations=1
 gtk-theme-name=\"Breeze-Dark\"
 gtk-primary-button-wraps-slider=1
 gtk-toolbar-style=3
@@ -429,7 +428,7 @@ gtk-cursor-theme-name=\"breeze_cursors\"
 gtk-sound-theme-name=\"ocean\"
 gtk-icon-theme-name=\"breeze-dark\"
 gtk-font-name=\"Nano Sans, 10\"
-" > /home/$my_user/gtkrc-2.0 && chown $my_user /home/$my_user/gtkrc-2.0
+" > /home/$my_user/.gtkrc-2.0 && chown $my_user /home/$my_user/.gtkrc-2.0
 ' >> /mnt/post.sh
 fi
 
