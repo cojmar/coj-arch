@@ -8,7 +8,7 @@ export my_gui_autostart=n
 export my_drivers=0
 export my_gui=0
 export my_aur=y
-export my_after="echo done"
+
 function get_opt() {   
     echo -ne '\n' 
     printf "%s" "$1 (default $2) : " && read my_opt && if [[ -z "$my_opt" ]]; then my_opt=$2;fi    
@@ -266,24 +266,15 @@ fi
 
 if [ "$my_gui" = "3" ]; then
     export my_gui_autostart="startplasma-x11"
-    my_pacman+=(plasma-meta konsole dolphin)
-    export my_after='
-    echo "
-        gtk-enable-animations=1
-        gtk-theme-name="Breeze-Dark"
-        gtk-primary-button-wraps-slider=1
-        gtk-toolbar-style=3
-        gtk-menu-images=1
-        gtk-cursor-theme-size=24
-        gtk-cursor-theme-name="breeze_cursors"
-        gtk-sound-theme-name="ocean"
-        gtk-icon-theme-name="breeze-dark"
-        gtk-font-name="Nano Sans, 10"
-    " > ~/.gtkrc-2.0
-    '
+    my_pacman+=(plasma-meta konsole dolphin)    
 fi
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
+
+# set trheds to makepkg.conf
+nc=$(($(grep -c ^processor /proc/cpuinfo) * 2))
+sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j$nc\"/g" /etc/makepkg.conf
+sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g" /etc/makepkg.conf
 
 timedatectl set-ntp true
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
@@ -294,6 +285,7 @@ pacman -S --noconfirm archlinux-keyring
 pacstrap -K /mnt "${my_pacman[@]}" --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
+cp /etc/makepkg.conf /mnt/etc/makepkg.conf
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 genfstab -U /mnt > /mnt/etc/fstab
 ln -sf /mnt/usr/share/zoneinfo/$time_zone /mnt/etc/localtime
@@ -312,7 +304,7 @@ hwclock --systohc
 sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
 locale-gen
 pacman -Syy
-systemctl enable sshd && systemctl enable dhcpcd
+systemctl enable sshd 
 
 # determine processor type and install microcode
 proc_type=$(lscpu)
@@ -337,12 +329,7 @@ systemctl disable dhcpcd
 systemctl stop dhcpcd
 systemctl enable NetworkManager.service
 
-nc=$(grep -c ^processor /proc/cpuinfo)
-TOTAL_MEM=$(cat /proc/meminfo | grep -i 'memtotal' | grep -o '[[:digit:]]*')
-if [[  $TOTAL_MEM -gt 8000000 ]]; then
-sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j$nc\"/g" /etc/makepkg.conf
-sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g" /etc/makepkg.conf
-fi
+
 
 if [ "$my_drivers" != "0" ]; then
     #VIDEO
@@ -428,6 +415,24 @@ echo \"
 ' >> /mnt/post.sh
 fi
 
+#dark thems
+if [ "$my_gui" = "3" ]; then
+echo -ne '   
+echo -ne "
+gtk-enable-animations=1
+gtk-theme-name=\"Breeze-Dark\"
+gtk-primary-button-wraps-slider=1
+gtk-toolbar-style=3
+gtk-menu-images=1
+gtk-cursor-theme-size=24
+gtk-cursor-theme-name=\"breeze_cursors\"
+gtk-sound-theme-name=\"ocean\"
+gtk-icon-theme-name=\"breeze-dark\"
+gtk-font-name=\"Nano Sans, 10\"
+" > /home/$my_user/gtkrc-2.0 && chown $my_user /home/$my_user/gtkrc-2.0
+' >> /mnt/post.sh
+fi
+
 echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
 # adding AUR if case and EXTRA
@@ -448,12 +453,9 @@ arch-chroot /mnt /bin/sh -c '
 pacman -Syu --needed --noconfirm ${my_extra}
 '
 fi
-#my after
-arch-chroot -u $my_user /mnt /bin/sh -c '
-${my_after}
-'
+
 # making bootloader and cleaning
-arch-chroot /mnt /bin/sh -c '
+arch-chroot /mnt /bin/sh -c '   
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
     pacman -R grub efibootmgr --noconfirm
     rm -rf /var/cache
