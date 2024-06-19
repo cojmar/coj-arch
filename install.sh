@@ -185,7 +185,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: server\n3: desktop-xfce\n4: plasma\n"
+echo -ne "1: custom\n2: AUR server\n3: AUR desktop-xfce\n4: AUR dektop-plasma\n5: AUR desktop-cinnamon\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
@@ -213,9 +213,9 @@ elif [ "$my_opt" = "5" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
     
-    export my_drivers=1
+    export my_drivers=2
     export my_gui=4
-    export my_aur=n
+    export my_extra+="brave "
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
