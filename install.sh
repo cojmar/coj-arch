@@ -152,6 +152,9 @@ function set_gui(){
         elif [ "$my_opt" = "3" ]; then
             export my_gui=$my_opt
             echo plasma
+        elif [ "$my_opt" = "4" ]; then
+            export my_gui=$my_opt
+            echo cinnamon
         else        
         echo 'none'
         get_opt 'Autostart GUI app? (app name or n for no) :' "n"  
