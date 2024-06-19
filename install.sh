@@ -467,7 +467,10 @@ echo "
   Default commands: mc htop ncdu vim sudo unzip
 If u installed AUR: git yay pacseek
 "
-printf "%s" "Arch installed, reboot? (leave blank for yes) : " && read do_reb && if [[ -z "$do_reb" ]]; then reboot;fi
+get_opt "Arch installed, reboot?" "y"
+if [ "$my_opt" = "y" ]; then
+reboot
+fi
 else
 reboot
 fi
