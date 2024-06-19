@@ -144,7 +144,7 @@ function set_gui(){
         echo $sep
         echo Desktop Env
         echo $sep
-        echo -ne "1: none\n2: xfce4\n3: plasma\n4: cinnamon\n"
+        echo -ne "1: none\n2: KDE plasma\n3: xfce4\n4: cinnamon\n"
         get_opt 'Desktop Env: ' "1"
         if [ "$my_opt" = "2" ]; then
             export my_gui=$my_opt
@@ -188,7 +188,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: AUR server\n3: AUR desktop-xfce\n4: AUR dektop-plasma\n5: AUR desktop-cinnamon\n"
+echo -ne "1: custom\n2: AUR server\n3: AUR desktop KDE Plasma \n4: AUR dektop xfce4\n5: AUR desktop cinnamon\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
@@ -271,18 +271,18 @@ if [ "$my_gui" != "0" ]; then
 fi
 
 if [ "$my_gui" = "2" ]; then
-    export my_gui_autostart="startxfce4"
-    my_pacman+=(xfce4 xfce4-taskmanager alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse)
-fi
-
-if [ "$my_gui" = "3" ]; then
     export my_gui_autostart="startplasma-x11"
     my_pacman+=(plasma-meta konsole dolphin)    
 fi
 
+if [ "$my_gui" = "3" ]; then
+    export my_gui_autostart="startxfce4"
+    my_pacman+=(xfce4 xfce4-taskmanager alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse)
+fi
+
 if [ "$my_gui" = "4" ]; then
     export my_gui_autostart="cinnamon-session"
-    my_pacman+=(cinnamon)    
+    my_pacman+=(cinnamon gnome-shell)
 fi
 
 
