@@ -454,7 +454,7 @@ var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /mnt/boot/gr
 sync
 if [ "$my_template" = "1" ]; then
 neofetch
-df -h / 
+df -h /mnt
 echo "
   Default commands: mc htop ncdu vim sudo unzip
 If u installed AUR: git yay pacseek
