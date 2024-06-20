@@ -476,13 +476,11 @@ fi
 if [ "$my_aur" = "y" ]; then
 export my_commands="echo '
 Default commands: mc htop ncdu vim sudo unzip
-    AUR commands: git yay pacseek
-      
+    AUR commands: git yay pacseek      
 '"
 else
 export my_commands="echo '
-Default commands: mc htop ncdu vim sudo unzip
-      
+Default commands: mc htop ncdu vim sudo unzip      
 '"
 fi
 
@@ -491,7 +489,8 @@ echo -ne "
 fastfetch
 ${my_commands}
 if [ -f /etc/systemd/system/getty@tty1.service.d/override.conf ]; then
-echo to remove autologin run this command: sudo rm -rf /etc/systemd/system/getty@tty1.service.d/override.conf
+echo "to remove autologin run this command: sudo rm -rf /etc/systemd/system/getty@tty1.service.d/override.conf
+"
 fi
 
 " >> /home/$my_user/.bash_profile
