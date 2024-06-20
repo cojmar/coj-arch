@@ -310,6 +310,10 @@ elif grep -E "AuthenticAMD" <<< ${proc_type}; then
     my_pacman+=(amd-ucode)
 fi
 
+if [ "$my_aur" = "y" ]; then
+    my_pacman+=(git base-devel)
+fi
+
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 
 # set trheds to makepkg.conf
@@ -426,16 +430,16 @@ cp /root/xorg.conf.new /etc/X11/xorg.conf
 fi
 fi
 
-
 echo -ne "\nchown -R ${my_user} /root\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
 # adding AUR if case and EXTRA with aur
 
 if [ "$my_aur" = "y" ]; then
+echo "BULDING AUR"
 # my_user=cojmar
 arch-chroot -u $my_user /mnt /bin/sh -c '
 cd ~
-sudo pacman -S --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git 
+git clone https://aur.archlinux.org/yay-bin.git 
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay --noconfirm 
 yay -Syu --noconfirm pacseek "${my_extra[@]}" && yay -Yc --noconfirm
