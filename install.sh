@@ -320,12 +320,12 @@ fi
 
 if [ "$my_gui" = "3" ]; then
     export my_gui_autostart="startxfce4"
-    my_pacman+=(xfce4 xfce4-taskmanager alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse)
+    my_pacman+=(xfce4 xfce4-taskmanager alsa-utils xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-jack pulseaudio-lirc pavucontrol lib32-alsa-plugins lib32-alsa-lib lib32-libpulse dolphin)
 fi
 
 if [ "$my_gui" = "4" ]; then
     export my_gui_autostart="cinnamon-session"
-    my_pacman+=(cinnamon metacity gnome-shell)
+    my_pacman+=(cinnamon konsole dolphin)
 fi
 # drivers
 if [ "$my_drivers" = "3" ]; then
