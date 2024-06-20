@@ -397,7 +397,8 @@ if [ "$my_gui_autostart" != "n" ]; then
 echo -ne '
 echo -ne "
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
-    startx > /dev/null
+    startx 2&>.my_x_start
+    rm -rf .my_x_start
 fi
 " > /home/$my_user/.bash_profile
 
@@ -436,7 +437,7 @@ echo -ne "\nchown -R ${my_user} /root\nrm -rf post.sh" >> /mnt/post.sh && chmod 
 # adding AUR if case and EXTRA with aur
 
 if [ "$my_aur" = "y" ]; then
-echo ================= BULDING AUR
+echo ================= INSTALLING AUR
 # my_user=cojmar
 arch-chroot -u $my_user /mnt /bin/sh -c '
 cd ~
@@ -465,7 +466,7 @@ arch-chroot /mnt /bin/sh -c '
     chown -R $my_user /home/$my_user/
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
     var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg
-    pacman -R grub efibootmgr --noconfirm
+    pacman -R grub efibootmgr dhcpcd --noconfirm
     rm -rf /var/cache
     rm -rf /var/log
     mkdir /var/log
