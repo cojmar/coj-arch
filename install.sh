@@ -33,7 +33,7 @@ convertsecs() {
 
 #DISK
 get_disk() { # gets install disk
-    echo $sep && echo "Available disks"
+    echo "Available disks"
     lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
     get_opt "Install on disk" "1"
     
@@ -195,6 +195,7 @@ clear
 echo $sep && echo  "Welcome to cojmar arch
 AUR stands for \"Arch User Repository\" and adds access to latest bleeding edge stuf
 "
+echo $sep
 set_disk
 echo $sep
 echo Base config
@@ -285,8 +286,9 @@ else #default 1
     fi
 fi
 # start the install
-echo ""
+echo $sep
 echo ================= START INSTALL
+echo $sep
 export my_timestamp1=$(date +%s)
 IFS=' ' read -r my_extra <<< $my_extra
 if [ "$my_aur" != "y" ]; then
@@ -402,9 +404,9 @@ echo $my_host_name > /mnt/etc/hostname
 if [ "$my_make_swap" = "y" ]; then
     make_swap   
 fi
-
+echo $sep
 echo ================= MAIN INSTALL DONE
-
+echo $sep
 
 if [ "$my_sudo_pass" = "y" ]; then
     export my_sudo_pass=""
@@ -489,8 +491,8 @@ echo -ne "
 fastfetch
 ${my_commands}
 if [ -f /etc/systemd/system/getty@tty1.service.d/override.conf ]; then
-echo "to remove autologin run this command: sudo rm -rf /etc/systemd/system/getty@tty1.service.d/override.conf
-"
+echo \"to remove autologin run this command: sudo rm -rf /etc/systemd/system/getty@tty1.service.d/override.conf
+\"
 fi
 
 " >> /home/$my_user/.bash_profile
@@ -513,8 +515,10 @@ echo -ne "\nchown -R ${my_user} /root\nrm -rf post.sh" >> /mnt/post.sh && chmod 
 # adding AUR if case and EXTRA with aur
 
 if [ "$my_aur" = "y" ]; then
+echo $sep
 echo ================= INSTALLING AUR
-# my_user=cojmar
+echo $sep
+
 arch-chroot -u $my_user /mnt /bin/sh -c '
 cd ~
 git clone https://aur.archlinux.org/yay-bin.git 
@@ -528,7 +532,9 @@ fi
 if [[ -z "$my_use_template" ]]; then 
 echo ""
 else
+echo $sep
 echo ================= ADDING HOME TEMPLATE
+echo $sep
 echo $my_use_template
 curl -L ${my_url}/home_templates/${my_use_template}.zip > home.zip
 cp home.zip /mnt/home/$my_user/home.zip
