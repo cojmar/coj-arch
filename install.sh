@@ -2,7 +2,7 @@
 #INIT 
 #DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip neofetch)
+export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch)
 export my_extra=""
 export my_gui_autostart=n
 export my_drivers=0
@@ -328,7 +328,7 @@ sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2/g" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
-pacman -S --noconfirm archlinux-keyring neofetch unzip
+pacman -S --noconfirm archlinux-keyring fastfetch unzip
 pacstrap -K /mnt "${my_pacman[@]}" --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
@@ -411,8 +411,7 @@ fi
 
 echo -ne '
 echo -ne "
-neofetch
-df -h / 
+fastfetch
 echo \"
   Default commands: mc htop ncdu vim sudo unzip
 If u installed AUR: git yay pacseek
@@ -476,12 +475,8 @@ arch-chroot /mnt /bin/sh -c '
 
 sync
 if [ "$my_template" = "1" ]; then
-neofetch
+fastfetch
 df -h /mnt
-echo "
-  Default commands: mc htop ncdu vim sudo unzip
-If u installed AUR: git yay pacseek
-"
 get_opt "Arch installed, reboot?" "y"
 if [ "$my_opt" = "y" ]; then
 reboot
