@@ -8,6 +8,13 @@ export my_gui_autostart=n
 export my_drivers=0
 export my_gui=0
 export my_aur=y
+export my_startx="
+if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
+    startx &>/dev/null
+fi
+"
+
+
 if [[ -z "$my_url" ]]; then export my_url="https://raw.githubusercontent.com/cojmar/coj-arch/main";fi
 
 function get_opt() {   
@@ -214,11 +221,14 @@ elif [ "$my_opt" = "4" ]; then
      echo $sep
     get_opt "URL" "https://youtube.com"
     echo $my_opt
-    export my_gui_autostart="
-    while :
-    do
-        chromium --force-dark-mode --enable-features=WebUIDarkMode --start-maximized --kiosk ${my_opt}
-    done
+    export my_gui_autostart="chromium --force-dark-mode --enable-features=WebUIDarkMode --start-maximized —full-screen --kiosk ${my_opt}"
+    export my_startx="
+    if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
+        while :
+        do
+            startx &>/dev/null
+        done 
+    fi
     "
     export my_make_swap=n
     export my_user_autologin=y    
@@ -429,9 +439,7 @@ fi
 if [ "$my_gui_autostart" != "n" ]; then
 echo -ne '
 echo -ne "
-if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
-    startx &>/dev/null    
-fi
+${my_startx}
 " > /home/$my_user/.bash_profile
 
 echo -ne "
