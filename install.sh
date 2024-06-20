@@ -210,6 +210,7 @@ echo Template
 echo $sep
 echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n"
 get_opt "Template:" "1"
+echo $my_opt
 export my_template=$my_opt
 # templates
 
