@@ -192,7 +192,9 @@ set_gui(){
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" 
 clear 
 # minimal config
-echo $sep && echo  Welcome to cojmar arch
+echo $sep && echo  "Welcome to cojmar arch
+AUR stands for \"Arch User Repository\" and means access to latest bleeding edge stuf
+"
 set_disk
 echo $sep
 echo Base config
@@ -204,7 +206,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: AUR server\n3: AUR desktop with brave\n4: Web App in chromium -kiosk\n"
+echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
