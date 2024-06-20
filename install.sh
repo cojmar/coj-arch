@@ -214,11 +214,16 @@ elif [ "$my_opt" = "4" ]; then
      echo $sep
     get_opt "URL" "https://youtube.com"
     echo $my_opt
-    export my_gui_autostart="xterm -e 'chromium --allow-running-insecure-content --disable-web-security --start-maximized --disable-setuid-sandbox --disable-notifications --disable-search-engine-choice-screen --disable-prompt-on-repost --disable-back-forward-cache --disable-client-side-phishing-detection --disable-extensions --disable-component-extensions-with-background-pages --disable-default-apps --disable-sync --disable-breakpad --disable-component-update --disable-domain-reliability --disable-background-timer-throttling --disable-backgrounding-occluded-windows --no-sandbox --no-zygote --noerrdialogs --no-default-browser-check --no-first-run --ash-no-nudges --test-type --hide-crash-restore-bubble --disable-features=Translate,BackForwardCache,CalculateNativeWinOcclusion,DownloadBubble,DownloadBubbleV2 --force-dark-mode --enable-features=WebUIDarkMode --kiosk ${my_opt}'"
+    export my_gui_autostart="
+    while :
+    do
+        chromium --force-dark-mode --enable-features=WebUIDarkMode --start-maximized --kiosk ${my_opt}
+    done
+    "
     export my_make_swap=n
     export my_user_autologin=y    
     export my_gui=1
-    export my_extra+=" chromium xterm"
+    export my_extra+=" chromium"
     export my_drivers=3
     export my_aur=n
 else #default 1
