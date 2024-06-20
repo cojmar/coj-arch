@@ -254,7 +254,7 @@ fi
 
 mkfs.fat $boot_part && mkfs.ext4 -F $sys_part
 
-if [ "$my_file_system" = "1" ]; then
+if [ "$my_file_system" = "2" ]; then
     mkfs.btrfs -f $sys_part
 else
     mkfs.ext4 -F $sys_part
