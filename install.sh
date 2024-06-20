@@ -276,7 +276,7 @@ fi
 
 if [ "$my_gui" = "4" ]; then
     export my_gui_autostart="cinnamon-session"
-    my_pacman+=(cinnamon konsole)
+    my_pacman+=(cinnamon xterm)
 fi
 # drivers
 
