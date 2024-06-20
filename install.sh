@@ -472,22 +472,22 @@ ${my_gui_autostart}
 fi
 
 if [ "$my_aur" = "y" ]; then
-export my_commands="
+export my_commands="echo '
 Default commands: mc htop ncdu vim sudo unzip
     AUR commands: git yay pacseek
       
-"
+'"
 else
-export my_commands="
+export my_commands="echo '
 Default commands: mc htop ncdu vim sudo unzip
       
-"
+'"
 fi
 
 echo -ne '
 echo -ne "
 fastfetch
-echo ${my_commands}
+${my_commands}
 if [ -f /etc/systemd/system/getty@tty1.service.d/override.conf ]; then
 echo to remove autologin run this command: sudo rm -rf /etc/systemd/system/getty@tty1.service.d/override.conf
 fi
