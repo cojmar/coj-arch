@@ -185,7 +185,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: AUR server\n3: AUR desktop with brave\n4: Web App in chromium\n"
+echo -ne "1: custom\n2: AUR server\n3: AUR desktop with brave\n4: Web App in chromium -kiosk\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
