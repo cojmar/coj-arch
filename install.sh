@@ -214,11 +214,11 @@ elif [ "$my_opt" = "4" ]; then
      echo $sep
     get_opt "URL" "https://youtube.com"
     echo $my_opt
-    export my_gui_autostart="xmodmap -e \"keycode 105 = \" && chromium --start-maximized ${my_opt}"
+    export my_gui_autostart="chromium --start-maximized ${my_opt}"
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y    
     export my_gui=1
-    export my_extra+=" chromium xorg-xmodmap"
+    export my_extra+=" chromium"
     export my_drivers=3
     export my_aur=n
 else #default 1
