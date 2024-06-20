@@ -193,7 +193,7 @@ iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi
 clear 
 # minimal config
 echo $sep && echo  "Welcome to cojmar arch
-AUR stands for \"Arch User Repository\" and means access to latest bleeding edge stuf
+AUR stands for \"Arch User Repository\" and adds access to latest bleeding edge stuf
 "
 set_disk
 echo $sep
@@ -475,8 +475,8 @@ fi
 
 if [ "$my_aur" = "y" ]; then
 export my_commands="echo '
-Default commands: mc htop ncdu vim sudo unzip
-    AUR commands: git yay pacseek      
+    Default commands: mc htop ncdu vim sudo unzip git
+AUR package managers: yay (command line) pacseek (command line with GUI)      
 '"
 else
 export my_commands="echo '
