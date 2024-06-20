@@ -8,6 +8,7 @@ export my_gui_autostart=n
 export my_drivers=0
 export my_gui=0
 export my_aur=y
+export my_sudo_pass=y
 export my_startx="
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
     startx &>/dev/null
@@ -100,7 +101,10 @@ function get_password() { # gets password to be used
     get_opt "Please re-enter password: " $my_rand_pass
     pass2=$my_opt   
     if [[ "$pass1" == "$pass2" ]]; then
-        export my_pass=$pass1        
+        export my_pass=$pass1
+        get_opt "Require password for sudo?" "y"
+        export my_sudo_pass=$my_opt
+
     else
         echo -ne "ERROR! Passwords do not match. \n"
         get_password
@@ -221,13 +225,15 @@ elif [ "$my_opt" = "4" ]; then
      echo $sep
     get_opt "URL" "https://youtube.com"
     echo $my_opt
-    export my_gui_autostart="chromium --force-dark-mode --enable-features=WebUIDarkMode --start-maximized —full-screen --kiosk ${my_opt}"
-    export my_startx="
-    if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
-        while :
+    export my_gui_autostart="
+    while :
         do
-            startx &>/dev/null
-        done 
+            chromium --force-dark-mode --enable-features=WebUIDarkMode --start-maximized --start-fullscreen --kiosk ${my_opt}
+        done
+    "
+    export my_startx="
+    if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then        
+            startx &>/dev/null         
     fi
     "
     export my_make_swap=n
@@ -388,6 +394,13 @@ fi
 
 echo ================= MAIN INSTALL DONE
 
+
+if [ "$my_sudo_pass" = "y" ]; then
+    export my_sudo_pass=""
+else
+    export my_sudo_pass="NOPASSWD:"
+fi
+
 echo -ne '
 hwclock --systohc
 sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
@@ -412,7 +425,7 @@ if [ "$my_drivers" != "0" ]; then
 fi
 
 useradd -U $my_user
-echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
+echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo -ne "AllowUsers $my_user\nAllowTcpForwarding yes\nPermitTunnel yes\n" >> /etc/ssh/sshd_config
