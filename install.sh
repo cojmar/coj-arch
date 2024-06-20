@@ -434,7 +434,7 @@ if [ "$my_drivers" != "0" ]; then
 fi
 
 useradd -U $my_user
-echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user
+echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo -ne "AllowUsers $my_user\nAllowTcpForwarding yes\nPermitTunnel yes\n" >> /etc/ssh/sshd_config
@@ -471,13 +471,27 @@ ${my_gui_autostart}
 ' >> /mnt/post.sh
 fi
 
+if [ "$my_aur" = "y" ]; then
+export my_commands="
+Default commands: mc htop ncdu vim sudo unzip
+    AUR commands: git yay pacseek
+      
+"
+else
+export my_commands="
+Default commands: mc htop ncdu vim sudo unzip
+      
+"
+fi
+
 echo -ne '
 echo -ne "
 fastfetch
-echo \"
-  Default commands: mc htop ncdu vim sudo unzip
-If u installed AUR: git yay pacseek
-\"
+echo ${my_commands}
+if [ -f /etc/systemd/system/getty@tty1.service.d/override.conf ]; then
+echo to remove autologin run this command: sudo rm -rf /etc/systemd/system/getty@tty1.service.d/override.conf
+fi
+
 " >> /home/$my_user/.bash_profile
 ' >> /mnt/post.sh
 
@@ -526,6 +540,7 @@ fi
 arch-chroot /mnt /bin/sh -c '
     chown -R root /root 
     chown -R $my_user /home/$my_user/
+    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
     var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg
     pacman -R grub efibootmgr dhcpcd --noconfirm
