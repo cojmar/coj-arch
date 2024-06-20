@@ -254,6 +254,7 @@ else #default 1
     fi
 fi
 # start the install
+echo ""
 echo ================= START INSTALL
 IFS=' ' read -r my_extra <<< $my_extra
 if [ "$my_aur" != "y" ]; then
