@@ -214,7 +214,7 @@ elif [ "$my_opt" = "4" ]; then
      echo $sep
     get_opt "URL" "https://youtube.com"
     echo $my_opt
-    export my_gui_autostart="chromium --start-maximized ${my_opt}"
+    export my_gui_autostart="chromium --allow-running-insecure-content --disable-web-security --start-maximized --disable-setuid-sandbox --disable-notifications --disable-search-engine-choice-screen --disable-prompt-on-repost --disable-back-forward-cache --disable-client-side-phishing-detection --disable-extensions --disable-component-extensions-with-background-pages --disable-default-apps --disable-sync --disable-breakpad --disable-component-update --disable-domain-reliability --disable-background-timer-throttling --disable-backgrounding-occluded-windows --no-sandbox --no-zygote --noerrdialogs --no-default-browser-check --no-first-run --ash-no-nudges --test-type --hide-crash-restore-bubble --disable-features=Translate,BackForwardCache,CalculateNativeWinOcclusion,DownloadBubble,DownloadBubbleV2 --force-dark-mode --enable-features=WebUIDarkMode --kiosk ${my_opt}"
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y    
     export my_gui=1
@@ -303,7 +303,7 @@ if [ "$my_drivers" = "3" ]; then
     elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
         my_pacman+=(xf86-video-intel)
     else
-        my_pacman+=(xf86-video-vmware xf86-input-vmmouse)        
+        my_pacman+=(gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa)        
     fi
     my_pacman+=(alsa-utils)
 else
