@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #INIT 
-#DEV bash <(curl -L http://192.168.0.101:5500/install.sh)
+#DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip neofetch)
 export my_extra=" "
@@ -446,7 +446,7 @@ if [[ -z "$my_use_template" ]]; then
 echo no custom templates
 else
 echo $my_use_template
-curl -L https://github.com/cojmar/coj-arch/raw/main/gui_templates/${my_use_template}.zip > home.zip
+curl -L ${my_url}/gui_templates/${my_use_template}.zip > home.zip
 cp home.zip /mnt/home/$my_user/home.zip
 cd /mnt/home/${my_user}
 unzip -o home.zip
