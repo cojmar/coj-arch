@@ -33,6 +33,7 @@ convertsecs() {
 
 #DISK
 get_disk() { # gets install disk
+    echo $sep
     echo "Available disks"
     lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
     get_opt "Install on disk" "1"
