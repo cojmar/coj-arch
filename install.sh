@@ -129,7 +129,7 @@ function set_gui(){
         get_opt 'Install video drivers and alsa-utils for alsamixer ?' "n"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
-            export my_drivers=1    
+            export my_drivers=3
         fi
     else
         export my_gui=1
@@ -185,7 +185,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: AUR server\n3: AUR desktop with brave\n4: Web App in chromium"
+echo -ne "1: custom\n2: AUR server\n3: AUR desktop with brave\n4: Web App in chromium\n"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
@@ -208,6 +208,19 @@ elif [ "$my_opt" = "3" ]; then
     get_opt "DESKTOP ENV:" "1"
     export my_gui=$(($my_opt + 1))
     export my_use_template=$my_gui
+elif [ "$my_opt" = "4" ]; then
+    echo $sep
+    echo Web App URL
+     echo $sep
+    get_opt "URL" "https://youtube.com"
+    echo $my_opt
+    export my_gui_autostart="xmodmap -e \"keycode 105 = \" && chromium --start-maximized ${my_opt}"
+    export my_make_swap=$my_def_swap_opt
+    export my_user_autologin=y    
+    export my_gui=1
+    export my_extra+=" chromium xorg-xmodmap"
+    export my_drivers=3
+    export my_aur=n
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
@@ -241,7 +254,7 @@ else #default 1
     fi
 fi
 # start the install
-
+echo ================= START INSTALL
 IFS=' ' read -r my_extra <<< $my_extra
 if [ "$my_aur" != "y" ]; then
 my_pacman+=($my_extra)
@@ -279,29 +292,42 @@ if [ "$my_gui" = "4" ]; then
     my_pacman+=(cinnamon xterm)
 fi
 # drivers
-
-if [ "$my_drivers" != "0" ]; then
-    #VIDEO
+if [ "$my_drivers" = "3" ]; then
     if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
-        my_pacman+=(nvidia)
-   
+        my_pacman+=(xf86-video-nouveau)
     elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
         my_pacman+=(xf86-video-amdgpu)
     elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
+        my_pacman+=(xf86-video-intel)
     elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
+        my_pacman+=(xf86-video-intel)
     else
-        my_pacman+=(gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa)        
+        my_pacman+=(xf86-video-vmware xf86-input-vmmouse)        
     fi
-    #AUDIO
     my_pacman+=(alsa-utils)
-fi
+else
+    if [ "$my_drivers" != "0" ]; then
+        #VIDEO
+        if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
+            my_pacman+=(nvidia)   
+        elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
+            my_pacman+=(xf86-video-amdgpu)
+        elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
+            my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
+        elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
+            my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
+        else
+            my_pacman+=(gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa)        
+        fi
+        #AUDIO
+        my_pacman+=(alsa-utils)
+    fi
 
-if [ "$my_drivers" = "2" ]; then
-   my_pacman+=(winetricks zenity lutris gamemode vulkan-tools)
-   #WineDependencies 
-   my_pacman+=(wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader)
+    if [ "$my_drivers" = "2" ]; then
+    my_pacman+=(winetricks zenity lutris gamemode vulkan-tools)
+    #WineDependencies 
+    my_pacman+=(wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader)
+    fi
 fi
 
 # determine processor type and install microcode
