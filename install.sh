@@ -18,13 +18,21 @@ fi
 
 if [[ -z "$my_url" ]]; then export my_url="https://raw.githubusercontent.com/cojmar/coj-arch/main";fi
 
-function get_opt() {   
+get_opt() {   
     echo -ne '\n' 
     printf "%s" "$1 (default $2) : " && read my_opt && if [[ -z "$my_opt" ]]; then my_opt=$2;fi    
     # echo $my_opt
 }
+
+convertsecs() {
+ ((h=${1}/3600))
+ ((m=(${1}%3600)/60))
+ ((s=${1}%60))
+ printf "%02d:%02d:%02d\n" $h $m $s
+}
+
 #DISK
-function get_disk() { # gets install disk
+get_disk() { # gets install disk
     echo $sep && echo "Available disks"
     lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
     get_opt "Install on disk" "1"
@@ -32,7 +40,7 @@ function get_disk() { # gets install disk
     export my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$my_opt' {print $2}')
     echo $my_disk
 }
-function make_part() { # makes partitions on install disk
+make_part() { # makes partitions on install disk
     # disk prep
     sgdisk -Z ${my_disk} # zap all on disk
     sgdisk -a 2048 -o ${my_disk} # new gpt disk 2048 alignment
@@ -41,14 +49,14 @@ function make_part() { # makes partitions on install disk
     sgdisk -n 3::-0 --typecode=3:8300:'ROOT' ${my_disk} # partition 2 (OS) 
     partprobe ${my_disk} 
 }
-function get_part_auto() { # get partitions automaticaly based on selected disk
+get_part_auto() { # get partitions automaticaly based on selected disk
     boot_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk -v var="$my_disk" '$1 ~ var {print $0}' | awk '{print NR,$0}' | awk 'NR=='1' {print $2}')
     echo BOOT $boot_part   
 
     sys_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk -v var="$my_disk" '$1 ~ var {print $0}' | awk '{print NR,$0}' | awk 'NR=='2' {print $2}')
     echo OS $sys_part
 }
-function get_part() { # manualy select partitions
+get_part() { # manualy select partitions
     echo $sep && echo "Available partitions"
     lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
     
@@ -60,7 +68,7 @@ function get_part() { # manualy select partitions
     sys_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$my_opt' {print $2}')
     echo $sys_part 
 }
-function set_disk() { # runs all disk settings
+set_disk() { # runs all disk settings
     umount -A --recursive /mnt
     echo $sep
     echo Disk Operations    
@@ -94,7 +102,7 @@ function set_disk() { # runs all disk settings
     
 }
 # USER
-function get_password() { # gets password to be used
+get_password() { # gets password to be used
     my_rand_pass=$(openssl rand -base64 32)
     get_opt "Please enter password: " $my_rand_pass
     pass1=$my_opt
@@ -110,14 +118,14 @@ function get_password() { # gets password to be used
         get_password
     fi
 }
-function set_user() { # runs all the user settings
+set_user() { # runs all the user settings
     echo $sep  
     get_opt "Username" "cojmar"
     export my_user=$my_opt
     echo $my_user
     get_password    
 }
-function make_swap(){
+make_swap(){
     # Put swap into the actual system, not into RAM disk, otherwise there is no point in it, itll cache RAM into RAM. So, /mnt/ everything.
     mkdir -p /mnt/opt/swap # make a dir that we can apply NOCOW to to make it btrfs-friendly.
     chattr +C /mnt/opt/swap # apply NOCOW, btrfs needs that.
@@ -130,7 +138,7 @@ function make_swap(){
     echo "/opt/swap/swapfile    none    swap    sw    0    0" >> /mnt/etc/fstab # Add swap to fstab, so it KEEPS working after installation.
 }
 # GUI
-function set_gui(){
+set_gui(){
     export my_gui_autostart=n
     export my_drivers=0
     get_opt 'GUI (xorg xorg-xinit video drivers)' "n"
@@ -277,6 +285,7 @@ fi
 # start the install
 echo ""
 echo ================= START INSTALL
+export my_timestamp1=$(date +%s)
 IFS=' ' read -r my_extra <<< $my_extra
 if [ "$my_aur" != "y" ]; then
 my_pacman+=($my_extra)
@@ -527,13 +536,19 @@ arch-chroot /mnt /bin/sh -c '
 '
 
 sync
-if [ "$my_template" = "1" ]; then
 fastfetch
-df -h /mnt
+export my_timestamp2=$(date +%s)
+
+export duration=$(( $my_timestamp2 - $my_timestamp1 ))
+echo install duration: $(convertsecs $duration)
+
+if [ "$my_template" = "1" ]; then
 get_opt "Arch installed, reboot?" "y"
 if [ "$my_opt" = "y" ]; then
 reboot
 fi
 else
+echo rebooting in 5
+sleep 5
 reboot
 fi
