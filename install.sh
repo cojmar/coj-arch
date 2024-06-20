@@ -160,7 +160,8 @@ function set_gui(){
         echo $sep        
         echo 'Gaming'
         echo $sep
-        echo adds lutris and WineDependencies
+        echo adds wine-staging winetricks lutris and WineDependencies described at this URL:
+        echo https://github.com/lutris/docs/blob/master/WineDependencies.md
         get_opt 'Optimise for Gaming ?' "y"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
