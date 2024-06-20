@@ -344,7 +344,7 @@ if [ "$my_make_swap" = "y" ]; then
     make_swap   
 fi
 
-echo ================= BASE INSTALL DONE
+echo ================= MAIN INSTALL DONE
 
 echo -ne '
 hwclock --systohc
