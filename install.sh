@@ -435,7 +435,7 @@ echo -ne "\nchown -R ${my_user} /root\nrm -rf post.sh" >> /mnt/post.sh && chmod 
 # adding AUR if case and EXTRA with aur
 
 if [ "$my_aur" = "y" ]; then
-echo "BULDING AUR"
+echo ================= BULDING AUR
 # my_user=cojmar
 arch-chroot -u $my_user /mnt /bin/sh -c '
 cd ~
