@@ -295,7 +295,7 @@ fi
 
 if [ "$my_gui" = "4" ]; then
     export my_gui_autostart="cinnamon-session"
-    my_pacman+=(cinnamon xterm)
+    my_pacman+=(cinnamon metacity gnome-shell)
 fi
 # drivers
 if [ "$my_drivers" = "3" ]; then
