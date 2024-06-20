@@ -3,7 +3,7 @@
 #DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip neofetch)
-export my_extra=" "
+export my_extra=""
 export my_gui_autostart=n
 export my_drivers=0
 export my_gui=0
@@ -121,11 +121,11 @@ function make_swap(){
 function set_gui(){
     export my_gui_autostart=n
     export my_drivers=0
-    get_opt 'GUI (xorg xorg-xinit graphicdrivers)' "n"
+    get_opt 'GUI (xorg xorg-xinit video drivers)' "n"
     echo $my_opt
     if [ "$my_opt" = "n" ]; then
         export my_gui=0
-        get_opt 'Install Video drivers and alsa-utils for alsamixer ?' "n"
+        get_opt 'Install video drivers and alsa-utils for alsamixer ?' "n"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_drivers=1    
@@ -138,7 +138,7 @@ function set_gui(){
         fi
         get_opt 'Add Browser? (browser name or n for no) :' "chromium"
         if [ "$my_opt" != "n" ]; then        
-        export my_extra+="${my_opt} "
+        export my_extra+=" ${my_opt}"
         fi
         echo $my_opt
         echo $sep
@@ -146,25 +146,20 @@ function set_gui(){
         echo $sep
         echo -ne "1: none\n2: KDE plasma\n3: xfce4\n4: cinnamon\n"
         get_opt 'Desktop Env: ' "1"
-        if [ "$my_opt" = "2" ]; then
+  
+        if [ "$my_opt" = "1" ]; then       
+            get_opt 'Autostart GUI app? (app name or n for no) :' "n"  
+            echo $my_opt
+            if [ "$my_opt" != "n" ]; then 
+                export my_gui_autostart=$my_opt
+            fi
+        else
             export my_gui=$my_opt
-            echo xfce4
-        elif [ "$my_opt" = "3" ]; then
-            export my_gui=$my_opt
-            echo plasma
-        elif [ "$my_opt" = "4" ]; then
-            export my_gui=$my_opt
-            echo cinnamon
-        else        
-        echo 'none'
-        get_opt 'Autostart GUI app? (app name or n for no) :' "n"  
-        echo $my_opt
-        export my_gui_autostart=$my_opt
         fi        
         echo $sep        
         echo 'Gaming'
         echo $sep
-        echo adds wine winetricks lutris gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
+        echo adds lutris and WineDependencies
         get_opt 'Optimise for Gaming ?' "y"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
@@ -201,7 +196,7 @@ if [ "$my_opt" = "2" ]; then
 elif [ "$my_opt" = "3" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
-    export my_extra+="brave "
+    export my_extra+=" brave"
     export my_drivers=2    
 
     echo $sep
@@ -222,18 +217,17 @@ else #default 1
     echo $sep
     echo Optional config    
     echo $sep  
-    get_opt "AUR (adds git, yay and pacseek aur helpers)" "y"
+    get_opt "AUR (adds git, yay and pacseek aur helpers)" "n"
     export my_aur=$my_opt
     echo $my_aur 
     set_gui    
     echo $sep
-    extra=""
-    if [ "$my_aur" = "y" ]; then
+        if [ "$my_aur" = "y" ]; then
         echo AUR detected, you can typein AUR packages too        
     fi
-    get_opt "Extra packages" $extra
-    export my_extra+="${my_opt} "
-    echo $my_extra
+    get_opt "Extra packages" ""
+    export my_extra+=" ${my_opt}"
+    echo $my_opt
     echo ""
     echo $sep
     echo Config done!
@@ -245,6 +239,12 @@ else #default 1
     fi
 fi
 # start the install
+
+IFS=' ' read -r my_extra <<< $my_extra
+if [ "$my_aur" != "y" ]; then
+my_pacman+=($my_extra)
+fi
+
 if [ "$my_auto_part" = "y" ]; then
     make_part
     get_part_auto
@@ -276,7 +276,39 @@ if [ "$my_gui" = "4" ]; then
     export my_gui_autostart="cinnamon-session"
     my_pacman+=(cinnamon konsole)
 fi
+# drivers
 
+if [ "$my_drivers" != "0" ]; then
+    #VIDEO
+    if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
+        my_pacman+=(nvidia)
+   
+    elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
+        my_pacman+=(xf86-video-amdgpu)
+    elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
+        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
+    elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
+        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
+    else
+        my_pacman+=(gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa)        
+    fi
+    #AUDIO
+    my_pacman+=(alsa-utils)
+fi
+
+if [ "$my_drivers" = "2" ]; then
+   my_pacman+=(winetricks zenity lutris gamemode vulkan-tools)
+   #WineDependencies 
+   my_pacman+=(wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader)
+fi
+
+# determine processor type and install microcode
+proc_type=$(lscpu)
+if grep -E "GenuineIntel" <<< ${proc_type}; then
+    my_pacman+=(intel-ucode)
+elif grep -E "AuthenticAMD" <<< ${proc_type}; then 
+    my_pacman+=(amd-ucode)
+fi
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 
@@ -315,16 +347,20 @@ locale-gen
 pacman -Syy
 systemctl enable sshd 
 
-# determine processor type and install microcode
-proc_type=$(lscpu)
-if grep -E "GenuineIntel" <<< ${proc_type}; then
-    echo "Installing Intel microcode"
-    pacman -S --noconfirm --needed intel-ucode
-    proc_ucode=intel-ucode.img
-elif grep -E "AuthenticAMD" <<< ${proc_type}; then
-    echo "Installing AMD microcode"
-    pacman -S --noconfirm --needed amd-ucode
-    proc_ucode=amd-ucode.img
+if [ "$my_drivers" != "0" ]; then
+    #VIDEO
+    if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then        
+        nvidia-xconfig
+    elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
+        echo ""
+    elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
+        echo ""
+    elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
+        echo ""
+    else        
+        systemctl enable vmtoolsd
+        systemctl enable vmware-vmblock-fuse    
+    fi
 fi
 
 useradd -U $my_user
@@ -337,35 +373,6 @@ echo "$my_user:$my_pass" | chpasswd
 systemctl disable dhcpcd
 systemctl stop dhcpcd
 systemctl enable NetworkManager.service
-
-
-
-if [ "$my_drivers" != "0" ]; then
-    #VIDEO
-    if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
-        pacman -S --noconfirm --needed nvidia
-        nvidia-xconfig
-    elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
-        pacman -S --noconfirm --needed xf86-video-amdgpu
-    elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-        pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
-    elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-        pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
-    else
-        pacman -S --needed --noconfirm gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa
-        systemctl enable vmtoolsd
-        systemctl enable vmware-vmblock-fuse    
-    fi
-
-    #AUDIO
-    pacman -S --noconfirm --needed alsa-utils
-
-fi
-
-
-if [ "$my_drivers" = "2" ]; then
-   pacman -S --noconfirm --needed wine winetricks zenity lutris gamemode lib32-vkd3d lib32-vulkan-icd-loader vkd3d vulkan-tools
-fi
 
 ' > /mnt/post.sh
 
@@ -387,11 +394,11 @@ echo -ne "
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
     startx 2&>1
 fi
-" > /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
+" > /home/$my_user/.bash_profile
 
 echo -ne "
 ${my_gui_autostart}
-" > /home/$my_user/.xinitrc && chown $my_user /home/$my_user/.xinitrc
+" > /home/$my_user/.xinitrc
 
 ' >> /mnt/post.sh
 fi
@@ -404,7 +411,7 @@ echo \"
   Default commands: mc htop ncdu vim sudo unzip
 If u installed AUR: git yay pacseek
 \"
-" >> /home/$my_user/.bash_profile && chown $my_user /home/$my_user/.bash_profile
+" >> /home/$my_user/.bash_profile
 ' >> /mnt/post.sh
 
 
@@ -420,24 +427,18 @@ fi
 fi
 
 
-echo -ne "\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
+echo -ne "\nchown -R ${my_user} /root\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
-# adding AUR if case and EXTRA
+# adding AUR if case and EXTRA with aur
 
 if [ "$my_aur" = "y" ]; then
 # my_user=cojmar
 arch-chroot -u $my_user /mnt /bin/sh -c '
-sudo mkdir /root/.cache
-sudo chown -R $my_user /root
-cd /home/$my_user
+cd ~
 sudo pacman -S --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git 
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay --noconfirm 
-yay -Syu --noconfirm pacseek ${my_extra} && yay -Yc --noconfirm
-'
-else
-arch-chroot /mnt /bin/sh -c '
-pacman -Syu --needed --noconfirm ${my_extra}
+yay -Syu --noconfirm pacseek "${my_extra[@]}" && yay -Yc --noconfirm
 '
 fi
 
@@ -454,16 +455,18 @@ rm -rf home.zip
 fi 
 
 # making bootloader and cleaning
-arch-chroot /mnt /bin/sh -c '   
+arch-chroot /mnt /bin/sh -c '
+    chown -R root /root 
     chown -R $my_user /home/$my_user/
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
+    var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg
     pacman -R grub efibootmgr --noconfirm
     rm -rf /var/cache
     rm -rf /var/log
     mkdir /var/log
     rm -rf /root/.cache
 '
-var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /mnt/boot/grub/grub.cfg
+
 sync
 if [ "$my_template" = "1" ]; then
 neofetch
