@@ -8,7 +8,7 @@ export my_gui_autostart=n
 export my_drivers=0
 export my_gui=0
 export my_aur=y
-if [[ -z "$my_url" ]]; then my_url="https://raw.githubusercontent.com/cojmar/coj-arch/main";fi
+if [[ -z "$my_url" ]]; then export my_url="https://raw.githubusercontent.com/cojmar/coj-arch/main";fi
 
 function get_opt() {   
     echo -ne '\n' 
