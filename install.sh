@@ -396,7 +396,7 @@ if [ "$my_gui_autostart" != "n" ]; then
 echo -ne '
 echo -ne "
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
-    startx 2&>1
+    startx > /dev/null
 fi
 " > /home/$my_user/.bash_profile
 
