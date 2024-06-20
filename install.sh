@@ -185,7 +185,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: AUR server\n3: AUR desktop + brave\n"
+echo -ne "1: custom\n2: AUR server\n3: AUR desktop with brave\n4: Web App in chromium"
 get_opt "Template:" "1"
 export my_template=$my_opt
 # templates
@@ -373,7 +373,7 @@ useradd -U $my_user
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
 mkdir /home/$my_user && chown $my_user /home/$my_user 
-echo AllowUsers $my_user >> /etc/ssh/sshd_config
+echo -ne "AllowUsers $my_user\nAllowTcpForwarding yes\nPermitTunnel yes\n" >> /etc/ssh/sshd_config
 echo "$my_user:$my_pass" | chpasswd
 
 systemctl disable dhcpcd
@@ -450,10 +450,11 @@ fi
 
 
 if [[ -z "$my_use_template" ]]; then 
-echo no custom templates
+echo ""
 else
+echo ================= ADDING HOME TEMPLATE
 echo $my_use_template
-curl -L ${my_url}/gui_templates/${my_use_template}.zip > home.zip
+curl -L ${my_url}/home_templates/${my_use_template}.zip > home.zip
 cp home.zip /mnt/home/$my_user/home.zip
 cd /mnt/home/${my_user}
 unzip -o home.zip
