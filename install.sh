@@ -9,6 +9,7 @@ export my_drivers=0
 export my_gui=0
 export my_aur=y
 export my_sudo_pass=y
+export my_add_vnc=n
 export my_startx="
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
     startx &>/dev/null
@@ -250,20 +251,19 @@ elif [ "$my_opt" = "4" ]; then
     fi
     "
     export my_make_swap=n
-    export my_user_autologin=y    
+    export my_user_autologin=y
     export my_gui=1
     export my_extra+=" chromium"
     export my_drivers=3
     export my_aur=n
 elif [ "$my_opt" = "5" ]; then
     export my_make_swap=$my_def_swap_opt
-    export my_user_autologin=y    
+    export my_user_autologin=y
     export my_gui=1
-    export my_extra+=" xterm"
-    export my_drivers=3
-    export my_aur=y
-    export my_sudo_pass=n
+    export my_pacman+=(xterm x11vnc)
+    export my_drivers=3        
     export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white"
+    export my_add_vnc=y
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
@@ -386,6 +386,10 @@ fi
 
 if [ "$my_aur" = "y" ]; then
     my_pacman+=(git base-devel)
+fi
+
+if [ "$my_add_vnc" = "y" ]; then
+export my_startx=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null 2>&1 &\n${my_startx}")
 fi
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
