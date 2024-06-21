@@ -389,7 +389,7 @@ if [ "$my_aur" = "y" ]; then
 fi
 
 if [ "$my_add_vnc" = "y" ]; then
-export my_startx=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null 2>&1 &\n${my_startx}")
+export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null 2>&1 &\n${my_gui_autostart}")
 fi
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
