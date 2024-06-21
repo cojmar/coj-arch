@@ -263,7 +263,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_drivers=3
     export my_aur=y
     export my_sudo_pass=n
-    export my_gui_autostart="xterm -maximized -bg black -fg white
+    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
