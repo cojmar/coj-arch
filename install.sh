@@ -208,7 +208,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n"
+echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xtem GUI de AUR (DEV)"
 get_opt "Template:" "1"
 echo $my_opt
 export my_template=$my_opt
@@ -255,6 +255,15 @@ elif [ "$my_opt" = "4" ]; then
     export my_extra+=" chromium"
     export my_drivers=3
     export my_aur=n
+elif [ "$my_opt" = "5" ]; then
+    export my_make_swap=$my_def_swap_opt
+    export my_user_autologin=y    
+    export my_gui=1
+    export my_extra+=" xterm"
+    export my_drivers=3
+    export my_aur=y
+    export my_sudo_pass=n
+    export my_gui_autostart="xterm -maximized -bg black -fg white
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
