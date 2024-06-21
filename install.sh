@@ -10,6 +10,9 @@ export my_gui=0
 export my_aur=y
 export my_sudo_pass=y
 export my_add_vnc=n
+export my_more="
+echo sloboz cu ochii roz
+"
 export my_startx="
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
     startx &>/dev/null
@@ -389,7 +392,15 @@ if [ "$my_aur" = "y" ]; then
 fi
 
 if [ "$my_add_vnc" = "y" ]; then
-export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null 2>&1 &\n${my_gui_autostart}")
+my_pacman+=(nodejs npm git)
+export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null 2>&1 &\ncd noVNC\nnohup npm start > /dev/null 2>&1\n${my_gui_autostart}")
+export my_more="
+cd /home/${my_user}
+git clone https://github.com/cojmar/noVNC.git
+cd noVNC
+npm i
+echo ok
+"
 fi
 
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
@@ -525,7 +536,7 @@ cp /root/xorg.conf.new /etc/X11/xorg.conf
 fi
 fi
 
-echo -ne "\nchown -R ${my_user} /root\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
+echo -ne "\n${my_more}\nchown -R ${my_user} /root\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
 # adding AUR if case and EXTRA with aur
 
