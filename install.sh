@@ -234,6 +234,7 @@ elif [ "$my_opt" = "3" ]; then
     get_opt "DESKTOP ENV:" "1"
     export my_gui=$(($my_opt + 1))
     export my_use_template=$my_gui
+    export my_vnc=y
 elif [ "$my_opt" = "4" ]; then
     echo $sep
     echo Web App URL
@@ -257,6 +258,7 @@ elif [ "$my_opt" = "4" ]; then
     export my_extra+=" chromium"
     export my_drivers=3
     export my_aur=n
+    export my_vnc=y
 elif [ "$my_opt" = "5" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
