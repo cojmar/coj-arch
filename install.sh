@@ -197,9 +197,8 @@ iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi
 clear 
 # minimal config
 echo $sep && echo  "Welcome to cojmar arch
-AUR stands for \"Arch User Repository\" and adds access to latest bleeding edge stuf
-"
-echo $sep
+AUR stands for \"Arch User Repository\" and adds access to latest bleeding edge stuf"
+
 set_disk
 echo $sep
 echo Base config
