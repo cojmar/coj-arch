@@ -391,7 +391,7 @@ fi
 
 if [ "$my_vnc" = "y" ]; then
 my_pacman+=(nodejs npm git)
-export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null 2>&1 &\nnohup node ~/noVNC/index.js > /dev/null 2>&1\n${my_gui_autostart}")
+export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null &\nnohup node ~/noVNC/index.js > /dev/null &\n${my_gui_autostart}")
 export my_more+="
 cd /home/${my_user}
 git clone https://github.com/cojmar/noVNC.git
