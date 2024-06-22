@@ -263,7 +263,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
     export my_gui=1
-    export my_pacman+=(xterm x11vnc)
+    export my_pacman+=(xterm)
     export my_drivers=3        
     export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white"
     export my_vnc=y
@@ -394,7 +394,7 @@ fi
 mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 
 if [ "$my_vnc" = "y" ]; then
-my_pacman+=(nodejs npm git)
+my_pacman+=(x11vnc nodejs npm git)
 export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null &\n${my_gui_autostart}")
 export my_more+=$(echo -ne "
 cd /opt
