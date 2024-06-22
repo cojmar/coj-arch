@@ -9,10 +9,9 @@ export my_drivers=0
 export my_gui=0
 export my_aur=y
 export my_sudo_pass=y
-export my_add_vnc=n
-export my_more="
-echo sloboz cu ochii roz
-"
+export my_vnc=n
+export my_more=""
+
 export my_startx="
 if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
     startx &>/dev/null
@@ -266,7 +265,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_pacman+=(xterm x11vnc)
     export my_drivers=3        
     export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white"
-    export my_add_vnc=y
+    export my_vnc=y
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
@@ -391,15 +390,15 @@ if [ "$my_aur" = "y" ]; then
     my_pacman+=(git base-devel)
 fi
 
-if [ "$my_add_vnc" = "y" ]; then
+if [ "$my_vnc" = "y" ]; then
 my_pacman+=(nodejs npm git)
-export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null 2>&1 &\ncd noVNC\nnohup npm start > /dev/null 2>&1\n${my_gui_autostart}")
-export my_more="
+export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null 2>&1 &\nnohup node ~/noVNC/index.js > /dev/null 2>&1\n${my_gui_autostart}")
+export my_more+="
 cd /home/${my_user}
 git clone https://github.com/cojmar/noVNC.git
 cd noVNC
 npm i
-echo ok
+echo ================= VNC INSTALL DONE
 "
 fi
 
