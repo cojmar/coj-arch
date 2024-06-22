@@ -389,10 +389,12 @@ if [ "$my_aur" = "y" ]; then
     my_pacman+=(git base-devel)
 fi
 
+mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
+
 if [ "$my_vnc" = "y" ]; then
 my_pacman+=(nodejs npm git)
 export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null &\n${my_gui_autostart}")
-export my_more+=$(echo -ne "
+export my_more+="
 cd /opt
 git clone https://github.com/cojmar/noVNC.git
 cd noVNC
@@ -400,10 +402,8 @@ npm i
 chmod +x install_service_systemctl.sh
 ./install_service_systemctl.sh
 echo ================= VNC INSTALL DONE
-")
+"
 fi
-
-mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 
 # set trheds to makepkg.conf
 nc=$(($(grep -c ^processor /proc/cpuinfo) * 2))
