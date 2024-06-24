@@ -423,7 +423,7 @@ Description=x11vnc VNC Server for X11
 Restart=on-failure
 ExecStop=pkill x11vnc
 ExecStart=
-ExecStart=/usr/bin/x11vnc  -localhost -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg -ncache 10
+ExecStart=/usr/bin/x11vnc  -localhost -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg
 
 [Install]
 WantedBy=graphical.target
@@ -431,7 +431,7 @@ WantedBy=graphical.target
 systemctl enable x11vnc
 ')
 else
-export my_gui_autostart=$(echo -ne "nohup x11vnc -localhost -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg -ncache 10  &\n${my_gui_autostart}")
+export my_gui_autostart=$(echo -ne "nohup x11vnc -localhost -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg &\n${my_gui_autostart}")
 fi
 
 fi
