@@ -210,7 +210,7 @@ set_user
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xtem GUI de AUR (DEV)"
+echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)"
 get_opt "Template:" "1"
 echo $my_opt
 export my_template=$my_opt
@@ -265,7 +265,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_gui=1
     export my_pacman+=(xterm)
     export my_drivers=3        
-    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch;bash\""
+    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
     export my_vnc=y
 else #default 1
     get_opt "Autologin" "n"
