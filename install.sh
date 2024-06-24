@@ -178,6 +178,11 @@ set_gui(){
                 export my_gui_autostart=$my_opt
             fi
         else
+            get_opt 'Use home template (custom home user settings):' "y"
+            if [ "$my_opt" = "y" ]; then 
+                export my_use_template=$my_gui
+            fi
+            
             export my_gui=$my_opt
         fi        
         echo $sep        
