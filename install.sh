@@ -168,7 +168,7 @@ set_gui(){
         echo $sep
         echo Desktop Env
         echo $sep
-        echo -ne "1: none\n2: KDE plasma\n3: xfce4\n4: cinnamon\n"
+        echo -ne "1: none\n2: KDE plasma\n3: xfce4\n4: cinnamon\n5: Budgie\n"
         get_opt 'Desktop Env: ' "1"
   
         if [ "$my_opt" = "1" ]; then       
@@ -236,7 +236,7 @@ elif [ "$my_opt" = "3" ]; then
     echo $sep
     echo DESKTOP ENV
     echo $sep
-    echo -ne "1: KDE plasma \n2: xfce4\n3: cinnamon\n"
+    echo -ne "1: KDE plasma \n2: xfce4\n3: cinnamon\n4: Budgie\n"
     get_opt "DESKTOP ENV:" "1"
     export my_gui=$(($my_opt + 1))
     export my_use_template=$my_gui
@@ -344,7 +344,13 @@ fi
 
 if [ "$my_gui" = "4" ]; then
     export my_gui_autostart="cinnamon-session"
-    my_pacman+=(cinnamon konsole dolphin)
+    my_pacman+=(cinnamon terminator dolphin)
+fi
+if [ "$my_gui" = "5" ]; then
+    export my_gui_autostart="export XDG_CURRENT_DESKTOP=Budgie:GNOME
+    budgie-desktop
+    "
+    my_pacman+=(budgie budgie-desktop terminator dolphin)
 fi
 # drivers
 if [ "$my_drivers" = "3" ]; then
