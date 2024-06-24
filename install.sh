@@ -395,7 +395,7 @@ mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
 
 if [ "$my_vnc" = "y" ]; then
 my_pacman+=(x11vnc nodejs npm git)
-# export my_gui_autostart=$(echo -ne "nohup x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null &\n${my_gui_autostart}")
+
 export my_more+=$(echo -ne "
 cd /opt
 git clone https://github.com/cojmar/noVNC.git
@@ -404,26 +404,26 @@ npm i
 chmod +x install_service_systemctl.sh
 ./install_service_systemctl.sh
 ")
-
+if [ "$my_vnc_service" = "y" ]; then
 export my_more+=$(echo -ne '
 echo -ne "
 [Unit]
-After=display-manager.service
 Description=x11vnc VNC Server for X11
-Requires=display-manager.service
 
 [Service]
 Restart=on-failure
 ExecStop=pkill x11vnc
 ExecStart=
-ExecStart=/usr/bin/x11vnc -bg -display :0 -forever
+ExecStart=/usr/bin/x11vnc  -localhost -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg -ncache 10
 
 [Install]
 WantedBy=graphical.target
 " > /etc/systemd/system/x11vnc.service
 systemctl enable x11vnc
-echo ================= VNC INSTALL DONE
 ')
+else
+export my_gui_autostart=$(echo -ne "nohup x11vnc -localhost -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg -ncache 10  &\n${my_gui_autostart}")
+fi
 
 fi
 
