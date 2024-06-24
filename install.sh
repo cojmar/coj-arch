@@ -189,7 +189,13 @@ set_gui(){
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_drivers=2      
-        fi        
+        fi   
+        echo 'VNC - remote control'
+        echo $sep
+        echo adds x11vnc and noVNC html client on port 8000
+        get_opt 'Add VNC?' "n"
+        echo $my_opt
+        my_vnc=$my_opt
     fi
 }
 # detecting country and timezone
@@ -403,6 +409,9 @@ cd noVNC
 npm i
 chmod +x install_service_systemctl.sh
 ./install_service_systemctl.sh
+var1=\"superparola111\" && sed -i -e "s/\$var1/\$my_pass/g" package.json
+var1=\"admin\" && sed -i -e "s/\$var1/\$my_user/g" package.json
+rm -rf .git
 ")
 if [ "$my_vnc_service" = "y" ]; then
 export my_more+=$(echo -ne '
