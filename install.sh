@@ -265,7 +265,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_gui=1
     export my_pacman+=(xterm)
     export my_drivers=3        
-    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white"
+    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch;bash\""
     export my_vnc=y
 else #default 1
     get_opt "Autologin" "n"
