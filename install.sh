@@ -344,7 +344,7 @@ fi
 
 if [ "$my_gui" = "4" ]; then
     export my_gui_autostart="cinnamon-session"
-    my_pacman+=(cinnamon terminator dolphin)
+    my_pacman+=(cinnamon konsole dolphin)
 fi
 if [ "$my_gui" = "5" ]; then
     export my_gui_autostart="export XDG_CURRENT_DESKTOP=Budgie:GNOME
