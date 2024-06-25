@@ -266,6 +266,7 @@ elif [ "$my_opt" = "4" ]; then
     export my_make_swap=n
     export my_user_autologin=y
     export my_gui=1
+    export my_use_template=$my_gui
     export my_extra+=" chromium"
     export my_drivers=3
     export my_aur=n
