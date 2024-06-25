@@ -283,7 +283,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_gui=1
     export my_pacman+=(xterm)
     export my_drivers=3        
-    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git nmcli\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
+    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git nmcli nmtui\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
     export my_vnc=y
 else #default 1
     get_opt "Autologin" "n"
@@ -454,6 +454,25 @@ fi
 
 fi
 
+if [ "$my_test" = "y" ]; then
+export my_more+=$(echo -ne '
+echo -ne "
+[Unit]
+Description=test
+
+[Service]
+Restart=on-failure
+ExecStart=
+ExecStart=/usr/bin/nm-online -q
+
+[Install]
+WantedBy=graphical.target
+" > /etc/systemd/system/test.service
+systemctl enable test
+')
+fi
+
+
 # set trheds to makepkg.conf
 nc=$(($(grep -c ^processor /proc/cpuinfo) * 2))
 sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j$nc\"/g" /etc/makepkg.conf
@@ -541,7 +560,7 @@ fi
 if [ "$my_gui_autostart" != "n" ]; then
 echo -ne '
 echo -ne "
-nohup nm-online -q &> /dev/null
+
 ${my_startx}
 " > /home/$my_user/.bash_profile
 
@@ -554,18 +573,18 @@ fi
 
 if [ "$my_aur" = "y" ]; then
 export my_commands="echo '
-    Default commands: mc htop ncdu vim sudo unzip git nmcli
+    Default commands: mc htop ncdu vim sudo unzip git nmcli nmtui
 AUR package managers: yay (command line) pacseek (command line with GUI)      
 '"
 else
 export my_commands="echo '
-Default commands: mc htop ncdu vim sudo unzip nmcli
+Default commands: mc htop ncdu vim sudo unzip nmcli nmtui
 '"
 fi
 
 echo -ne '
 echo -ne "
-nohup nm-online -q &> /dev/null
+
 fastfetch
 ${my_commands}
 if [ -f /etc/systemd/system/getty@tty1.service.d/override.conf ]; then
