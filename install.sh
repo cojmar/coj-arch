@@ -541,7 +541,7 @@ fi
 if [ "$my_gui_autostart" != "n" ]; then
 echo -ne '
 echo -ne "
-nohup nm-online -q &
+nohup nm-online -q &> /dev/null
 ${my_startx}
 " > /home/$my_user/.bash_profile
 
@@ -565,7 +565,7 @@ fi
 
 echo -ne '
 echo -ne "
-nohup nm-online -q &
+nohup nm-online -q &> /dev/null
 fastfetch
 ${my_commands}
 if [ -f /etc/systemd/system/getty@tty1.service.d/override.conf ]; then
