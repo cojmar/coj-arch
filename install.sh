@@ -2,7 +2,7 @@
 #INIT 
 #DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch)
+export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch)
 export my_extra=""
 export my_gui_autostart=n
 export my_drivers=0
@@ -252,12 +252,18 @@ elif [ "$my_opt" = "4" ]; then
      echo $sep
     get_opt "URL" "https://youtube.com"
     echo $my_opt
-    export my_gui_autostart="
-    while :
-        do
-            chromium --force-dark-mode --enable-features=WebUIDarkMode --start-maximized --start-fullscreen --kiosk ${my_opt}
-        done
-    "
+    get_opt "Reopen if closed?" "n"
+    echo $my_opt
+    if [ "$my_opt" = "n" ]; then
+        export my_gui_autostart="chromium --force-dark-mode --enable-features=WebUIDarkMode --start-maximized --start-fullscreen --kiosk ${my_opt}"
+    else
+        export my_gui_autostart="
+        while :
+            do
+                chromium --force-dark-mode --enable-features=WebUIDarkMode --start-maximized --start-fullscreen --kiosk ${my_opt}
+            done
+        "
+    fi
     export my_startx="
     if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then        
             startx &>/dev/null         
@@ -277,7 +283,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_gui=1
     export my_pacman+=(xterm)
     export my_drivers=3        
-    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
+    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git nmcli\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
     export my_vnc=y
 else #default 1
     get_opt "Autologin" "n"
@@ -516,6 +522,7 @@ echo "$my_user:$my_pass" | chpasswd
 systemctl disable dhcpcd
 systemctl stop dhcpcd
 systemctl enable NetworkManager.service
+systemctl enable ModemManager
 
 ' > /mnt/post.sh
 
@@ -546,12 +553,12 @@ fi
 
 if [ "$my_aur" = "y" ]; then
 export my_commands="echo '
-    Default commands: mc htop ncdu vim sudo unzip git
+    Default commands: mc htop ncdu vim sudo unzip git nmcli
 AUR package managers: yay (command line) pacseek (command line with GUI)      
 '"
 else
 export my_commands="echo '
-Default commands: mc htop ncdu vim sudo unzip      
+Default commands: mc htop ncdu vim sudo unzip nmcli
 '"
 fi
 
