@@ -278,6 +278,10 @@ elif [ "$my_opt" = "4" ]; then
     export my_aur=n
     export my_vnc=y
 elif [ "$my_opt" = "5" ]; then
+    get_opt "Extra packages?" ""
+    export my_extra+=" ${my_opt}"
+    echo $my_opt
+    echo ""
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
     export my_gui=1
@@ -304,7 +308,7 @@ else #default 1
         if [ "$my_aur" = "y" ]; then
         echo AUR detected, you can typein AUR packages too        
     fi
-    get_opt "Extra packages" ""
+    get_opt "Extra packages?" ""
     export my_extra+=" ${my_opt}"
     echo $my_opt
     echo ""
