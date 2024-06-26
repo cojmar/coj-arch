@@ -152,7 +152,7 @@ set_gui(){
         get_opt 'Install video drivers and alsa-utils for alsamixer ?' "n"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
-            export my_drivers=3
+            export my_drivers=1
         fi
     else
         export my_gui=1
@@ -264,17 +264,13 @@ elif [ "$my_opt" = "4" ]; then
             done
         "
     fi
-    export my_startx="
-    if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then        
-            startx &>/dev/null         
-    fi
-    "
+
     export my_make_swap=n
     export my_user_autologin=y
     export my_gui=1
     export my_use_template=$my_gui
     export my_extra+=" chromium"
-    export my_drivers=3
+    export my_drivers=1
     export my_aur=n
     export my_vnc=y
 elif [ "$my_opt" = "5" ]; then
@@ -286,7 +282,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_user_autologin=y
     export my_gui=1
     export my_pacman+=(xterm)
-    export my_drivers=3        
+    export my_drivers=1        
     export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git nmcli nmtui\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
     export my_vnc=y
 else #default 1
@@ -369,43 +365,30 @@ if [ "$my_gui" = "5" ]; then
     my_pacman+=(budgie budgie-desktop terminator dolphin)
 fi
 # drivers
-if [ "$my_drivers" = "3" ]; then
+
+if [ "$my_drivers" != "0" ]; then
+    #VIDEO
     if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
-        my_pacman+=(xf86-video-nouveau)
+        my_pacman+=(nvidia)   
     elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
         my_pacman+=(xf86-video-amdgpu)
     elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-        my_pacman+=(xf86-video-intel)
+        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
     elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-        my_pacman+=(xf86-video-intel)
+        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
     else
         my_pacman+=(gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa)        
     fi
+    #AUDIO
     my_pacman+=(alsa-utils)
-else
-    if [ "$my_drivers" != "0" ]; then
-        #VIDEO
-        if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
-            my_pacman+=(nvidia)   
-        elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
-            my_pacman+=(xf86-video-amdgpu)
-        elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-            my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
-        elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-            my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
-        else
-            my_pacman+=(gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa)        
-        fi
-        #AUDIO
-        my_pacman+=(alsa-utils)
-    fi
-
-    if [ "$my_drivers" = "2" ]; then
-    my_pacman+=(winetricks zenity lutris vulkan-tools)
-    #WineDependencies 
-    my_pacman+=(wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader)
-    fi
 fi
+
+if [ "$my_drivers" = "2" ]; then
+my_pacman+=(winetricks zenity lutris vulkan-tools)
+#WineDependencies 
+my_pacman+=(wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader)
+fi
+
 
 # determine processor type and install microcode
 proc_type=$(lscpu)
@@ -457,7 +440,7 @@ export my_gui_autostart=$(echo -ne "nohup x11vnc -localhost -xkb -noxrecord -nox
 fi
 
 fi
-
+# testing stuff
 if [ "$my_test" = "y" ]; then
 export my_more+=$(echo -ne '
 echo -ne "
@@ -467,7 +450,7 @@ Description=test
 [Service]
 Restart=on-failure
 ExecStart=
-ExecStart=/usr/bin/nm-online -q
+ExecStart=/bin/bash -c \"echo ok >> /home/${my_user}/test.text \"
 
 [Install]
 WantedBy=graphical.target
@@ -476,6 +459,21 @@ systemctl enable test
 ')
 fi
 
+# fix underscan service
+export my_more+=$(echo -ne '
+echo -ne "
+[Unit]
+Description=Fixes undercan on old tv
+
+[Service]
+Restart=on-failure
+ExecStart=
+ExecStart=/bin/bash -c \"xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-30,0,1.05,-20,0,0,0.99 \"
+
+[Install]
+WantedBy=graphical.target
+" > /etc/systemd/system/fix_underscan.service
+')
 
 # set trheds to makepkg.conf
 nc=$(($(grep -c ^processor /proc/cpuinfo) * 2))
@@ -675,3 +673,5 @@ echo rebooting in 5
 sleep 5
 reboot
 fi
+
+# xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-30,0,1.05,-20,0,0,0.99
