@@ -234,7 +234,7 @@ if [ "$my_opt" = "2" ]; then
 elif [ "$my_opt" = "3" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
-    export my_extra+=" brave code"
+    export my_extra+=" brave"
     export my_drivers=3
 
     echo $sep
