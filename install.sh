@@ -436,7 +436,7 @@ WantedBy=graphical.target
 systemctl enable x11vnc
 ')
 else
-export my_gui_autostart=$(echo -ne "nohup x11vnc -localhost -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg &\n${my_gui_autostart}")
+export my_gui_autostart=$(echo -ne "nohup x11vnc -localhost -xkb -noxrecord -noxfixes -noxdamage -display :0 -loop -shared -forever -bg > /dev/null &\n${my_gui_autostart}")
 fi
 
 fi
@@ -458,22 +458,6 @@ WantedBy=graphical.target
 systemctl enable test
 ')
 fi
-
-# fix underscan service
-export my_more+=$(echo -ne '
-echo -ne "
-[Unit]
-Description=Fixes undercan on old tv
-
-[Service]
-Restart=on-failure
-ExecStart=
-ExecStart=/bin/bash -c \"xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-30,0,1.05,-20,0,0,0.99 \"
-
-[Install]
-WantedBy=graphical.target
-" > /etc/systemd/system/fix_underscan.service
-')
 
 # set trheds to makepkg.conf
 nc=$(($(grep -c ^processor /proc/cpuinfo) * 2))
@@ -674,4 +658,4 @@ sleep 5
 reboot
 fi
 
-# xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-30,0,1.05,-20,0,0,0.99
+# xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-40,0,1.05,-20,0,0,0.99
