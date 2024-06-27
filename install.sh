@@ -178,12 +178,11 @@ set_gui(){
                 export my_gui_autostart=$my_opt
             fi
         else
+            export my_gui=$my_opt
             get_opt 'Use home template (custom home user settings):' "y"
             if [ "$my_opt" = "y" ]; then 
                 export my_use_template=$my_gui
             fi
-            
-            export my_gui=$my_opt
         fi        
         echo $sep        
         echo 'Gaming'
@@ -236,7 +235,7 @@ elif [ "$my_opt" = "3" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
     export my_extra+=" brave"
-    export my_drivers=2    
+    export my_drivers=1
 
     echo $sep
     echo DESKTOP ENV
@@ -469,7 +468,7 @@ sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g" /etc/makepkg
 # set pacman.conf
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i 's/^#Color/Color/' /etc/pacman.conf
-var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2\nILoveCandy\nILoveCandy\nNoExtract = usr\/share\/locale\/\* !usr\/share\/locale\/uk\*\nNoExtract = usr\/share\/doc\/\*\n/g" /etc/pacman.conf
+var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2\nILoveCandy\nILoveCandy\nNoExtract = usr\/share\/locale\/\* !usr\/share\/locale\/uk\*\nNoExtract = usr\/share\/doc\/\*\n\nNoExtract = usr\/share\/man\/\*/g" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
