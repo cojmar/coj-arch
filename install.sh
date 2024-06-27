@@ -459,17 +459,19 @@ systemctl enable test
 ')
 fi
 
+timedatectl set-ntp true
+
 # set trheds to makepkg.conf
 nc=$(($(grep -c ^processor /proc/cpuinfo) * 2))
 sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j$nc\"/g" /etc/makepkg.conf
 sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g" /etc/makepkg.conf
 
-timedatectl set-ntp true
+# set pacman.conf
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i 's/^#Color/Color/' /etc/pacman.conf
 var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2\nILoveCandy\nILoveCandy\nNoExtract = usr\/share\/locale\/\* !usr\/share\/locale\/uk\*\n/g" /etc/pacman.conf
-
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
 pacman -S --noconfirm archlinux-keyring fastfetch unzip
 pacstrap -K /mnt "${my_pacman[@]}" --noconfirm --needed
