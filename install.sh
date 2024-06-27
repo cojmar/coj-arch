@@ -469,7 +469,7 @@ sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g" /etc/makepkg
 # set pacman.conf
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i 's/^#Color/Color/' /etc/pacman.conf
-var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2\nILoveCandy\nILoveCandy\nNoExtract = usr\/share\/locale\/\* !usr\/share\/locale\/uk\*\n/g" /etc/pacman.conf
+var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2\nILoveCandy\nILoveCandy\nNoExtract = usr\/share\/locale\/\* !usr\/share\/locale\/uk\*\nNoExtract = usr\/share\/doc\/\*\n/g" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
