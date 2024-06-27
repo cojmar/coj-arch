@@ -658,4 +658,4 @@ sleep 5
 reboot
 fi
 
-# xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-40,0,1.05,-20,0,0,0.99
+# xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-37,0,1.05,-20,0,0,0.99
