@@ -593,7 +593,7 @@ cp /root/xorg.conf.new /etc/X11/xorg.conf
 fi
 fi
 
-echo -ne "\n${my_more}\nchown -R ${my_user} /root\nrm -rf post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
+echo -ne "\n${my_more}\nchown -R ${my_user} /root\nrm -rf /post.sh" >> /mnt/post.sh && chmod +x /mnt/post.sh && arch-chroot /mnt ./post.sh
 
 # adding AUR if case and EXTRA with aur
 
