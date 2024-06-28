@@ -279,6 +279,7 @@ elif [ "$my_opt" = "5" ]; then
         export my_gui=6
         export my_use_template=$my_gui
     else
+        export my_use_template=y
         export my_pacman+=(xterm)
         export my_gui=1
         export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git nmcli nmtui\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
@@ -575,7 +576,7 @@ ${my_startx}
 
 echo -ne "
 dbus-update-activation-environment --systemd --all
-[[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+xrdb ~/.Xresources
 ${my_gui_autostart}
 " > /home/$my_user/.xinitrc
 
