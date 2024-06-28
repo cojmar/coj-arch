@@ -563,6 +563,7 @@ ${my_startx}
 " > /home/$my_user/.bash_profile
 
 echo -ne "
+dbus-update-activation-environment --systemd --all
 ${my_gui_autostart}
 " > /home/$my_user/.xinitrc
 
