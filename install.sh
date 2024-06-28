@@ -145,7 +145,7 @@ make_swap(){
 set_gui(){
     export my_gui_autostart=n
     export my_drivers=0
-    get_opt 'GUI (xorg xorg-xinit video drivers)' "n"
+    get_opt 'GUI (xorg xorg-xinit xorg-xrdb video drivers)' "n"
     echo $my_opt
     if [ "$my_opt" = "n" ]; then
         export my_gui=0
@@ -341,7 +341,7 @@ else
 fi
 
 if [ "$my_gui" != "0" ]; then
-    my_pacman+=(xorg xorg-xinit)
+    my_pacman+=(xorg xorg-xinit xorg-xrdb)
 fi
 
 if [ "$my_gui" = "2" ]; then
@@ -564,6 +564,7 @@ ${my_startx}
 
 echo -ne "
 dbus-update-activation-environment --systemd --all
+xrdb -load -I${HOME}/.config/X11 ~/.Xresources
 ${my_gui_autostart}
 " > /home/$my_user/.xinitrc
 
