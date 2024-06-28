@@ -273,17 +273,28 @@ elif [ "$my_opt" = "4" ]; then
     export my_aur=n
     export my_vnc=y
 elif [ "$my_opt" = "5" ]; then
+    
+    get_opt "Use I3?" "y"
+    if [ "$my_opt" = "y" ]; then
+        export my_gui=6
+        export my_use_template=$my_gui
+    else
+        export my_pacman+=(xterm)
+        export my_gui=1
+        export my_gui_autostart+="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git nmcli nmtui\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
+    fi      
+    
+    echo $my_opt
+    echo ""
+    
     get_opt "Extra packages?" ""
     export my_extra+=" ${my_opt}"
     echo $my_opt
     echo ""
+   
     export my_make_swap=$my_def_swap_opt
-    export my_user_autologin=y
-    export my_gui=1  
-    export my_drivers=1
-
-    export my_pacman+=(xterm)    
-    export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git nmcli nmtui\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
+    export my_user_autologin=y   
+    export my_drivers=1  
     export my_vnc=y
 else #default 1
     get_opt "Autologin" "n"
@@ -564,7 +575,7 @@ ${my_startx}
 
 echo -ne "
 dbus-update-activation-environment --systemd --all
-xrdb -load -I${HOME}/.config/X11 ~/.Xresources
+[[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 ${my_gui_autostart}
 " > /home/$my_user/.xinitrc
 
@@ -633,6 +644,13 @@ echo $sep
 echo ================= ADDING HOME TEMPLATE
 echo $sep
 echo $my_use_template
+
+curl -L ${my_url}/home_templates/base.zip > home.zip
+cp home.zip /mnt/home/$my_user/home.zip
+cd /mnt/home/${my_user}
+unzip -o home.zip
+rm -rf home.zip
+
 curl -L ${my_url}/home_templates/${my_use_template}.zip > home.zip
 cp home.zip /mnt/home/$my_user/home.zip
 cd /mnt/home/${my_user}
