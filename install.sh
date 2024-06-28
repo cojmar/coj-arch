@@ -168,7 +168,7 @@ set_gui(){
         echo $sep
         echo Desktop Env
         echo $sep
-        echo -ne "1: none\n2: KDE plasma\n3: xfce4\n4: cinnamon\n5: Budgie\n"
+        echo -ne "1: none\n2: KDE plasma\n3: xfce4\n4: cinnamon\n5: Budgie\n6: I3\n"
         get_opt 'Desktop Env: ' "1"
   
         if [ "$my_opt" = "1" ]; then       
@@ -240,7 +240,7 @@ elif [ "$my_opt" = "3" ]; then
     echo $sep
     echo DESKTOP ENV
     echo $sep
-    echo -ne "1: KDE plasma \n2: xfce4\n3: cinnamon\n4: Budgie\n"
+    echo -ne "1: KDE plasma \n2: xfce4\n3: cinnamon\n4: Budgie\n5: I3\n"
     get_opt "DESKTOP ENV:" "1"
     export my_gui=$(($my_opt + 1))
     export my_use_template=$my_gui
@@ -279,9 +279,10 @@ elif [ "$my_opt" = "5" ]; then
     echo ""
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y
-    export my_gui=1
-    export my_pacman+=(xterm)
-    export my_drivers=1        
+    export my_gui=1  
+    export my_drivers=1
+
+    export my_pacman+=(xterm)    
     export my_gui_autostart="xterm -fa 'Monospace' -fs 14 -maximized -bg black -fg white -e \"fastfetch; echo -ne '    Default commands: mc htop ncdu vim sudo unzip git nmcli nmtui\nAUR package managers: yay (command line) pacseek (command line with GUI)\n\n';bash\"" 
     export my_vnc=y
 else #default 1
@@ -362,6 +363,10 @@ if [ "$my_gui" = "5" ]; then
     budgie-desktop
     "
     my_pacman+=(budgie budgie-desktop terminator dolphin)
+fi
+if [ "$my_gui" = "6" ]; then
+    export my_gui_autostart="i3"
+    my_pacman+=(i3-wm dmenu i3status xterm)
 fi
 # drivers
 
