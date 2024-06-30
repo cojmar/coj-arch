@@ -662,7 +662,6 @@ unzip -o home.zip
 rm -rf home.zip
 fi 
 
-
 # making bootloader and cleaning
 arch-chroot /mnt /bin/sh -c '
     chown -R root /root 
