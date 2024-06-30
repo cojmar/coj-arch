@@ -189,7 +189,7 @@ set_gui(){
         echo $sep
         echo adds wine-staging winetricks lutris and WineDependencies described at this URL:
         echo https://github.com/lutris/docs/blob/master/WineDependencies.md
-        get_opt 'Optimise for Gaming ?' "y"
+        get_opt 'Optimise for Gaming ?' "n"
         echo $my_opt
         if [ "$my_opt" = "y" ]; then
             export my_drivers=2      
@@ -692,4 +692,4 @@ sleep 5
 reboot
 fi
 
-# xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-37,0,1.05,-20,0,0,0.99
+# xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-37,0,1.05,-22,0,0,0.99
