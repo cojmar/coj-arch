@@ -670,10 +670,14 @@ arch-chroot /mnt /bin/sh -c '
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
     var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg
     pacman -R grub efibootmgr dhcpcd --noconfirm
+    echo -ne "
+    pacman -Qdt --noconfirm
     rm -rf /var/cache
     rm -rf /var/log
-    mkdir /var/log
     rm -rf /root/.cache
+    " > clean.sh
+    chmod +x clean.sh
+    ./clean.sh    
 '
 
 sync
