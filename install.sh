@@ -2,7 +2,7 @@
 #INIT 
 #DEV export my_url="http://192.168.0.108:5500" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch)
+export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch bash)
 export my_extra=""
 export my_gui_autostart=n
 export my_drivers=0
@@ -50,10 +50,10 @@ make_part() { # makes partitions on install disk
     sgdisk -a 2048 -o ${my_disk} # new gpt disk 2048 alignment
     if [[ ! -d "/sys/firmware/efi" ]]; then
         sgdisk -n 1::+1M --typecode=1:ef02:'BIOSBOOT' ${my_disk} # partition 1 (BIOS Boot Partition)    
-        sgdisk -n 3::-0 --typecode=3:8300:'ROOT' ${my_disk} # partition 2 (OS) 
+        sgdisk -n 2::-0 --typecode=2:8300:'ROOT' ${my_disk} # partition 2 (OS) 
     else
-        sgdisk -n 2::+1M --typecode=2:ef00:'EFIBOOT' ${my_disk} # partition 1 (EFI)
-        sgdisk -n 3::-0 --typecode=3:8300:'ROOT' ${my_disk} # partition 2 (OS) 
+        sgdisk -n 1::+1M --typecode=1:ef00:'EFIBOOT' ${my_disk} # partition 1 (EFI)
+        sgdisk -n 2::-0 --typecode=2:8300:'ROOT' ${my_disk} # partition 2 (OS) 
     fi
     partprobe ${my_disk} 
 }
@@ -433,7 +433,9 @@ fi
 
 mount $sys_part /mnt 
 if [[  -d "/sys/firmware/efi" ]]; then
- mount --mkdir $boot_part /mnt/boot/efi
+    mount --mkdir $boot_part /mnt/boot/efi
+else
+    mkdir /mnt/boot
 fi
 
 if [ "$my_vnc" = "y" ]; then
@@ -671,16 +673,28 @@ unzip -o home.zip
 rm -rf home.zip
 fi 
 
-# making bootloader 
+# making bootloader cleaning
 if [[ ! -d "/sys/firmware/efi" ]]; then
-    grub-install --boot-directory=/mnt/boot ${my_disk}
+arch-chroot /mnt /bin/sh -c '    
+    grub-install --target=i386-pc ${my_disk}
+    chown -R root /root 
+    chown -R $my_user /home/$my_user/
+    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
+    grub-mkconfig -o /boot/grub/grub.cfg
+    var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg 
+    pacman -R dhcpcd --noconfirm
+    echo -ne "
+    pacman -Qdt --noconfirm
+    rm -rf /var/cache
+    rm -rf /var/log
+    rm -rf /root/.cache
+    " > clean.sh
+    chmod +x clean.sh
+    ./clean.sh    
+'    
 else
 arch-chroot /mnt /bin/sh -c '    
-    grub-install --recheck ${my_disk}  
-'
-fi
-# cleaning
-arch-chroot /mnt /bin/sh -c '
+    grub-install --recheck ${my_disk}
     chown -R root /root 
     chown -R $my_user /home/$my_user/
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
@@ -696,6 +710,7 @@ arch-chroot /mnt /bin/sh -c '
     chmod +x clean.sh
     ./clean.sh    
 '
+fi
 
 sync
 fastfetch
