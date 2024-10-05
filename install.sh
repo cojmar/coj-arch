@@ -669,7 +669,7 @@ arch-chroot /mnt /bin/sh -c '
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user
     grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
     var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg
-    pacman -R grub efibootmgr dhcpcd --noconfirm
+    pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
     rm -rf /var/cache
