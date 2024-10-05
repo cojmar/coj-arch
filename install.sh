@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #INIT 
-#DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/install.sh)
+#DEV export my_url="http://192.168.0.108:5500" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch)
 export my_extra=""
@@ -48,11 +48,16 @@ make_part() { # makes partitions on install disk
     # disk prep
     sgdisk -Z ${my_disk} # zap all on disk
     sgdisk -a 2048 -o ${my_disk} # new gpt disk 2048 alignment
-
-    sgdisk -n 2::+1M --typecode=2:ef00:'EFIBOOT' ${my_disk} # partition 1 (EFI)
-    sgdisk -n 3::-0 --typecode=3:8300:'ROOT' ${my_disk} # partition 2 (OS) 
+    if [[ ! -d "/sys/firmware/efi" ]]; then
+        sgdisk -n 1::+1M --typecode=1:ef02:'BIOSBOOT' ${my_disk} # partition 1 (BIOS Boot Partition)    
+        sgdisk -n 3::-0 --typecode=3:8300:'ROOT' ${my_disk} # partition 2 (OS) 
+    else
+        sgdisk -n 2::+1M --typecode=2:ef00:'EFIBOOT' ${my_disk} # partition 1 (EFI)
+        sgdisk -n 3::-0 --typecode=3:8300:'ROOT' ${my_disk} # partition 2 (OS) 
+    fi
     partprobe ${my_disk} 
 }
+
 get_part_auto() { # get partitions automaticaly based on selected disk
     boot_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk -v var="$my_disk" '$1 ~ var {print $0}' | awk '{print NR,$0}' | awk 'NR=='1' {print $2}')
     echo BOOT $boot_part   
@@ -204,6 +209,7 @@ set_gui(){
 }
 # detecting country and timezone
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" 
+pacman -Sy
 clear 
 # minimal config
 echo $sep && echo  "Welcome to cojmar arch
@@ -425,7 +431,10 @@ if [ "$my_aur" = "y" ]; then
     my_pacman+=(git base-devel)
 fi
 
-mount $sys_part /mnt && mount --mkdir $boot_part /mnt/boot/efi
+mount $sys_part /mnt 
+if [[  -d "/sys/firmware/efi" ]]; then
+ mount --mkdir $boot_part /mnt/boot/efi
+fi
 
 if [ "$my_vnc" = "y" ]; then
 my_pacman+=(x11vnc nodejs npm git)
@@ -662,13 +671,21 @@ unzip -o home.zip
 rm -rf home.zip
 fi 
 
-# making bootloader and cleaning
+# making bootloader 
+if [[ ! -d "/sys/firmware/efi" ]]; then
+    grub-install --boot-directory=/mnt/boot ${my_disk}
+else
+arch-chroot /mnt /bin/sh -c '    
+    grub-install --recheck ${my_disk}  
+'
+fi
+# cleaning
 arch-chroot /mnt /bin/sh -c '
     chown -R root /root 
     chown -R $my_user /home/$my_user/
-    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user
-    grub-install --recheck ${my_disk} && grub-mkconfig -o /boot/grub/grub.cfg
-    var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg
+    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
+    grub-mkconfig -o /boot/grub/grub.cfg
+    var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg 
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
