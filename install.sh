@@ -520,6 +520,9 @@ pacman -S --noconfirm fastfetch unzip
 if [ "$my_use_archkeyring" = "y" ];then
 pacman -S --noconfirm archlinux-keyring
 my_pacman+=(archlinux-keyring)
+else
+sed -i 's/LocalFileSigLevel/#LocalFileSigLevel/' /etc/pacman.conf
+sed -i 's/Required DatabaseOptional/Never/' /etc/pacman.conf
 fi
 
 pacstrap -K /mnt "${my_pacman[@]}" --noconfirm --needed
