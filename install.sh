@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #INIT 
-#DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/install.sh)
+#DEV export my_url="http://192.168.0.101:5501" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch bash)
+export my_pacman=(base linux linux-firmware grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch bash)
 export my_extra=""
 export my_gui_autostart=n
 export my_drivers=0
@@ -150,7 +150,7 @@ make_swap(){
 set_gui(){
     export my_gui_autostart=n
     export my_drivers=0
-    get_opt 'GUI (xorg xorg-xinit xorg-xrdb video drivers)' "n"
+    get_opt 'GUI (xorg xorg-xinit xorg-xrdb)' "n"
     echo $my_opt
     if [ "$my_opt" = "n" ]; then
         export my_gui=0
@@ -161,7 +161,11 @@ set_gui(){
         fi
     else
         export my_gui=1
-        export my_drivers=1
+        get_opt 'Install video drivers and alsa-utils for alsamixer ?' "y"
+        echo $my_opt
+        if [ "$my_opt" = "y" ]; then
+            export my_drivers=1
+        fi
         if [ "$my_aur" = "y" ]; then
         echo AUR detected, you can typein AUR browsers too, example: brave        
         fi
@@ -223,6 +227,10 @@ get_opt "Host name (computer name)" "cojarch"
 my_host_name=$my_opt
 echo $my_host_name
 set_user    
+echo $sep
+get_opt "Add archlinux-keyring:" "y"
+export my_use_archkeyring=$my_opt
+echo $my_opt
 echo $sep
 echo Template
 echo $sep
@@ -360,7 +368,7 @@ else
 fi
 
 if [ "$my_gui" != "0" ]; then
-    my_pacman+=(xorg xorg-xinit xorg-xrdb)
+    my_pacman+=(xorg-server xorg-xinit xorg-xrdb)
 fi
 
 if [ "$my_gui" = "2" ]; then
@@ -503,11 +511,17 @@ sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g" /etc/makepkg
 # set pacman.conf
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i 's/^#Color/Color/' /etc/pacman.conf
-var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2\nILoveCandy\nILoveCandy\nNoExtract = usr\/share\/locale\/\* !usr\/share\/locale\/uk\*\nNoExtract = usr\/share\/doc\/\*\n\nNoExtract = usr\/share\/man\/\*/g" /etc/pacman.conf
+var1="ParallelDownloads = 5" && var2="ParallelDownloads = 10" && sed -i -e "s/$var1/$var2\nILoveCandy\nNoExtract = usr\/share\/locale\/\* !usr\/share\/locale\/uk\*\nNoExtract = usr\/share\/doc\/\*\n\nNoExtract = usr\/share\/man\/\*/g" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
-pacman -S --noconfirm archlinux-keyring fastfetch unzip
+pacman -S --noconfirm fastfetch unzip
+
+if [ "$my_use_archkeyring" = "y" ];then
+pacman -S --noconfirm archlinux-keyring
+my_pacman+=(archlinux-keyring)
+fi
+
 pacstrap -K /mnt "${my_pacman[@]}" --noconfirm --needed
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 cp /etc/pacman.conf /mnt/etc/pacman.conf
