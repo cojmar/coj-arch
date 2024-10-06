@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #INIT 
-#DEV export my_url="http://192.168.0.108:5500" && bash <(curl -L ${my_url}/install.sh)
+#DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base linux linux-firmware archlinux-keyring grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch bash)
 export my_extra=""
