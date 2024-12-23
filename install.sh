@@ -406,9 +406,9 @@ if [ "$my_drivers" != "0" ]; then
     elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
         my_pacman+=(xf86-video-amdgpu)
     elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
+        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa intel-media-driver mesa libva-intel-driver)
     elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa)
+        my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa intel-media-driver mesa libva-intel-driver)
     else
         my_pacman+=(gtkmm open-vm-tools xf86-video-vmware xf86-input-vmmouse libva-utils lib32-mesa)        
     fi
