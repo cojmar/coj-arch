@@ -56,8 +56,11 @@ echo Base config
 set_user    
 echo $sep
 
-get_opt "Add GUI (i3 window manager both native and in arch)" "y"
-export my_gui=$my_opt
+# get_opt "Add GUI (i3 window manager both native and in arch)" "y"
+# export my_gui=$my_opt
+
+export my_gui="y"
+
 if [ "$my_gui" = "y" ];then
     my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar)
 fi
