@@ -55,7 +55,7 @@ echo $sep && echo  "Welcome to cojmar arch for termux"
 echo Base config
 set_user    
 echo $sep
-get_opt "Add GUI (i3 window manager both native and in arch)" "y"
+get_opt "Install i3 native? (i3 window manager will be installed in termux istead of arch)" "y"
 export my_gui=$my_opt
 echo $sep
 get_opt "Add AUR managers(yay and pacseek)" "y"
@@ -65,7 +65,7 @@ echo $sep
 get_opt "Emulate x86_x64?" "n"
 export my_x86=$my_opt
 
-if [ "$my_gui" = "y" ];then
+if [ "$my_gui" != "y" ];then
     my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar)
 fi
 
@@ -148,10 +148,10 @@ if [ "$my_x86" = "y" ];then
 pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
 fi
 
-# if [ "$my_gui" = "y" ];then
-    # pkg install -y i3
+if [ "$my_gui" = "y" ];then
+    pkg install -y i3 dmenu xfce4-terminal polybar
     # pkg install -y code-oss
-# fi
+fi
 
 
 
@@ -162,9 +162,6 @@ if [ "$my_x86" = "y" ];then
 else
     proot-distro install --override-alias coj-arch archlinux
 fi
-
-
-
 
 fi
 proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c 'source /root/shared_folder/post.sh'
@@ -204,6 +201,42 @@ chmod +x arch.sh
 echo $sep
 echo "Use ./arch.sh to start arch"
 echo $sep
+if [ "$my_gui" = "y" ];then
+
+echo echo -ne "
+#!/data/data/com.termux/files/usr/bin/bash
+
+# Kill open X11 processes
+kill -9 \$(pgrep -f "termux.x11") 2>/dev/null
+
+# Enable PulseAudio over Network
+pulseaudio --start --load=\"module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1\" --exit-idle-time=-1
+
+# Prepare termux-x11 session
+export XDG_RUNTIME_DIR=\${TMPDIR}
+termux-x11 :0 >/dev/null &
+
+# Wait a bit until termux-x11 gets started.
+sleep 3
+
+# Launch Termux X11 main activity
+am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
+sleep 1
+
+# Set audio server
+export PULSE_SERVER=127.0.0.1
+
+# Run i3 Desktop
+env DISPLAY=:0 dbus-launch --exit-with-session i3 & > /dev/null 2>&1
+
+exit 0
+" > i3.sh
+chmod +x i3.sh
+echo $sep
+echo "Use ./i3.sh to start native i3"
+
+echo $sep
+fi
 export my_timestamp2=$(date +%s)
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
 echo install duration: $(convertsecs $duration)
