@@ -55,8 +55,8 @@ echo $sep && echo  "Welcome to cojmar arch for termux"
 echo Base config
 set_user    
 echo $sep
-get_opt "Install i3 native? (i3 window manager will be installed in termux istead of arch)" "y"
-export my_gui=$my_opt
+get_opt "Install i3 native? (i3 window manager will be installed in termux istead of arch also arch will share same home folder)" "y"
+export my_native=$my_opt
 echo $sep
 get_opt "Add AUR managers(yay and pacseek)" "y"
 export my_aur=$my_opt
@@ -65,7 +65,7 @@ echo $sep
 get_opt "Emulate x86_x64?" "n"
 export my_x86=$my_opt
 
-if [ "$my_gui" != "y" ];then
+if [ "$my_native" != "y" ];then
     my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar)
 fi
 
@@ -141,14 +141,14 @@ pkg install -y tur-repo
 pkg install -y termux-x11-nightly
 pkg install -y pulseaudio
 pkg install -y proot-distro
-pkg install -y mc
-pkg install -y htop
+pkg install -y mc htop unzip
+
 
 if [ "$my_x86" = "y" ];then
 pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
 fi
 
-if [ "$my_gui" = "y" ];then
+if [ "$my_native" = "y" ];then
     pkg install -y i3 dmenu xfce4-terminal polybar
     # pkg install -y code-oss
 fi
@@ -171,7 +171,8 @@ proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/b
 fi
 
 rm -rf ~/shared_folder
-echo echo -ne "
+
+startx=$(echo -ne "
 #!/data/data/com.termux/files/usr/bin/bash
 
 # Kill open X11 processes
@@ -191,38 +192,31 @@ sleep 3
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
 sleep 1
 
-# Argument -- acts as terminator of proot-distro login options processing.
-# All arguments behind it would not be treated as options of PRoot Distro.
-proot-distro login coj-arch --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && su - ${my_user} -c \"env DISPLAY=:0 i3\"'
+")
 
+echo -ne"
+${startx}
+proot-distro login coj-arch --user ${my_user} --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && /bin/bash -c \"env DISPLAY=:0 i3\"'
 exit 0
 " > arch.sh
+
+if [ "$my_native" = "y" ];then
+echo -ne"
+${startx}
+proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && /bin/bash -c \"env DISPLAY=:0 i3\"'
+exit 0
+" > arch.sh
+cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
+fi
+
 chmod +x arch.sh
 echo $sep
 echo "Use ./arch.sh to start arch"
 echo $sep
-if [ "$my_gui" = "y" ];then
+if [ "$my_native" = "y" ];then
 
 echo echo -ne "
-#!/data/data/com.termux/files/usr/bin/bash
-
-# Kill open X11 processes
-kill -9 \$(pgrep -f "termux.x11") 2>/dev/null
-
-# Enable PulseAudio over Network
-pulseaudio --start --load=\"module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1\" --exit-idle-time=-1
-
-# Prepare termux-x11 session
-export XDG_RUNTIME_DIR=\${TMPDIR}
-termux-x11 :0 >/dev/null &
-
-# Wait a bit until termux-x11 gets started.
-sleep 3
-
-# Launch Termux X11 main activity
-am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
-sleep 1
-
+${startx}
 # Set audio server
 export PULSE_SERVER=127.0.0.1
 
@@ -246,5 +240,6 @@ get_opt "Start Arch now?" "y"
 if [ "$my_opt" = "y" ];then
 ./arch.sh
 fi
-
+else
+bin/bash -c "${post}"
 fi
