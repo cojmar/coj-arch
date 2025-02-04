@@ -80,10 +80,11 @@ else
     export my_sudo_pass="NOPASSWD:"
 fi
 # POST ROOT
+# &&
+# awk '{if (\$0 ~ /^#MAKEFLAGS=/) print \"MAKEFLAGS=\\\"j2\\\"\"; else print \$0}' /etc/makepkg.conf > /etc/makepkg.conf.tmp && mv /etc/makepkg.conf.tmp /etc/makepkg.conf
+
 post=$(echo -ne "
 awk '{if (\$0 ~ /^#ParallelDownloads = 5/) {print \"ParallelDownloads = 15\"; print \"ILoveCandy\";} else print \$0}' /etc/pacman.conf > /etc/pacman.conf.tmp && mv /etc/pacman.conf.tmp /etc/pacman.conf
-&&
-awk '{if (\$0 ~ /^#MAKEFLAGS=/) print \"MAKEFLAGS=\\\"j2\\\"\"; else print \$0}' /etc/makepkg.conf > /etc/makepkg.conf.tmp && mv /etc/makepkg.conf.tmp /etc/makepkg.conf
 &&
 pacman -Sy --noconfirm
 &&
