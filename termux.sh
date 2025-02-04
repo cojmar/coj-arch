@@ -55,11 +55,15 @@ echo $sep && echo  "Welcome to cojmar arch for termux"
 echo Base config
 set_user    
 echo $sep
+get_opt "Add GUI (i3 window manager both native and in arch)" "y"
+export my_gui=$my_opt
+echo $sep
+get_opt "Add AUR managers(yay and pacseek)" "y"
+export my_aur=$my_opt
 
-# get_opt "Add GUI (i3 window manager both native and in arch)" "y"
-# export my_gui=$my_opt
-
-export my_gui="y"
+echo $sep
+get_opt "Emulate x86_x64?" "n"
+export my_x86=$my_opt
 
 if [ "$my_gui" = "y" ];then
     my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar)
@@ -139,17 +143,34 @@ pkg install -y proot-distro
 pkg install -y mc
 pkg install -y htop
 
-if [ "$my_gui" = "y" ];then
-    pkg install -y i3
-    pkg install -y code-oss
+if [ "$my_x86" = "y" ];then
+pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
 fi
 
-proot-distro install archlinux
-proot-distro reset archlinux
-fi
-proot-distro login archlinux --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c 'source /root/shared_folder/post.sh'
+# if [ "$my_gui" = "y" ];then
+    # pkg install -y i3
+    # pkg install -y code-oss
+# fi
 
-proot-distro login archlinux --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c "su - ${my_user} -c 'source /root/shared_folder/post_user.sh'"
+
+
+proot-distro remove coj-arch
+
+if [ "$my_x86" = "y" ];then
+    DISTRO_ARCH=x86_64 proot-distro install --override-alias coj-arch archlinux
+else
+    proot-distro install --override-alias coj-arch archlinux
+fi
+
+
+
+
+fi
+proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c 'source /root/shared_folder/post.sh'
+
+if [ "$my_aur" = "y" ];then
+proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c "su - ${my_user} -c 'source /root/shared_folder/post_user.sh'"
+fi
 
 rm -rf ~/shared_folder
 echo echo -ne "
@@ -174,7 +195,7 @@ sleep 1
 
 # Argument -- acts as terminator of proot-distro login options processing.
 # All arguments behind it would not be treated as options of PRoot Distro.
-proot-distro login archlinux --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && su - ${my_user} -c \"env DISPLAY=:0 i3\"'
+proot-distro login coj-arch --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && su - ${my_user} -c \"env DISPLAY=:0 i3\"'
 
 exit 0
 " > arch.sh
