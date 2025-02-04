@@ -141,7 +141,7 @@ pkg install -y tur-repo
 pkg install -y termux-x11-nightly
 pkg install -y pulseaudio
 pkg install -y proot-distro
-pkg install -y mc htop unzip
+pkg install -y mc htop unzip fastfetch
 
 
 if [ "$my_x86" = "y" ];then
