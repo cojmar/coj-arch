@@ -172,9 +172,7 @@ fi
 
 rm -rf ~/shared_folder
 
-startx=$(echo -ne "
-#!/data/data/com.termux/files/usr/bin/bash
-
+startx=$(echo -ne "#!/data/data/com.termux/files/usr/bin/bash
 # Kill open X11 processes
 kill -9 \$(pgrep -f "termux.x11") 2>/dev/null
 
@@ -194,16 +192,16 @@ sleep 1
 
 ")
 
-echo -ne"
+echo -ne "
 ${startx}
-proot-distro login coj-arch --user ${my_user} --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && /bin/bash -c \"env DISPLAY=:0 i3\"'
+proot-distro login coj-arch --user ${my_user} --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit 0
 " > arch.sh
 
 if [ "$my_native" = "y" ];then
-echo -ne"
+echo -ne "
 ${startx}
-proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && /bin/bash -c \"env DISPLAY=:0 i3\"'
+proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit 0
 " > arch.sh
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
