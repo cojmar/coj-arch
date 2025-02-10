@@ -206,6 +206,7 @@ clear
 echo Starting Arch...
 if [[ -z "\$my_rand_pass" ]]; then 
 ${startx}
+echo Starting Arch...
 proot-distro login coj-arch --user ${my_user} --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit 0
 fi
@@ -218,6 +219,7 @@ clear
 echo Starting Arch...
 if [[ -z "\$my_rand_pass" ]]; then 
 ${startx}
+echo Starting Arch...
 proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit 0
 fi
