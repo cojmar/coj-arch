@@ -2,7 +2,7 @@
 #INIT 
 #DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/termux.sh)
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base-devel sudo mc htop ncdu unzip fastfetch wget git)
+export my_pacman=(base-devel sudo mc htop ncdu unzip fastfetch wget git ttf-dejavu ttf-liberation)
 export my_sudo_pass=y
 export my_outside=n
 
@@ -26,14 +26,20 @@ convertsecs() {
 get_password() { # gets password to be used
     my_rand_pass=$(openssl rand -base64 32)
     if [[ -z "$my_rand_pass" ]]; then my_rand_pass=123456;my_outside=y;fi
-    get_opt "Please enter password: " $my_rand_pass
-    pass1=$my_opt
-    get_opt "Please re-enter password: " $my_rand_pass
-    pass2=$my_opt   
+    get_opt "Require password for sudo?" "n"
+    export my_sudo_pass=$my_opt
+
+    if [ "$my_sudo_pass" = "y" ];then
+        get_opt "Please enter password: " $my_rand_pass
+        pass1=$my_opt
+        get_opt "Please re-enter password: " $my_rand_pass
+        pass2=$my_opt
+    else
+           pass1=$my_rand_pass
+           pass2=$my_rand_pass
+    fi
     if [[ "$pass1" == "$pass2" ]]; then
-        export my_pass=$pass1
-        get_opt "Require password for sudo?" "n"
-        export my_sudo_pass=$my_opt
+        export my_pass=$pass1    
 
     else
         echo -ne "ERROR! Passwords do not match. \n"
@@ -66,7 +72,7 @@ get_opt "Emulate x86_x64?" "n"
 export my_x86=$my_opt
 
 if [ "$my_native" != "y" ];then
-    my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar)
+    my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar rofi)
 fi
 
 if [ "$my_outside" = "y" ];then
@@ -119,7 +125,7 @@ cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 &&
 yay --noconfirm 
 &&
-yay -Syu --noconfirm pacseek && yay -Yc --noconfirm
+yay -Syu --noconfirm pacseek corekeyboard && yay -Yc --noconfirm
 ")
 
 
@@ -142,7 +148,8 @@ pkg install -y termux-x11-nightly
 pkg install -y pulseaudio
 pkg install -y proot-distro
 pkg install -y mc htop unzip fastfetch
-
+pkg install -y rofi
+pkg install -y code-oss
 
 if [ "$my_x86" = "y" ];then
 pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
@@ -172,7 +179,7 @@ fi
 
 rm -rf ~/shared_folder
 
-startx=$(echo -ne "#!/data/data/com.termux/files/usr/bin/bash
+startx=$(echo -ne "
 # Kill open X11 processes
 kill -9 \$(pgrep -f "termux.x11") 2>/dev/null
 
@@ -192,17 +199,23 @@ sleep 1
 
 ")
 
-echo -ne "
+echo -ne "#!/data/data/com.termux/files/usr/bin/bash
+my_rand_pass=\$(openssl rand -base64 32)
+if [[ -z "\$my_rand_pass" ]]; then 
 ${startx}
 proot-distro login coj-arch --user ${my_user} --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit 0
+fi
 " > arch.sh
 
 if [ "$my_native" = "y" ];then
-echo -ne "
+echo -ne "#!/data/data/com.termux/files/usr/bin/bash
+my_rand_pass=\$(openssl rand -base64 32)
+if [[ -z "\$my_rand_pass" ]]; then 
 ${startx}
 proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit 0
+fi
 " > arch.sh
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
 fi
@@ -213,7 +226,7 @@ echo "Use ./arch.sh to start arch"
 echo $sep
 if [ "$my_native" = "y" ];then
 
-echo echo -ne "
+echo echo -ne "#!/data/data/com.termux/files/usr/bin/bash
 ${startx}
 # Set audio server
 export PULSE_SERVER=127.0.0.1
