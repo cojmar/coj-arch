@@ -125,7 +125,7 @@ cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 &&
 yay --noconfirm 
 &&
-yay -Syu --noconfirm && yay -S --noconfirm corekeyboard && yay -S --noconfirm pacseek && yay -Yc --noconfirm
+yay -Syu --noconfirm && yay -S --noconfirm pacseek && yay -Yc --noconfirm
 ")
 
 
@@ -149,6 +149,7 @@ pkg install -y pulseaudio
 pkg install -y proot-distro
 pkg install -y mc htop unzip fastfetch
 pkg install -y rofi
+pkg install -y florence
 pkg install -y code-oss
 
 if [ "$my_x86" = "y" ];then
