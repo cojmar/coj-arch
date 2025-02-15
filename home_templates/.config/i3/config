@@ -212,9 +212,9 @@ client.urgent           $wm_color_border_inactive_bg $wm_color_border_inactive_b
 client.placeholder      $wm_color_border_inactive_bg $wm_color_border_inactive_bg $wm_color_border_inactive_fg $wm_color_border_inactive_bg $wm_color_border_inactive_bg
 client.background       $wm_color_background
 
-# focus_follows_mouse no
-for_window [class="Xvkbd"] focus disable
+focus_follows_mouse no
 
 exec polybar
 exec i3-msg split v
-exec --no-startup-id $my_term -x code-oss
+# exec --no-startup-id $my_term -x code-oss
+exec $my_term -e "bash -c 'fastfetch; exec bash'"
