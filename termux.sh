@@ -4,8 +4,12 @@
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base-devel sudo mc htop ncdu unzip fastfetch wget git ttf-dejavu ttf-liberation)
 export my_sudo_pass=y
-export my_outside=n
+export my_outside=y
 
+if [[ -f "/etc/pacman.conf" ]]; then
+	export my_outside=n
+fi
+# echo $my_outside
 if [[ -z "$my_url" ]]; then export my_url="https://raw.githubusercontent.com/cojmar/coj-arch/main";fi
 
 get_opt() {   
@@ -25,7 +29,7 @@ convertsecs() {
 # USER
 get_password() { # gets password to be used
     my_rand_pass=$(openssl rand -base64 32)
-    if [[ -z "$my_rand_pass" ]]; then my_rand_pass=123456;my_outside=y;fi
+    if [[ -z "$my_rand_pass" ]]; then my_rand_pass=123456;fi
     get_opt "Require password for sudo?" "n"
     export my_sudo_pass=$my_opt
 
@@ -184,14 +188,15 @@ startx=$(echo -ne "
 # Kill open X11 processes
 kill -9 \$(pgrep -f "termux.x11") 2>/dev/null
 clear
-echo Starting X session
+echo Starting X11
 # Enable PulseAudio over Network
 pulseaudio --start --load=\"module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1\" --exit-idle-time=-1
 
 # Prepare termux-x11 session
 export XDG_RUNTIME_DIR=\${TMPDIR}
 termux-x11 :0 >/dev/null &
-
+clear
+echo X11 started
 # Wait a bit until termux-x11 gets started.
 sleep 3
 
@@ -202,28 +207,32 @@ sleep 1
 ")
 
 echo -ne "#!/data/data/com.termux/files/usr/bin/bash
-my_rand_pass=\$(openssl rand -base64 32)
+if [[ -f "/etc/pacman.conf" ]]; then
+	exit 0
+fi
 clear
 echo Starting Arch...
-if [[ -z "\$my_rand_pass" ]]; then 
+
 ${startx}
 echo Starting Arch...
 proot-distro login coj-arch --user ${my_user} --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit 0
-fi
+
 " > arch.sh
 
 if [ "$my_native" = "y" ];then
 echo -ne "#!/data/data/com.termux/files/usr/bin/bash
-my_rand_pass=\$(openssl rand -base64 32)
+if [[ -f "/etc/pacman.conf" ]]; then
+	exit 0
+fi
 clear
 echo Starting Arch...
-if [[ -z "\$my_rand_pass" ]]; then 
+
 ${startx}
 echo Starting Arch...
 proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit 0
-fi
+
 " > arch.sh
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
 fi
