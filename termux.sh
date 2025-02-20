@@ -76,7 +76,7 @@ get_opt "Emulate x86_x64?" "n"
 export my_x86=$my_opt
 
 if [ "$my_native" != "y" ];then
-    my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar rofi)
+    my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar rofi feh)
 fi
 
 if [ "$my_outside" = "y" ];then
@@ -162,7 +162,7 @@ pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
 fi
 
 if [ "$my_native" = "y" ];then
-    pkg install -y i3 dmenu xfce4-terminal polybar
+    pkg install -y i3 dmenu xfce4-terminal polybar feh
     # pkg install -y code-oss
 fi
 
