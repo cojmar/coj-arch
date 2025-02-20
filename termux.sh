@@ -216,23 +216,23 @@ echo Starting Arch...
 
 ${startx}
 echo Starting Arch...
-proot-distro login coj-arch --user ${my_user} --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
-exit 0
+setsid proot-distro login coj-arch --user ${my_user} --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
+exit
 
 " > arch.sh
 
 if [ "$my_native" = "y" ];then
 echo -ne "#!/data/data/com.termux/files/usr/bin/bash
 if [[ -f "/etc/pacman.conf" ]]; then
-	exit 0
+	exit
 fi
 clear
 echo Starting Arch...
 
 ${startx}
 echo Starting Arch...
-proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
-exit 0
+setsid proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
+exit
 
 " > arch.sh
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
