@@ -213,7 +213,7 @@ client.placeholder      $wm_color_border_inactive_bg $wm_color_border_inactive_b
 client.background       $wm_color_background
 
 focus_follows_mouse no
-
+exec ~/.fehbg
 exec polybar
 exec i3-msg split v
 # exec --no-startup-id $my_term -x code-oss
