@@ -144,6 +144,7 @@ echo $sep
 export my_timestamp1=$(date +%s)
 if [ "$my_outside" = "y" ];then
 if [ "$my_clean_install" = "y" ];then
+termux-setup-storage
 pkg update -y
 pkg upgrade -y
 pkg install -y x11-repo
