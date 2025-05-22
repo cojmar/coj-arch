@@ -213,6 +213,7 @@ set_gui(){
 }
 # detecting country and timezone
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" 
+iso=RO
 pacman -Sy
 clear 
 # minimal config
@@ -393,7 +394,7 @@ if [ "$my_gui" = "5" ]; then
 fi
 if [ "$my_gui" = "6" ]; then
     export my_gui_autostart="i3"
-    my_pacman+=(i3-wm dmenu i3status xterm)
+    my_pacman+=(i3-wm dmenu i3status xterm rofi)
     # pulse audio
     my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
 fi
