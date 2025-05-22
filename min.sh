@@ -18,15 +18,12 @@ get_password() { # gets password to be used
     get_opt "Require password for sudo?" "n"
     export my_sudo_pass=$my_opt
 
-    if [ "$my_sudo_pass" = "y" ];then
-        get_opt "Please enter password: " $my_rand_pass
-        pass1=$my_opt
-        get_opt "Please re-enter password: " $my_rand_pass
-        pass2=$my_opt
-    else
-           pass1=$my_rand_pass
-           pass2=$my_rand_pass
-    fi
+  
+    get_opt "Please enter password: " $my_rand_pass
+    pass1=$my_opt
+    get_opt "Please re-enter password: " $my_rand_pass
+    pass2=$my_opt
+
     if [[ "$pass1" == "$pass2" ]]; then
         export my_pass=$pass1    
 
