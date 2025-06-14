@@ -411,7 +411,7 @@ if [ "$my_drivers" != "0" ]; then
     elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
         my_pacman+=(libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa intel-media-driver mesa libva-intel-driver)
     else
-        my_pacman+=(gtkmm open-vm-tools xf86-input-vmmouse libva-utils lib32-mesa mesa vulkan-swrast vulkan-mesa-layers)
+        my_pacman+=(open-vm-tools xf86-input-vmmouse mesa lib32-mesa libglvnd vulkan-mesa-layers)
     fi
     #AUDIO
     my_pacman+=(alsa-utils)
