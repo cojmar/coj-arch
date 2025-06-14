@@ -394,7 +394,7 @@ if [ "$my_gui" = "5" ]; then
 fi
 if [ "$my_gui" = "6" ]; then
     export my_gui_autostart="i3"
-    my_pacman+=(i3-wm dmenu i3status xterm rofi)
+    my_pacman+=(i3-wm dmenu i3status xterm rofi feh)
     # pulse audio
     my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
 fi
