@@ -703,6 +703,7 @@ arch-chroot /mnt /bin/sh -c '
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
+    pacman -Scc --noconfirm
     rm -rf /var/cache
     rm -rf /var/log
     rm -rf /root/.cache
@@ -721,6 +722,7 @@ arch-chroot /mnt /bin/sh -c '
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
+    pacman -Scc --noconfirm
     rm -rf /var/cache
     rm -rf /var/log
     rm -rf /root/.cache
