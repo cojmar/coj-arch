@@ -119,7 +119,7 @@ get_password() { # gets password to be used
     pass2=$my_opt   
     if [[ "$pass1" == "$pass2" ]]; then
         export my_pass=$pass1
-        get_opt "Require password for sudo?" "y"
+        get_opt "Require password for sudo?" "n"
         export my_sudo_pass=$my_opt
 
     else
