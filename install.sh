@@ -325,8 +325,8 @@ elif [ "$my_opt" = "6" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y   
     export my_drivers=1  
-    export my_vnc=n
-    export my_gui_autostart="Hyprland" 
+    export my_vnc=n    
+    export my_startx="Hyprland" 
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
