@@ -316,7 +316,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_vnc=y
 elif [ "$my_opt" = "6" ]; then    
     export my_gui=7
-    export my_use_template=$my_gui 
+    export my_use_template=y
     
     get_opt "Extra packages?" ""
     export my_extra+=" ${my_opt}"
