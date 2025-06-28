@@ -414,6 +414,12 @@ if [ "$my_gui" = "6" ]; then
     # pulse audio
     my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
 fi
+if [ "$my_gui" = "7" ]; then
+    export my_gui_autostart="Hyprland"
+    my_pacman+=(hyprland foot waybar ttf-font-awsome)
+    # pulse audio
+    my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
+fi
 # drivers
 
 if [ "$my_drivers" != "0" ]; then
