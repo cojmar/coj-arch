@@ -237,7 +237,7 @@ echo $sep
 echo Template
 echo $sep
 echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)]\n6 Hyprland (WAY THE LAND)"
-get_opt "Template:" "5"
+get_opt "Template:" "6"
 echo $my_opt
 export my_template=$my_opt
 # templates
@@ -416,7 +416,7 @@ if [ "$my_gui" = "6" ]; then
 fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="Hyptland"
-    my_pacman+=(hyprland foot waybar ttf-font-awesome)
+    my_pacman+=(hyprland foot waybar ttf-font-awesome wofi)
     # pulse audio
     my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
 fi
@@ -687,7 +687,7 @@ cd ~
 git clone https://aur.archlinux.org/yay-bin.git 
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay --noconfirm 
-yay -Syu --noconfirm pacseek "${my_extra[@]}" && yay -Yc --noconfirm
+yay -Syu --noconfirm pacseek linutil "${my_extra[@]}" && yay -Yc --noconfirm
 '
 fi
 
