@@ -235,7 +235,7 @@ echo $my_opt
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)"
+echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)]\n6 Hyprland (WAY THE LAND)"
 get_opt "Template:" "5"
 echo $my_opt
 export my_template=$my_opt
@@ -313,6 +313,22 @@ elif [ "$my_opt" = "5" ]; then
     export my_user_autologin=y   
     export my_drivers=1  
     export my_vnc=y
+elif [ "$my_opt" = "6" ]; then    
+    export my_gui=7
+    export my_use_template=$my_gui       
+    
+    echo $my_opt
+    echo ""
+    
+    get_opt "Extra packages?" ""
+    export my_extra+=" ${my_opt}"
+    echo $my_opt
+    echo ""   
+    export my_make_swap=$my_def_swap_opt
+    export my_user_autologin=y   
+    export my_drivers=1  
+    export my_vnc=n
+    export my_gui_autostart="Hyprland" 
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
@@ -369,7 +385,11 @@ else
 fi
 
 if [ "$my_gui" != "0" ]; then
-    my_pacman+=(xorg-server xorg-xinit xorg-xrdb)
+    if [ "$my_gui" != "7" ]; then
+        my_pacman+=(xorg-server xorg-xinit xorg-xrdb)
+    else
+        my_pacman+=(foot waybar Hyprland ttf-font-awesome)
+    fi
 fi
 
 if [ "$my_gui" = "2" ]; then
