@@ -316,10 +316,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_vnc=y
 elif [ "$my_opt" = "6" ]; then    
     export my_gui=7
-    export my_use_template=$my_gui       
-    
-    echo $my_opt
-    echo ""
+    export my_use_template=$my_gui 
     
     get_opt "Extra packages?" ""
     export my_extra+=" ${my_opt}"
@@ -389,7 +386,7 @@ if [ "$my_gui" != "0" ]; then
     if [ "$my_gui" != "7" ]; then
         my_pacman+=(xorg-server xorg-xinit xorg-xrdb)
     else
-        my_pacman+=(foot waybar Hyprland ttf-font-awesome)
+        my_pacman+=(foot waybar Hyprland)
     fi
 fi
 
