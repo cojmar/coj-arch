@@ -385,8 +385,6 @@ fi
 if [ "$my_gui" != "0" ]; then
     if [ "$my_gui" != "7" ]; then
         my_pacman+=(xorg-server xorg-xinit xorg-xrdb)
-    else
-        my_pacman+=(foot waybar Hyprland)
     fi
 fi
 
