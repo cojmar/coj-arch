@@ -754,6 +754,7 @@ arch-chroot /mnt /bin/sh -c '
 '
 fi
 
+
 sync
 fastfetch
 export my_timestamp2=$(date +%s)
