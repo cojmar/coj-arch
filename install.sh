@@ -316,7 +316,7 @@ elif [ "$my_opt" = "5" ]; then
     export my_vnc=y
 elif [ "$my_opt" = "6" ]; then    
     export my_gui=7
-    export my_use_template=y
+    export my_use_template=7
     
     get_opt "Extra packages?" ""
     export my_extra+=" ${my_opt}"
@@ -769,7 +769,7 @@ fi
 else
 echo rebooting in 5
 sleep 5
-reboot
+# reboot
 fi
 
 # xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-37,0,1.05,-22,0,0,0.99
