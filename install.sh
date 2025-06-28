@@ -415,8 +415,8 @@ if [ "$my_gui" = "6" ]; then
     my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
 fi
 if [ "$my_gui" = "7" ]; then
-    export my_gui_autostart="Hyprland"
-    my_pacman+=(hyprland foot waybar ttf-font-awsome)
+    export my_gui_autostart="Hyptland"
+    my_pacman+=(hyprland foot waybar ttf-font-awesome)
     # pulse audio
     my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
 fi
@@ -769,7 +769,7 @@ fi
 else
 echo rebooting in 5
 sleep 5
-reboot
+# reboot
 fi
 
 # xrandr --output HDMI-1 --panning 1280x720 --transform 1.05,0,-37,0,1.05,-22,0,0,0.99
