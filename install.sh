@@ -40,7 +40,7 @@ get_disk() { # gets install disk
     echo $sep
     echo "Available disks"
     lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk" || $1=="loop" {print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
-    get_opt "Install on disk" "1"
+    get_opt "Install on disk" "2"
     
     export my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk" || $1=="loop" {print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$my_opt' {print $2}')
     echo $my_disk
@@ -325,8 +325,12 @@ elif [ "$my_opt" = "6" ]; then
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y   
     export my_drivers=1  
-    export my_vnc=n    
-    export my_startx="Hyprland" 
+    export my_vnc=n        
+    export my_startx="
+    if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
+        Hyprland
+    fi
+    "
 else #default 1
     get_opt "Autologin" "n"
     export my_user_autologin=$my_opt
@@ -687,7 +691,7 @@ cd ~
 git clone https://aur.archlinux.org/yay-bin.git 
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay --noconfirm 
-yay -Syu --noconfirm pacseek linutil "${my_extra[@]}" && yay -Yc --noconfirm
+yay -Syu --noconfirm pacseek "${my_extra[@]}" && yay -Yc --noconfirm
 '
 fi
 
