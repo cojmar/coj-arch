@@ -216,6 +216,7 @@ set_gui(){
 iso=$(curl -4 ifconfig.co/country-iso) && time_zone="$(curl --fail https://ipapi.co/timezone)" 
 iso=RO
 pacman -Sy
+pacman -S --noconfirm arch-install-scripts  gptfdisk
 clear 
 # minimal config
 echo $sep && echo  "Welcome to cojmar arch
