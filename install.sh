@@ -39,10 +39,10 @@ convertsecs() {
 get_disk() { # gets install disk
     echo $sep
     echo "Available disks"
-    lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
+    lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk" || $1=="loop" {print "/dev/"$2" -  "$3}' | awk '{print NR,$0}'
     get_opt "Install on disk" "1"
     
-    export my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$my_opt' {print $2}')
+    export my_disk=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk" || $1=="loop" {print "/dev/"$2" -  "$3}' | awk '{print NR,$0}' | awk 'NR=='$my_opt' {print $2}')
     echo $my_disk
 }
 make_part() { # makes partitions on install disk
