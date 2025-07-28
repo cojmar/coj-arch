@@ -156,6 +156,8 @@ pkg install -y proot-distro
 pkg install -y mc htop unzip fastfetch
 pkg install -y rofi
 pkg install -y florence
+pkg install -Y x11vnc
+pkg install -Y nodejs
 pkg install -y code-oss
 
 if [ "$my_x86" = "y" ];then
@@ -267,12 +269,6 @@ echo "Use ./i3.sh to start native i3"
 
 echo $sep
 fi
-echo -ne "unset PREFIX" > .bashrc
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-nvm install --lts
 
 export my_timestamp2=$(date +%s)
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
