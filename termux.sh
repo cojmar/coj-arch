@@ -95,7 +95,9 @@ nc=$(($(grep -c ^processor /proc/cpuinfo) * 1))
 post=$(echo -ne "
 var1=\"ParallelDownloads = 5\" && var2=\"ParallelDownloads = 20\" && sed -i -e \"s/\$var1/\$var2\\\\nILoveCandy /g\" /etc/pacman.conf
 &&
-var12=\"#MAKEFLAGS=\\\"-j2\\\"\" && var22=\"MAKEFLAGS=\\\"${nc}\\\"\" && sed -i -e \"s/\$var12/\$var22/g\" /etc/makepkg.conf
+var1=\"#MAKEFLAGS=\\\"-j2\\\"\" && var2=\"MAKEFLAGS=\\\"${nc}\\\"\" && sed -i -e \"s/\$var1/\$var2/g\" /etc/makepkg.conf
+&&
+var1=\"COMPRESSXZ=(xz -c -z -)\" && var2=\"COMPRESSXZ=(xz -c -T ${nc} -z -)\" && sed -i -e \"s/\$var1/\$var2/g\" /etc/makepkg.conf
 &&
 pacman -Sy --noconfirm
 &&
