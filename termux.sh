@@ -99,6 +99,10 @@ var1=\"#MAKEFLAGS=\\\"-j2\\\"\" && var2=\"MAKEFLAGS=\\\"${nc}\\\"\" && sed -i -e
 &&
 var1=\"COMPRESSXZ=(xz -c -z -)\" && var2=\"COMPRESSXZ=(xz -c -T ${nc} -z -)\" && sed -i -e \"s/\$var1/\$var2/g\" /etc/makepkg.conf
 &&
+sed -i 's/LocalFileSigLevel/#LocalFileSigLevel/' /etc/pacman.conf
+&&
+sed -i 's/Required DatabaseOptional/Never/' /etc/pacman.conf
+&&
 pacman -Sy --noconfirm
 &&
 pacman -Syu --noconfirm
