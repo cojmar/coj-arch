@@ -96,15 +96,11 @@ fi
 post=$(echo -ne "
 var1=\"ParallelDownloads = 5\" && var2=\"ParallelDownloads = 20\" && sed -i -e \"s/\$var1/\$var2\\\\nILoveCandy /g\" /etc/pacman.conf
 &&
+sed -i \"s/#MAKEFLAGS=\\\"-j2\\\"/#MAKEFLAGS=\\\"4\\\"/g\" /etc/makepkg.conf
+&&
 pacman -Sy --noconfirm
 &&
 pacman -Syu --noconfirm
-&&
-pacman -S --noconfirm grep
-&&
-nc=\$(\$(grep -c ^processor /proc/cpuinfo) * 1)
-&&
-sed -i \"s/#MAKEFLAGS=\\\"-j2\\\"/MAKEFLAGS=\\\"-j\$nc\\\"/g\" /etc/makepkg.conf
 &&
 pacman -S ${my_pacman[@]} --noconfirm
 &&
