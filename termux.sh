@@ -103,6 +103,8 @@ sed -i 's/LocalFileSigLevel/#LocalFileSigLevel/' /etc/pacman.conf
 &&
 sed -i 's/Required DatabaseOptional/Never/' /etc/pacman.conf
 &&
+reflector -a 48 -c RO -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist && pacman -Sy
+&&
 pacman -Sy --noconfirm
 &&
 pacman -Syu --noconfirm
