@@ -94,11 +94,17 @@ fi
 # awk '{if (\$0 ~ /^#MAKEFLAGS=/) print \"MAKEFLAGS=\\\"j2\\\"\"; else print \$0}' /etc/makepkg.conf > /etc/makepkg.conf.tmp && mv /etc/makepkg.conf.tmp /etc/makepkg.conf
 
 post=$(echo -ne "
-var1=\"ParallelDownloads = 5\" && var2=\"ParallelDownloads = 10\" && sed -i -e \"s/\$var1/\$var2\\\\nILoveCandy /g\" /etc/pacman.conf
+var1=\"ParallelDownloads = 5\" && var2=\"ParallelDownloads = 20\" && sed -i -e \"s/\$var1/\$var2\\\\nILoveCandy /g\" /etc/pacman.conf
 &&
 pacman -Sy --noconfirm
 &&
 pacman -Syu --noconfirm
+&&
+pacman -S --noconfirm grep
+&&
+nc=\$(\$(grep -c ^processor /proc/cpuinfo) * 1)
+&&
+sed -i \"s/#MAKEFLAGS=\\\"-j2\\\"/MAKEFLAGS=\\\"-j\$nc\\\"/g\" /etc/makepkg.conf
 &&
 pacman -S ${my_pacman[@]} --noconfirm
 &&
@@ -127,10 +133,10 @@ git clone https://aur.archlinux.org/yay-bin.git
 &&
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 &&
-yay --noconfirm 
-&&
 yay -Syu --noconfirm
+&&
 yay -S --noconfirm pacseek 
+&&
 yay -Yc --noconfirm
 ")
 
@@ -146,7 +152,7 @@ echo $sep
 export my_timestamp1=$(date +%s)
 if [ "$my_outside" = "y" ];then
 if [ "$my_clean_install" = "y" ];then
-termux-setup-storage
+termux-setup-storage -y
 pkg update -y
 pkg upgrade -y
 pkg install -y x11-repo
