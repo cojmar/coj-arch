@@ -184,6 +184,7 @@ proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/b
 fi
 
 rm -rf ~/shared_folder
+mkdir -p ~/.shortcuts
 
 startx=$(echo -ne "
 # Kill open X11 processes
@@ -221,6 +222,8 @@ exit
 
 " > arch.sh
 
+
+
 if [ "$my_native" = "y" ];then
 echo -ne "#!/data/data/com.termux/files/usr/bin/bash
 if [[ -f "/etc/pacman.conf" ]]; then
@@ -235,10 +238,12 @@ setsid proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp 
 exit
 
 " > arch.sh
+
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
 fi
 
 chmod +x arch.sh
+cp arch.sh ~/.shortcuts
 echo $sep
 echo "Use ./arch.sh to start arch"
 echo $sep
@@ -255,6 +260,7 @@ env DISPLAY=:0 dbus-launch --exit-with-session i3 & > /dev/null 2>&1
 exit 0
 " > i3.sh
 chmod +x i3.sh
+cp i3.sh ~/.shortcuts
 echo $sep
 echo "Use ./i3.sh to start native i3"
 
