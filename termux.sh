@@ -91,7 +91,6 @@ else
 fi
 # POST ROOT
 # &&
-# awk '{if (\$0 ~ /^#MAKEFLAGS=/) print \"MAKEFLAGS=\\\"j2\\\"\"; else print \$0}' /etc/makepkg.conf > /etc/makepkg.conf.tmp && mv /etc/makepkg.conf.tmp /etc/makepkg.conf
 
 post=$(echo -ne "
 var1=\"ParallelDownloads = 5\" && var2=\"ParallelDownloads = 20\" && sed -i -e \"s/\$var1/\$var2\\\\nILoveCandy /g\" /etc/pacman.conf
@@ -129,11 +128,9 @@ git clone https://aur.archlinux.org/yay-bin.git
 &&
 cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 &&
-yay -Syu --noconfirm
+yay --noconfirm 
 &&
-yay -S --noconfirm pacseek 
-&&
-yay -Yc --noconfirm
+yay -Syu --noconfirm && yay -S --noconfirm pacseek && yay -Yc --noconfirm
 ")
 
 
@@ -148,7 +145,7 @@ echo $sep
 export my_timestamp1=$(date +%s)
 if [ "$my_outside" = "y" ];then
 if [ "$my_clean_install" = "y" ];then
-termux-setup-storage -y
+termux-setup-storage
 pkg update -y
 pkg upgrade -y
 pkg install -y x11-repo
