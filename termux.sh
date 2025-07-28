@@ -96,7 +96,7 @@ fi
 post=$(echo -ne "
 var1=\"ParallelDownloads = 5\" && var2=\"ParallelDownloads = 20\" && sed -i -e \"s/\$var1/\$var2\\\\nILoveCandy /g\" /etc/pacman.conf
 &&
-sed -i \"s/#MAKEFLAGS=\\\"-j2\\\"/#MAKEFLAGS=\\\"4\\\"/g\" /etc/makepkg.conf
+var1=\"#MAKEFLAGS=\\\"-j2\\\"\" && var2=\"#MAKEFLAGS=\\\"4\\\"\" && sed -i -e \"s/\$var1/\$var2/g\" /etc/makepkg.conf
 &&
 pacman -Sy --noconfirm
 &&
