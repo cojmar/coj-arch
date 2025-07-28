@@ -91,11 +91,11 @@ else
 fi
 # POST ROOT
 # &&
-
+nc=$(($(grep -c ^processor /proc/cpuinfo) * 1))
 post=$(echo -ne "
 var1=\"ParallelDownloads = 5\" && var2=\"ParallelDownloads = 20\" && sed -i -e \"s/\$var1/\$var2\\\\nILoveCandy /g\" /etc/pacman.conf
 &&
-var12=\"#MAKEFLAGS=\\\"-j2\\\"\" && var22=\"#MAKEFLAGS=\\\"4\\\"\" && sed -i -e \"s/\$var12/\$var22/g\" /etc/makepkg.conf
+var12=\"#MAKEFLAGS=\\\"-j2\\\"\" && var22=\"MAKEFLAGS=\\\"${nc}\\\"\" && sed -i -e \"s/\$var12/\$var22/g\" /etc/makepkg.conf
 &&
 pacman -Sy --noconfirm
 &&
