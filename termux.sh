@@ -129,7 +129,9 @@ cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 &&
 yay --noconfirm 
 &&
-yay -Syu --noconfirm && yay -S --noconfirm pacseek && yay -Yc --noconfirm
+yay -Syu --noconfirm
+#yay -S --noconfirm pacseek 
+yay -Yc --noconfirm
 ")
 
 
