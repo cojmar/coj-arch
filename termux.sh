@@ -151,6 +151,7 @@ termux-setup-storage
 pkg update -y
 pkg upgrade -y
 pkg install -y git
+pkg install -Y nodejs
 pkg install -y x11-repo
 pkg install -y tur-repo
 pkg install -y termux-x11-nightly
@@ -160,7 +161,6 @@ pkg install -y mc htop unzip fastfetch
 pkg install -y rofi
 pkg install -y florence
 pkg install -Y x11vnc
-pkg install -Y nodejs
 pkg install -y code-oss
 
 
