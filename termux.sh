@@ -150,6 +150,7 @@ if [ "$my_clean_install" = "y" ];then
 termux-setup-storage
 pkg update -y
 pkg upgrade -y
+pkg install -y git
 pkg install -y x11-repo
 pkg install -y tur-repo
 pkg install -y termux-x11-nightly
@@ -161,6 +162,7 @@ pkg install -y florence
 pkg install -Y x11vnc
 pkg install -Y nodejs
 pkg install -y code-oss
+
 
 if [ "$my_x86" = "y" ];then
 pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
@@ -210,8 +212,10 @@ sleep 3
 # Launch Termux X11 main activity
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
 sleep 1
-
 ")
+
+echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
+chmod +x i3vnc.sh
 
 echo -ne "#!/data/data/com.termux/files/usr/bin/bash
 if [[ -f "/etc/pacman.conf" ]]; then
@@ -239,7 +243,7 @@ echo Starting Arch...
 
 ${startx}
 echo Starting Arch...
-setsid proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
+setsid proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 ~/i3vnc.sh\"'
 exit
 
 " > arch.sh
@@ -260,7 +264,7 @@ ${startx}
 export PULSE_SERVER=127.0.0.1
 
 # Run i3 Desktop
-env DISPLAY=:0 dbus-launch --exit-with-session i3 & > /dev/null 2>&1
+env DISPLAY=:0 dbus-launch --exit-with-session ~/i3vnc.sh & > /dev/null 2>&1
 
 exit 0
 " > i3.sh
@@ -271,6 +275,10 @@ echo "Use ./i3.sh to start native i3"
 
 echo $sep
 fi
+
+git clone https://github.com/cojmar/noVNC.git
+cd noVNC
+npm i
 
 export my_timestamp2=$(date +%s)
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
