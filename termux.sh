@@ -214,7 +214,7 @@ am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
 sleep 1
 ")
 
-echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
+echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
 chmod +x i3vnc.sh
 
 echo -ne "#!/data/data/com.termux/files/usr/bin/bash
