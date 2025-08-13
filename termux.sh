@@ -61,8 +61,6 @@ set_user() { # runs all the user settings
 }
 
 # minimal config
-# mirrors
-bash <(curl -L https://raw.githubusercontent.com/sabamdarif/termux-desktop/refs/heads/main/other/termux-fastest-repo)
 
 echo $sep && echo  "Welcome to cojmar arch for termux"
 
@@ -79,6 +77,10 @@ export my_aur=$my_opt
 echo $sep
 get_opt "Emulate x86_x64?" "n"
 export my_x86=$my_opt
+
+# mirrors
+bash <(curl -L https://raw.githubusercontent.com/sabamdarif/termux-desktop/refs/heads/main/other/termux-fastest-repo)
+
 
 if [ "$my_native" != "y" ];then
     my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar rofi feh)
