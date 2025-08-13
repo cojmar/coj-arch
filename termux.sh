@@ -78,9 +78,6 @@ echo $sep
 get_opt "Emulate x86_x64?" "n"
 export my_x86=$my_opt
 
-# mirrors
-bash <(curl -L ${my_url}/termux-fastest-repo)
-
 
 if [ "$my_native" != "y" ];then
     my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar rofi feh)
@@ -90,6 +87,11 @@ if [ "$my_outside" = "y" ];then
 get_opt "Clean install?:" "y"
 export my_clean_install=$my_opt
 fi
+
+# mirrors
+bash <(curl -L ${my_url}/termux-fastest-repo)
+cd ~
+
 
 if [ "$my_sudo_pass" = "y" ]; then
     export my_sudo_pass=""
