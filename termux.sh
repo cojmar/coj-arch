@@ -61,6 +61,9 @@ set_user() { # runs all the user settings
 }
 
 # minimal config
+# mirrors
+bash <(curl -L https://raw.githubusercontent.com/sabamdarif/termux-desktop/refs/heads/main/other/termux-fastest-repo)
+
 echo $sep && echo  "Welcome to cojmar arch for termux"
 
 
