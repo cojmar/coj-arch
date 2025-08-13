@@ -294,7 +294,7 @@ echo $sep
 get_opt "Start Arch now?" "y"
 
 if [ "$my_opt" = "y" ];then
-./arch.sh
+~/arch.sh
 fi
 else
 bin/bash -c "${post}"
