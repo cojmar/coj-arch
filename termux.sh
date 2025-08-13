@@ -79,7 +79,7 @@ get_opt "Emulate x86_x64?" "n"
 export my_x86=$my_opt
 
 # mirrors
-bash <(curl -L https://raw.githubusercontent.com/sabamdarif/termux-desktop/refs/heads/main/other/termux-fastest-repo)
+bash <(curl -L ${my_url}/termux-fastest-repo)
 
 
 if [ "$my_native" != "y" ];then
