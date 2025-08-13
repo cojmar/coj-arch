@@ -61,7 +61,7 @@ set_user() { # runs all the user settings
 }
 
 # minimal config
-
+termux-wake-lock
 echo $sep && echo  "Welcome to cojmar arch for termux"
 
 
