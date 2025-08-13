@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 #INIT 
-# for better termux customization (graphic accel) i recommand to run this 1st: 
-# curl -Lf https://raw.githubusercontent.com/sabamdarif/termux-desktop/main/setup-termux-desktop -o setup-termux-desktop && chmod +x setup-termux-desktop && ./setup-termux-desktop
 #DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/termux.sh)
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base-devel sudo mc htop ncdu unzip fastfetch wget git ttf-dejavu ttf-liberation)
@@ -290,6 +288,12 @@ npm i
 export my_timestamp2=$(date +%s)
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
 echo install duration: $(convertsecs $duration)
+echo $sep
+get_opt "Do you want to run termux-desktop setup for more customization and hd accel" "y"
+if [ "$my_opt" = "y" ];then
+curl -Lf https://raw.githubusercontent.com/sabamdarif/termux-desktop/main/setup-termux-desktop -o setup-termux-desktop && chmod +x setup-termux-desktop && ./setup-termux-desktop
+fi
+
 echo $sep
 get_opt "Start Arch now?" "y"
 
