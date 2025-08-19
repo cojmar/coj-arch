@@ -173,7 +173,7 @@ if [ "$my_clean_install" = "y" ];then
     pkg install -y florence
     pkg install -y x11vnc tigervnc
     pkg install -y code-oss
-
+    pkg install -y termux-api
 
     if [ "$my_x86" = "y" ];then
     pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
@@ -232,9 +232,12 @@ sleep 1
 echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
 chmod +x i3vnc.sh
 
-echo -ne "vncserver :0 -geometry 1440x900 -depth 24  > /dev/null & node ~/noVNC/index > /dev/null 2>&1 &" > i3tigervnc.sh
+echo -ne "termux-wake-lock & vncserver :0 -geometry 1440x900 -depth 24  > /dev/null & node ~/noVNC/index > /dev/null 2>&1 &" > i3tigervnc.sh
 chmod +x i3tigervnc.sh
 cp i3tigervnc.sh ~/.shortcuts
+
+#add tiger to boot
+# mkdir -p ~/.termux/boot && echo -e '#!/data/data/com.termux/files/usr/bin/sh\nnohup /data/data/com.termux/files/usr/bin/vncserver :0 -geometry 1440x900 -depth 24 &\nnohup /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/bin/noVNC/index &' > ~/.termux/boot/i3tigervnc.sh && chmod +x ~/.termux/boot/i3tigervnc.sh
 
 echo -ne "pkill node\nvncserver -kill :0\n" > i3tigervnc-stop.sh && chmod +x i3tigervnc-stop.sh
 
