@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 #INIT 
-# for better termux customization (graphic accel) i recommand to run this 1st: 
-# curl -Lf https://raw.githubusercontent.com/sabamdarif/termux-desktop/main/setup-termux-desktop -o setup-termux-desktop && chmod +x setup-termux-desktop && ./setup-termux-desktop
 #DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/termux.sh)
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base-devel sudo mc htop ncdu unzip fastfetch wget git ttf-dejavu ttf-liberation)
@@ -61,6 +59,7 @@ set_user() { # runs all the user settings
 }
 
 # minimal config
+termux-wake-lock
 echo $sep && echo  "Welcome to cojmar arch for termux"
 
 
@@ -77,6 +76,7 @@ echo $sep
 get_opt "Emulate x86_x64?" "n"
 export my_x86=$my_opt
 
+
 if [ "$my_native" != "y" ];then
     my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar rofi feh)
 fi
@@ -85,6 +85,11 @@ if [ "$my_outside" = "y" ];then
 get_opt "Clean install?:" "y"
 export my_clean_install=$my_opt
 fi
+
+# mirrors
+bash <(curl -L ${my_url}/termux-fastest-repo)
+cd ~
+
 
 if [ "$my_sudo_pass" = "y" ]; then
     export my_sudo_pass=""
@@ -214,7 +219,7 @@ am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
 sleep 1
 ")
 
-echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
+echo -ne "termux-wake-lock & x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
 chmod +x i3vnc.sh
 
 echo -ne "vncserver :0 -geometry 1440x900 -depth 24  > /dev/null & node ~/noVNC/index > /dev/null 2>&1 &" > i3tigervnc.sh
@@ -287,10 +292,16 @@ export my_timestamp2=$(date +%s)
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
 echo install duration: $(convertsecs $duration)
 echo $sep
+get_opt "Do you want to run termux-desktop setup for more customization and hd accel" "y"
+if [ "$my_opt" = "y" ];then
+curl -Lf https://raw.githubusercontent.com/sabamdarif/termux-desktop/main/setup-termux-desktop -o setup-termux-desktop && chmod +x setup-termux-desktop && ./setup-termux-desktop
+fi
+
+echo $sep
 get_opt "Start Arch now?" "y"
 
 if [ "$my_opt" = "y" ];then
-./arch.sh
+~/arch.sh
 fi
 else
 bin/bash -c "${post}"
