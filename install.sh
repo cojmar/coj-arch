@@ -22,11 +22,9 @@ fi
 
 if [[ -z "$my_url" ]]; then export my_url="https://raw.githubusercontent.com/cojmar/coj-arch/main";fi
 
+#TERMUX
+[ "$PREFIX" = "/data/data/com.termux/files/usr" ] && sh ~/termux.sh && exit 0
 
-if [ -n "$PREFIX" ] && [ -d "$PREFIX" ] && grep -q "com.termux" /proc/version 2>/dev/null; then
-    bash <(curl -L ${my_url}/termux.sh)
-    exit 0
-fi
 
 
 
