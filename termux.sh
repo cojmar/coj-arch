@@ -290,6 +290,9 @@ fi
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
 fi
 
+cp -r -f ~/.config/florence/* /data/data/com.termux/files/usr/share/florence/
+
+
 chmod +x arch.sh
 cp arch.sh ~/.shortcuts
 echo $sep
