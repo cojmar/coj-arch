@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 #INIT 
+# for better termux customization (graphic accel) i recommand to run this 1st: 
+# curl -Lf https://raw.githubusercontent.com/sabamdarif/termux-desktop/main/setup-termux-desktop -o setup-termux-desktop && chmod +x setup-termux-desktop && ./setup-termux-desktop
 #DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/termux.sh)
 export sep=$(echo -ne "\n===========================\n \n")
 export my_pacman=(base-devel sudo mc htop ncdu unzip fastfetch wget git ttf-dejavu ttf-liberation)
@@ -59,7 +61,6 @@ set_user() { # runs all the user settings
 }
 
 # minimal config
-termux-wake-lock
 echo $sep && echo  "Welcome to cojmar arch for termux"
 
 
@@ -68,14 +69,24 @@ set_user
 echo $sep
 get_opt "Install i3 native? (i3 window manager will be installed in termux istead of arch also arch will share same home folder)" "y"
 export my_native=$my_opt
-echo $sep
-get_opt "Add AUR managers(yay and pacseek)" "y"
-export my_aur=$my_opt
 
-echo $sep
-get_opt "Emulate x86_x64?" "n"
-export my_x86=$my_opt
+if [ "$my_native" = "y" ];then
+    echo $sep
+    get_opt "Skip arch" "n"
+    export my_skip_arch=$my_opt
+fi
+if [ "$my_skip_arch" != "y" ];then
+    echo $sep
+    get_opt "Add AUR managers(yay and pacseek)" "y"
+    export my_aur=$my_opt
 
+    echo $sep
+    get_opt "Emulate x86_x64?" "n"
+    export my_x86=$my_opt
+else
+    export my_aur=n
+    export my_x86=n
+fi
 
 if [ "$my_native" != "y" ];then
     my_pacman+=(i3-wm dmenu i3status xfce4-terminal polybar rofi feh)
@@ -85,11 +96,6 @@ if [ "$my_outside" = "y" ];then
 get_opt "Clean install?:" "y"
 export my_clean_install=$my_opt
 fi
-
-# mirrors
-bash <(curl -L ${my_url}/termux-fastest-repo)
-cd ~
-
 
 if [ "$my_sudo_pass" = "y" ]; then
     export my_sudo_pass=""
@@ -152,47 +158,51 @@ echo $sep
 export my_timestamp1=$(date +%s)
 if [ "$my_outside" = "y" ];then
 if [ "$my_clean_install" = "y" ];then
-termux-setup-storage
-pkg update -y
-pkg upgrade -y
-pkg install -y git
-pkg install -y nodejs
-pkg install -y x11-repo
-pkg install -y tur-repo
-pkg install -y termux-x11-nightly
-pkg install -y pulseaudio
-pkg install -y proot-distro
-pkg install -y mc htop unzip fastfetch
-pkg install -y rofi
-pkg install -y florence
-pkg install -y x11vnc tigervnc
-pkg install -y code-oss
+    termux-setup-storage
+    pkg update -y
+    pkg upgrade -y
+    pkg install -y git
+    pkg install -y nodejs
+    pkg install -y x11-repo
+    pkg install -y tur-repo
+    pkg install -y termux-x11-nightly
+    pkg install -y pulseaudio
+    pkg install -y proot-distro
+    pkg install -y mc htop unzip fastfetch
+    pkg install -y rofi
+    pkg install -y florence
+    pkg install -y x11vnc tigervnc
+    pkg install -y code-oss
 
 
-if [ "$my_x86" = "y" ];then
-pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
+    if [ "$my_x86" = "y" ];then
+    pkg install -y qemu-user-aarch64 qemu-user-arm qemu-user-i386 qemu-user-x86-64
+    fi
+
+    if [ "$my_native" = "y" ];then
+        pkg install -y i3 dmenu xfce4-terminal polybar feh
+        # pkg install -y code-oss
+    fi
+
+
+    if [ "$my_skip_arch" != "y" ];then
+        proot-distro remove coj-arch
+
+        if [ "$my_x86" = "y" ];then
+            DISTRO_ARCH=x86_64 proot-distro install --override-alias coj-arch archlinux
+        else
+            proot-distro install --override-alias coj-arch archlinux
+        fi
+    fi
+
 fi
 
-if [ "$my_native" = "y" ];then
-    pkg install -y i3 dmenu xfce4-terminal polybar feh
-    # pkg install -y code-oss
-fi
+if [ "$my_skip_arch" != "y" ];then
+    proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c 'source /root/shared_folder/post.sh'
 
-
-
-proot-distro remove coj-arch
-
-if [ "$my_x86" = "y" ];then
-    DISTRO_ARCH=x86_64 proot-distro install --override-alias coj-arch archlinux
-else
-    proot-distro install --override-alias coj-arch archlinux
-fi
-
-fi
-proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c 'source /root/shared_folder/post.sh'
-
-if [ "$my_aur" = "y" ];then
-proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c "su - ${my_user} -c 'source /root/shared_folder/post_user.sh'"
+    if [ "$my_aur" = "y" ];then
+    proot-distro login coj-arch --bind ~/shared_folder:/root/shared_folder -- /bin/bash -c "su - ${my_user} -c 'source /root/shared_folder/post_user.sh'"
+    fi
 fi
 
 rm -rf ~/shared_folder
@@ -219,11 +229,17 @@ am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
 sleep 1
 ")
 
-echo -ne "termux-wake-lock & x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
+echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
 chmod +x i3vnc.sh
 
 echo -ne "vncserver :0 -geometry 1440x900 -depth 24  > /dev/null & node ~/noVNC/index > /dev/null 2>&1 &" > i3tigervnc.sh
 chmod +x i3tigervnc.sh
+cp i3tigervnc.sh ~/.shortcuts
+
+echo -ne "pkill node\nvncserver -kill :0\n" > i3tigervnc-stop.sh && chmod +x i3tigervnc-stop.sh
+
+mkdir -p ~/.vnc && echo -e '#!/data/data/com.termux/files/usr/bin/sh\nexec i3' > ~/.vnc/xstartup && chmod +x ~/.vnc/xstartup
+
 
 echo -ne "#!/data/data/com.termux/files/usr/bin/bash
 if [[ -f "/etc/pacman.conf" ]]; then
@@ -292,16 +308,10 @@ export my_timestamp2=$(date +%s)
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
 echo install duration: $(convertsecs $duration)
 echo $sep
-get_opt "Do you want to run termux-desktop setup for more customization and hd accel" "y"
-if [ "$my_opt" = "y" ];then
-curl -Lf https://raw.githubusercontent.com/sabamdarif/termux-desktop/main/setup-termux-desktop -o setup-termux-desktop && chmod +x setup-termux-desktop && ./setup-termux-desktop
-fi
-
-echo $sep
 get_opt "Start Arch now?" "y"
 
 if [ "$my_opt" = "y" ];then
-~/arch.sh
+./arch.sh
 fi
 else
 bin/bash -c "${post}"
