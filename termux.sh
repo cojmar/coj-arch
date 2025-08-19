@@ -97,6 +97,10 @@ get_opt "Clean install?:" "y"
 export my_clean_install=$my_opt
 fi
 
+# mirrors
+bash <(curl -L ${my_url}/termux-fastest-repo)
+cd ~
+
 if [ "$my_sudo_pass" = "y" ]; then
     export my_sudo_pass=""
 else
@@ -311,10 +315,16 @@ export my_timestamp2=$(date +%s)
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
 echo install duration: $(convertsecs $duration)
 echo $sep
+get_opt "Do you want to run termux-desktop setup for more customization and hd accel" "y"
+if [ "$my_opt" = "y" ];then
+curl -Lf https://raw.githubusercontent.com/sabamdarif/termux-desktop/main/setup-termux-desktop -o setup-termux-desktop && chmod +x setup-termux-desktop && ./setup-termux-desktop
+fi
+
+echo $sep
 get_opt "Start Arch now?" "y"
 
 if [ "$my_opt" = "y" ];then
-./arch.sh
+~/arch.sh
 fi
 else
 bin/bash -c "${post}"
