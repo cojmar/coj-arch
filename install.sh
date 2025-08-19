@@ -19,7 +19,6 @@ if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
 fi
 "
 
-
 if [[ -z "$my_url" ]]; then export my_url="https://raw.githubusercontent.com/cojmar/coj-arch/main";fi
 
 #TERMUX

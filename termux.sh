@@ -27,7 +27,6 @@ convertsecs() {
  printf "%02d:%02d:%02d\n" $h $m $s
 }
 
-
 # USER
 get_password() { # gets password to be used
     my_rand_pass=$(openssl rand -base64 32)

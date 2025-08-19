@@ -9,6 +9,7 @@
 # Setup TERMUX_APP_PACKAGE_MANAGER
 source "/data/data/com.termux/files/usr/bin/termux-setup-package-manager" || exit 1
 
+
 MIRROR_BASE_DIR="/data/data/com.termux/files/usr/etc/termux/mirrors"
 TEMP_DIR="/data/data/com.termux/files/usr/tmp"
 SPEED_RESULT_FILE="$TEMP_DIR/mirror_speeds.txt"
