@@ -22,6 +22,14 @@ fi
 
 if [[ -z "$my_url" ]]; then export my_url="https://raw.githubusercontent.com/cojmar/coj-arch/main";fi
 
+
+if [ -n "$PREFIX" ] && [ -d "$PREFIX" ] && grep -q "com.termux" /proc/version 2>/dev/null; then
+    bash <(curl -L ${my_url}/termux.sh)
+    exit 0
+fi
+
+
+
 get_opt() {   
     echo -ne '\n' 
     printf "%s" "$1 (default $2) : " && read my_opt && if [[ -z "$my_opt" ]]; then my_opt=$2;fi    
