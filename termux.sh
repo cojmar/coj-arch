@@ -160,7 +160,7 @@ pkg install -y proot-distro
 pkg install -y mc htop unzip fastfetch
 pkg install -y rofi
 pkg install -y florence
-pkg install -y x11vnc
+pkg install -y x11vnc tigervnc
 pkg install -y code-oss
 
 
@@ -216,6 +216,9 @@ sleep 1
 
 echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
 chmod +x i3vnc.sh
+
+echo -ne "vncserver :0 -geometry 1440x900 -depth 24  > /dev/null & node ~/noVNC/index > /dev/null 2>&1 &" > i3tigervnc.sh
+chmod +x i3tigervnc.sh
 
 echo -ne "#!/data/data/com.termux/files/usr/bin/bash
 if [[ -f "/etc/pacman.conf" ]]; then
@@ -275,7 +278,7 @@ echo "Use ./i3.sh to start native i3"
 
 echo $sep
 fi
-
+rm -rf noVNC
 git clone https://github.com/cojmar/noVNC.git
 cd noVNC
 npm i
