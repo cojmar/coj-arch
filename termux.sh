@@ -279,6 +279,14 @@ exit
 
 " > arch.sh
 
+echo -ne "
+if [ ! -e \"$TMPDIR/termux-started\" ]; then
+ touch \"\$TMPDIR/termux-started\"
+ #bash i3tigervnc.sh
+fi
+" > .bashrc
+
+
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
 fi
 
