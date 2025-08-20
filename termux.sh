@@ -290,7 +290,7 @@ cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.
 fi
 
 cp -r -f ~/.config/florence/* /data/data/com.termux/files/usr/share/florence/
-echo -ne "tx11start && $HOME/i3vnc.sh" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
+echo -ne "tx11start & $HOME/i3vnc.sh" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
 
 
 chmod +x arch.sh
