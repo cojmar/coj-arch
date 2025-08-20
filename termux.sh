@@ -235,13 +235,14 @@ sleep 1
 echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & echo vnc started" > i3vnc.sh && chmod +x i3vnc.sh
 
 echo -ne "termux-wake-lock & vncserver :0 -geometry 1600x900 -depth 24  > /dev/null & node ~/noVNC/index > /dev/null 2>&1 &" > i3tigervnc.sh
+echo -ne "pkill node\nvncserver -kill :0\n" > i3tigervnc-stop.sh && chmod +x i3tigervnc-stop.sh
 chmod +x i3tigervnc.sh
 cp i3tigervnc.sh ~/.shortcuts
 
 #add tiger to boot
 # mkdir -p ~/.termux/boot && echo -e '#!/data/data/com.termux/files/usr/bin/sh\nnohup /data/data/com.termux/files/usr/bin/vncserver :0 -geometry 1440x900 -depth 24 &\nnohup /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/bin/noVNC/index &' > ~/.termux/boot/i3tigervnc.sh && chmod +x ~/.termux/boot/i3tigervnc.sh
 
-echo -ne "pkill node\nvncserver -kill :0\n" > i3tigervnc-stop.sh && chmod +x i3tigervnc-stop.sh
+
 
 mkdir -p ~/.vnc && echo -e '#!/data/data/com.termux/files/usr/bin/sh\nexec i3' > ~/.vnc/xstartup && chmod +x ~/.vnc/xstartup
 
@@ -276,20 +277,11 @@ setsid proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp 
 exit
 
 " > arch.sh
-
-echo -ne "
-if [ ! -e \"$TMPDIR/termux-started\" ]; then
- touch \"\$TMPDIR/termux-started\"
- #bash i3tigervnc.sh
 fi
-" > .bashrc
-
 
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
-fi
-
-cp -r -f ~/.config/florence/* /data/data/com.termux/files/usr/share/florence/
-echo -ne "pkill -9 x11vnc && pkill -9 node && tx11start" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
+# cp -r -f ~/.config/florence/* /data/data/com.termux/files/usr/share/florence/
+echo -ne "tx11start" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
 
 
 chmod +x arch.sh
