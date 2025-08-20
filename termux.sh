@@ -281,7 +281,7 @@ fi
 
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
 # cp -r -f ~/.config/florence/* /data/data/com.termux/files/usr/share/florence/
-echo -ne "tx11start" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
+echo -ne "vncserver -kill :0 & pkill -9 x11vnc & pkill -9 node & tx11stop && tx11start" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
 
 
 chmod +x arch.sh
