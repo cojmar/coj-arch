@@ -232,8 +232,7 @@ am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
 sleep 1
 ")
 
-echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & i3" > i3vnc.sh
-chmod +x i3vnc.sh
+echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -bg > /dev/null 2>&1 & node ~/noVNC/index > /dev/null 2>&1 & echo vnc started" > i3vnc.sh && chmod +x i3vnc.sh
 
 echo -ne "termux-wake-lock & vncserver :0 -geometry 1600x900 -depth 24  > /dev/null & node ~/noVNC/index > /dev/null 2>&1 &" > i3tigervnc.sh
 chmod +x i3tigervnc.sh
@@ -273,7 +272,7 @@ echo Starting Arch...
 
 ${startx}
 echo Starting Arch...
-setsid proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 ~/i3vnc.sh\"'
+setsid proot-distro login coj-arch --user ${my_user} --termux-home --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=\${TMPDIR} && sudo su ${my_user} -c \"env DISPLAY=:0 i3\"'
 exit
 
 " > arch.sh
@@ -290,7 +289,7 @@ cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.
 fi
 
 cp -r -f ~/.config/florence/* /data/data/com.termux/files/usr/share/florence/
-echo -ne "tx11start & $HOME/i3vnc.sh" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
+echo -ne "pkill -9 x11vnc && pkill -9 node && tx11start" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
 
 
 chmod +x arch.sh
@@ -306,7 +305,7 @@ ${startx}
 export PULSE_SERVER=127.0.0.1
 
 # Run i3 Desktop
-env DISPLAY=:0 dbus-launch --exit-with-session ~/i3vnc.sh & > /dev/null 2>&1
+env DISPLAY=:0 dbus-launch --exit-with-session i3 & > /dev/null 2>&1
 
 exit 0
 " > i3.sh
