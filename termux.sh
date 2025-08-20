@@ -237,7 +237,7 @@ echo -ne "x11vnc -display \$DISPLAY -rfbport 5900 -forever -shared -nopw -loop -
 echo -ne "termux-wake-lock & vncserver :0 -geometry 1600x900 -depth 24  > /dev/null & node ~/noVNC/index > /dev/null 2>&1 &" > i3tigervnc.sh
 echo -ne "pkill node\nvncserver -kill :0\n" > i3tigervnc-stop.sh && chmod +x i3tigervnc-stop.sh
 chmod +x i3tigervnc.sh
-# cp i3tigervnc.sh ~/.shortcuts
+cp i3tigervnc.sh ~/.shortcuts
 
 #add tiger to boot
 # mkdir -p ~/.termux/boot && echo -e '#!/data/data/com.termux/files/usr/bin/sh\nnohup /data/data/com.termux/files/usr/bin/vncserver :0 -geometry 1440x900 -depth 24 &\nnohup /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/bin/noVNC/index &' > ~/.termux/boot/i3tigervnc.sh && chmod +x ~/.termux/boot/i3tigervnc.sh
@@ -281,8 +281,8 @@ fi
 
 cd ~ && curl -L ${my_url}/home_templates/termux.zip > home.zip && unzip -o home.zip && rm -rf home.zip
 # cp -r -f ~/.config/florence/* /data/data/com.termux/files/usr/share/florence/
-echo -ne "vncserver -kill :0 2>/dev/null & pkill -9 x11vnc & pkill -9 node & kill -9 \$(pgrep -f \"termux.x11\") 2>/dev/null & sleep 2 && tx11start" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
-echo -ne "vncserver -kill :0 2>/dev/null & pkill -9 x11vnc & pkill -9 node & kill -9 \$(pgrep -f \"termux.x11\") 2>/dev/null & sleep 2 && termux-wake-lock & vncserver :0 -geometry 1600x900 -depth 24  2> /dev/null && echo TigerVnc started && exit" > /data/data/com.termux/files/usr/bin/x11v && chmod +x /data/data/com.termux/files/usr/bin/x11v && cp /data/data/com.termux/files/usr/bin/x11v ~/.shortcuts
+echo -ne "vncserver -kill :0 2>/dev/null & pkill x11vnc & pkill node & kill \$(pgrep -f \"termux.x11\") 2>/dev/null & sleep 2 && tx11start" > /data/data/com.termux/files/usr/bin/x11 && chmod +x /data/data/com.termux/files/usr/bin/x11 && cp /data/data/com.termux/files/usr/bin/x11 ~/.shortcuts
+echo -ne "vncserver -kill :0 2>/dev/null & pkill x11vnc & pkill node & kill \$(pgrep -f \"termux.x11\") 2>/dev/null & sleep 2 && termux-wake-lock & vncserver :0 -geometry 1600x900 -depth 24  2> /dev/null && echo TigerVnc started " > /data/data/com.termux/files/usr/bin/x11v && chmod +x /data/data/com.termux/files/usr/bin/x11v && cp /data/data/com.termux/files/usr/bin/x11v ~/.shortcuts
 
 chmod +x arch.sh
 cp arch.sh ~/.shortcuts
