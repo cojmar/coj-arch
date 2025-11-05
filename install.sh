@@ -351,7 +351,8 @@ elif [ "$my_opt" = "6" ]; then
     export my_vnc=n        
     export my_startx="
     if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
-        Hyprland
+        echo Starting Hyprland...
+        Hyprland > /dev/null
     fi
     "
 else #default 1
