@@ -58,15 +58,28 @@ make_part() { # makes partitions on install disk
     # disk prep
     sgdisk -Z ${my_disk} # zap all on disk
     sgdisk -a 2048 -o ${my_disk} # new gpt disk 2048 alignment
-    if [[ ! -d "/sys/firmware/efi" ]]; then
-        sgdisk -n 1::+1M --typecode=1:ef02:'BIOSBOOT' ${my_disk} # partition 1 (BIOS Boot Partition)    
-        sgdisk -n 2::-0 --typecode=2:8300:'ROOT' ${my_disk} # partition 2 (OS) 
+
+    # get total size in GiB (integer)
+    disk_size_gb=$(($(blockdev --getsize64 "${my_disk}") / 1024 / 1024 / 1024))
+
+    # set ROOT partition size: +50G if disk > 51G, else use all space
+    if [[ "$disk_size_gb" -le 51 ]]; then
+        size_arg=""
     else
-        sgdisk -n 1::+1M --typecode=1:ef00:'EFIBOOT' ${my_disk} # partition 1 (EFI)
-        sgdisk -n 2::-0 --typecode=2:8300:'ROOT' ${my_disk} # partition 2 (OS) 
+        size_arg="+50G"
     fi
-    partprobe ${my_disk} 
+
+    if [[ ! -d "/sys/firmware/efi" ]]; then
+        sgdisk -n 1::+1M --typecode=1:ef02 --change-name=1:'BIOSBOOT' ${my_disk}
+        sgdisk -n 2::${size_arg} --typecode=2:8300 --change-name=2:'ROOT' ${my_disk}
+    else
+        sgdisk -n 1::+1M --typecode=1:ef00 --change-name=1:'EFIBOOT' ${my_disk}
+        sgdisk -n 2::${size_arg} --typecode=2:8300 --change-name=2:'ROOT' ${my_disk}
+    fi
+
+    partprobe ${my_disk}
 }
+
 
 get_part_auto() { # get partitions automaticaly based on selected disk
     boot_part=$(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="part"{print "/dev/"$2" -  "$3}' | awk -v var="$my_disk" '$1 ~ var {print $0}' | awk '{print NR,$0}' | awk 'NR=='1' {print $2}')
@@ -430,9 +443,9 @@ if [ "$my_gui" = "6" ]; then
 fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="Hyptland"
-    my_pacman+=(hyprland foot waybar ttf-font-awesome wofi)
+    my_pacman+=(hyprland foot waybar ttf-font-awesome wofi thunar)
     # pulse audio
-    my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
+    # my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
 fi
 # drivers
 
