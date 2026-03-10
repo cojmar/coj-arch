@@ -732,13 +732,13 @@ fi
 
 # making bootloader cleaning
 if [[ ! -d "/sys/firmware/efi" ]]; then
-arch-chroot /mnt /bin/sh -c '            
-    grub-install --target=x86_64-efi --efi-directory=/boot --boot-directory=/boot --removable
+arch-chroot /mnt /bin/sh -c '    
+    grub-install --target=i386-pc ${my_disk} --boot-directory=/boot --removable
     chown -R root /root 
     chown -R $my_user /home/$my_user/
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
-    sed -i 's/^GRUB_TIMEOUT=.*//GRUB_TIMEOUT=1/' /etc/default/grub
     grub-mkconfig -o /boot/grub/grub.cfg
+    var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg 
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
@@ -751,14 +751,13 @@ arch-chroot /mnt /bin/sh -c '
     ./clean.sh    
 '    
 else
-arch-chroot /mnt /bin/sh -c '        
-    grub-install --target=i386-pc --boot-directory=/boot --recheck ${my_disk}
+arch-chroot /mnt /bin/sh -c '    
+    grub-install --recheck ${my_disk}
     chown -R root /root 
     chown -R $my_user /home/$my_user/
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
-    sed -i 's/^GRUB_DISABLE_LINUX_UUID=.*/GRUB_DISABLE_LINUX_UUID=true/' /etc/default/grub || echo 'GRUB_DISABLE_LINUX_UUID=true' >> /etc/default/grub
-    sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=1/' /etc/default/grub
-    grub-mkconfig -o /boot/grub/grub.cfg    
+    grub-mkconfig -o /boot/grub/grub.cfg
+    var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg 
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
