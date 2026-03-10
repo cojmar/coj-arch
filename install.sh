@@ -735,8 +735,8 @@ if [[ ! -d "/sys/firmware/efi" ]]; then
 arch-chroot /mnt /bin/sh -c '            
     chown -R root /root 
     chown -R $my_user /home/$my_user/
-    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
-    grub-install --target=i386-pc --boot-directory=/boot ${my_disk}
+    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user        
+    grub-install --target=x86_64-efi --efi-directory=/boot --boot-directory=/boot --removable
     sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=1/' /etc/default/grub
     grub-mkconfig -o /boot/grub/grub.cfg
     pacman -R dhcpcd --noconfirm
@@ -755,7 +755,8 @@ arch-chroot /mnt /bin/sh -c '
     chown -R root /root 
     chown -R $my_user /home/$my_user/
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user        
-    grub-install --target=x86_64-efi --efi-directory=/boot --boot-directory=/boot ${my_disk}
+    grub-install --target=i386-pc --boot-directory=/boot --recheck ${my_disk}
+    sed -i 's/^GRUB_DISABLE_LINUX_UUID=.*/GRUB_DISABLE_LINUX_UUID=true/' /etc/default/grub || echo 'GRUB_DISABLE_LINUX_UUID=true' >> /etc/default/grub
     sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=1/' /etc/default/grub
     grub-mkconfig -o /boot/grub/grub.cfg    
     pacman -R dhcpcd --noconfirm
