@@ -327,6 +327,7 @@ elif [ "$my_opt" = "5" ]; then
 elif [ "$my_opt" = "6" ]; then    
     export my_gui=7
     export my_use_template=7
+    export my_aur=y
     
     get_opt "Extra packages?" ""
     export my_extra+=" ${my_opt}"
@@ -334,7 +335,7 @@ elif [ "$my_opt" = "6" ]; then
     echo ""   
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y   
-    export my_drivers=1  
+    export my_drivers=0
     export my_vnc=n        
     export my_startx="
     if [[ ! \$DISPLAY && \$XDG_VTNR -eq 1 ]]; then
@@ -429,10 +430,12 @@ if [ "$my_gui" = "6" ]; then
     my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
 fi
 if [ "$my_gui" = "7" ]; then
-    export my_gui_autostart="Hyptland"
-    my_pacman+=(hyprland foot waybar ttf-font-awesome wofi)
-    # pulse audio
-    my_pacman+=(pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-equalizer pulseaudio-jack pulseaudio-lirc pulseaudio-zeroconf)
+    export my_gui_autostart="start-hyprland"
+    my_pacman+=(hyprland kitty waybar ttf-font-awesome rofi)
+    # video
+    my_pacman+=(mesa lib32-mesa libglvnd xf86-video-amdgpu vulkan-radeon nvidia-open-dkms nvidia-utils nvidia-settings vulkan-intel lib32-vulkan-intel libva-intel-driver intel-media-driver libvdpau-va-gl libva-utils vulkan-mesa-layers open-vm-tools xf86-input-vmmouse)
+    # pipewire audio
+    my_pacman+=(pipewire pipewire-audio pipewire-alsa kpipewire)
 fi
 # drivers
 
