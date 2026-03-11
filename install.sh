@@ -785,8 +785,6 @@ arch-chroot /mnt /bin/sh -c '
     chmod +x clean.sh
     ./clean.sh    
 '
-mkdir -p /mnt/boot/efi/EFI/BOOT
-cp /mnt/boot/efi/EFI/arch/grubx64.efi /mnt/boot/efi/EFI/BOOT/BOOTX64.EFI
 else
 arch-chroot /mnt /bin/sh -c '    
     
@@ -809,7 +807,8 @@ arch-chroot /mnt /bin/sh -c '
 '
 fi
 
-
+mkdir -p /mnt/boot/efi/EFI/BOOT
+cp /mnt/boot/efi/EFI/arch/grubx64.efi /mnt/boot/efi/EFI/BOOT/BOOTX64.EFI
 
 sync
 fastfetch
