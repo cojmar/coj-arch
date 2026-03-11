@@ -329,10 +329,11 @@ elif [ "$my_opt" = "6" ]; then
     export my_use_template=7
     export my_aur=y
     
-    get_opt "Extra packages?" ""
-    export my_extra+=" ${my_opt}"
-    echo $my_opt
-    echo ""   
+    # get_opt "Extra packages?" ""
+    # export my_extra+=" ${my_opt}"    
+    # echo $my_opt
+    # echo ""   
+    export my_extra+=" nerd-fonts-jetbrains-mono waybar hyprland pipewire pipewire-pulse networkmanager bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout kitty thunar polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu"
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y   
     export my_drivers=0
@@ -431,8 +432,7 @@ if [ "$my_gui" = "6" ]; then
 fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
-    my_pacman+=(hyprland kitty waybar ttf-font-awesome rofi thunar)
-    export my_extra+=" nerd-fonts-jetbrains-mono waybar hyprland pipewire pipewire-pulse networkmanager bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout kitty thunar polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu"
+    my_pacman+=(hyprland kitty waybar ttf-font-awesome rofi thunar)    
     # video
     my_pacman+=(mesa lib32-mesa libglvnd xf86-video-amdgpu vulkan-radeon nvidia-open-dkms nvidia-utils nvidia-settings vulkan-intel lib32-vulkan-intel libva-intel-driver intel-media-driver libvdpau-va-gl libva-utils vulkan-mesa-layers open-vm-tools xf86-input-vmmouse)
     # pipewire audio
@@ -738,8 +738,8 @@ arch-chroot /mnt /bin/sh -c '
     chown -R $my_user /home/$my_user/
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
     grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch
-    mkdir -p /boot/efi/EFI/BOOT
-    cp /boot/efi/EFI/arch/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
+    mkdir -p /boot/EFI/BOOT
+    cp /boot/EFI/arch/grubx64.efi /boot/EFI/BOOT/BOOTX64.EFI
     var1="GRUB_TIMEOUT=5" && var2="GRUB_TIMEOUT=1" && sed -i -e "s/$var1/$var2/g" /etc/default/grub    
     grub-mkconfig -o /boot/grub/grub.cfg
     pacman -R dhcpcd --noconfirm
@@ -753,8 +753,6 @@ arch-chroot /mnt /bin/sh -c '
     chmod +x clean.sh
     ./clean.sh    
 '
-mkdir -p /mnt/boot/EFI/BOOT
-cp /mnt/boot/EFI/arch/grubx64.efi /mnt/boot/EFI/BOOT/BOOTX64.EFI
 else
 arch-chroot /mnt /bin/sh -c '    
     
