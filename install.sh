@@ -731,13 +731,12 @@ yay -Yc --noconfirm
 
 if [ "$my_gui" = "7" ]; then
 echo ================= INSTALLING JaKooLit
-    arch-chroot -u "$my_user" /mnt /bin/sh -c '
-    cd ~
+    arch-chroot -u "$my_user" /mnt /bin/sh -c '    
     yay -S --noconfirm brave-bin vscodium-bin faugus-launcher
-    git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to clone Jakoolits Arch-Hyprland repo${RC}"; exit 1; }
-    cd "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to navigate to Arch-Hyprland directory${RC}"; exit 1; }
+    git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git "Arch-Hyprland" || { printf "%b\n" "${RED}Failed to clone Jakoolits Arch-Hyprland repo${RC}"; exit 1; }
+    cd "Arch-Hyprland" || { printf "%b\n" "${RED}Failed to navigate to Arch-Hyprland directory${RC}"; exit 1; }
     chmod +x install.sh   
-    ./install.sh 
+    sudo ./install.sh 
     '
 fi
 
