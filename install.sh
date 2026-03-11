@@ -736,7 +736,8 @@ echo ================= INSTALLING JaKooLit
     yay -S --noconfirm brave-bin vscodium-bin faugus-launcher
     git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to clone Jakoolits Arch-Hyprland repo${RC}"; exit 1; }
     cd "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to navigate to Arch-Hyprland directory${RC}"; exit 1; }
-    chmod +x install.sh    
+    chmod +x install.sh   
+    ./install.sh 
     '
 fi
 
@@ -773,9 +774,7 @@ arch-chroot /mnt /bin/sh -c '
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
     grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch    
     var1="GRUB_TIMEOUT=5" && var2="GRUB_TIMEOUT=1" && sed -i -e "s/$var1/$var2/g" /etc/default/grub    
-    grub-mkconfig -o /boot/grub/grub.cfg
-    mkdir -p /boot/efi/EFI/BOOT
-    cp /boot/efi/EFI/arch/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
+    grub-mkconfig -o /boot/grub/grub.cfg    
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
@@ -787,6 +786,8 @@ arch-chroot /mnt /bin/sh -c '
     chmod +x clean.sh
     ./clean.sh    
 '
+mkdir -p /mnt/boot/efi/EFI/BOOT
+cp /mnt/boot/efi/EFI/arch/grubx64.efi /mnt/boot/efi/EFI/BOOT/BOOTX64.EFI
 else
 arch-chroot /mnt /bin/sh -c '    
     
