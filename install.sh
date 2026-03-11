@@ -763,7 +763,7 @@ curl -L ${my_url}/home_templates/${my_use_template}.zip > home.zip
 cp home.zip /mnt/home/$my_user/home.zip
 cd /mnt/home/${my_user}
 unzip -o home.zip
-# rm -rf home.zip
+rm -rf home.zip
 fi 
 
 # making bootloader cleaning
