@@ -732,13 +732,13 @@ fi
 
 # making bootloader cleaning
 if [[ ! -d "/sys/firmware/efi" ]]; then
-arch-chroot /mnt /bin/sh -c '    
-    grub-install --target=i386-pc ${my_disk} --removable
+arch-chroot /mnt /bin/sh -c '        
     chown -R root /root 
     chown -R $my_user /home/$my_user/
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
-    grub-mkconfig -o /boot/grub/grub.cfg
-    var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg 
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=coj-arch ${my_disk}
+    var1="GRUB_TIMEOUT=5" && var2="GRUB_TIMEOUT=1" && sed -i -e "s/$var1/$var2/g" /etc/default/grub    
+    grub-mkconfig -o /boot/grub/grub.cfg    
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
@@ -752,12 +752,14 @@ arch-chroot /mnt /bin/sh -c '
 '    
 else
 arch-chroot /mnt /bin/sh -c '    
-    grub-install --recheck ${my_disk}
+    
     chown -R root /root 
     chown -R $my_user /home/$my_user/
-    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
+    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user
+    
+    grub-install --recheck ${my_disk}
+    var1="GRUB_TIMEOUT=5" && var2="GRUB_TIMEOUT=1" && sed -i -e "s/$var1/$var2/g" /etc/default/grub    
     grub-mkconfig -o /boot/grub/grub.cfg
-    var1="timeout=5" && var2="timeout=1" && sed -i -e "s/$var1/$var2/g" /boot/grub/grub.cfg 
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
