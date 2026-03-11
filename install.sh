@@ -762,7 +762,7 @@ curl -L ${my_url}/home_templates/${my_use_template}.zip > home.zip
 cp home.zip /mnt/home/$my_user/home.zip
 cd /mnt/home/${my_user}
 unzip -o home.zip
-rm -rf home.zip
+# rm -rf home.zip
 fi 
 
 # making bootloader cleaning
@@ -774,8 +774,8 @@ arch-chroot /mnt /bin/sh -c '
     grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch    
     var1="GRUB_TIMEOUT=5" && var2="GRUB_TIMEOUT=1" && sed -i -e "s/$var1/$var2/g" /etc/default/grub    
     grub-mkconfig -o /boot/grub/grub.cfg
-    mkdir -p /boot/EFI/BOOT
-    cp /boot/EFI/arch/grubx64.efi /boot/EFI/BOOT/BOOTX64.EFI
+    mkdir -p /boot/efi/EFI/BOOT
+    cp /boot/efi/EFI/arch/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
