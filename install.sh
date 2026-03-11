@@ -702,10 +702,41 @@ echo $sep
 
 arch-chroot -u $my_user /mnt /bin/sh -c '
 cd ~
-git clone https://aur.archlinux.org/yay-bin.git 
-cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
-yay --noconfirm 
-yay -Syu --noconfirm pacseek "${my_extra[@]}" && yay -Yc --noconfirm
+
+# install yay
+git clone https://aur.archlinux.org/yay-bin.git
+cd yay-bin
+makepkg -si --noconfirm
+cd ..
+rm -rf yay-bin
+
+# install chaotic-aur
+sudo pacman -Sy --noconfirm git
+
+sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+sudo pacman-key --lsign-key 3056513887B78AEB
+
+git clone https://aur.archlinux.org/chaotic-keyring.git
+cd chaotic-keyring
+makepkg -si --noconfirm
+cd ..
+rm -rf chaotic-keyring
+
+git clone https://aur.archlinux.org/chaotic-mirrorlist.git
+cd chaotic-mirrorlist
+makepkg -si --noconfirm
+cd ..
+rm -rf chaotic-mirrorlist
+
+sudo sh -c "echo \"[chaotic-aur]\" >> /etc/pacman.conf"
+sudo sh -c "echo \"Include = /etc/pacman.d/chaotic-mirrorlist\" >> /etc/pacman.conf"
+
+sudo pacman -Sy --noconfirm
+
+# yay usage
+yay --noconfirm
+yay -Syu --noconfirm pacseek "${my_extra[@]}"
+yay -Yc --noconfirm
 '
 
 if [ "$my_gui" = "7" ]; then
