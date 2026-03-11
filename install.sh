@@ -432,9 +432,9 @@ if [ "$my_gui" = "6" ]; then
 fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
-    my_pacman+=(hyprland kitty waybar rofi thunar ttf-jetbrains-mono ttf-jetbrains-mono-nerd npm nodejs qbittorrent)
+    my_pacman+=(hyprland kitty waybar rofi thunar ttf-jetbrains-mono ttf-jetbrains-mono-nerd npm nodejs qbittorrent xorg-xwayland wayland-protocols)
     # video
-    my_pacman+=(mesa lib32-mesa libglvnd xf86-video-amdgpu vulkan-radeon nvidia-open-dkms nvidia-utils nvidia-settings vulkan-intel lib32-vulkan-intel libva-intel-driver intel-media-driver libvdpau-va-gl libva-utils vulkan-mesa-layers open-vm-tools xf86-input-vmmouse)
+    my_pacman+=(open-vm-tools xf86-input-vmmouse)
     # pipewire audio
     my_pacman+=(pipewire pipewire-audio pipewire-alsa kpipewire)
 fi
