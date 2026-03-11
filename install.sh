@@ -796,11 +796,11 @@ arch-chroot /mnt /bin/sh -c '
     chown -R root /root 
     chown -R $my_user /home/$my_user/
     echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
-    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch
-    mkdir -p /boot/EFI/BOOT
-    cp /boot/EFI/arch/grubx64.efi /boot/EFI/BOOT/BOOTX64.EFI
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch    
     var1="GRUB_TIMEOUT=5" && var2="GRUB_TIMEOUT=1" && sed -i -e "s/$var1/$var2/g" /etc/default/grub    
     grub-mkconfig -o /boot/grub/grub.cfg
+    mkdir -p /boot/EFI/BOOT
+    cp /boot/EFI/arch/grubx64.efi /boot/EFI/BOOT/BOOTX64.EFI
     pacman -R dhcpcd --noconfirm
     echo -ne "
     pacman -Qdt --noconfirm
@@ -812,8 +812,6 @@ arch-chroot /mnt /bin/sh -c '
     chmod +x clean.sh
     ./clean.sh    
 '
-mkdir -p /mnt/boot/EFI/BOOT
-cp /mnt/boot/EFI/arch/grubx64.efi /mnt/boot/EFI/BOOT/BOOTX64.EFI
 else
 arch-chroot /mnt /bin/sh -c '    
     
