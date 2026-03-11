@@ -729,13 +729,6 @@ yay -Syu --noconfirm pacseek "${my_extra[@]}"
 yay -Yc --noconfirm
 '
 
-if [ "$my_gui" = "7" ]; then
-    arch-chroot -u "$my_user" /mnt /bin/sh -c '    
-    yay -S --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git bat btop swww swaync linutil sunshine-bin tailscale tailscale-systray-git
-    '
-fi
-
-
 fi
 
 
