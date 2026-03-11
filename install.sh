@@ -432,7 +432,7 @@ fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
     my_pacman+=(hyprland kitty waybar ttf-font-awesome rofi thunar)
-    my_extra+=(nerd-fonts-jetbrains-mono waybar hyprland pipewire pipewire-pulse networkmanager bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout kitty thunar polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu)
+    export my_extra+=" nerd-fonts-jetbrains-mono waybar hyprland pipewire pipewire-pulse networkmanager bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout kitty thunar polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu"
     # video
     my_pacman+=(mesa lib32-mesa libglvnd xf86-video-amdgpu vulkan-radeon nvidia-open-dkms nvidia-utils nvidia-settings vulkan-intel lib32-vulkan-intel libva-intel-driver intel-media-driver libvdpau-va-gl libva-utils vulkan-mesa-layers open-vm-tools xf86-input-vmmouse)
     # pipewire audio
