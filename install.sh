@@ -333,7 +333,7 @@ elif [ "$my_opt" = "6" ]; then
     # export my_extra+=" ${my_opt}"    
     # echo $my_opt
     # echo ""   
-    export my_extra+=" faugus-launcher vscodium brave-bin bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu"
+    # export my_extra+=" faugus-launcher vscodium brave-bin bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu"
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y   
     export my_drivers=0
@@ -707,6 +707,43 @@ cd yay-bin && makepkg -si --noconfirm && cd .. && rm -rf yay-bin
 yay --noconfirm 
 yay -Syu --noconfirm pacseek "${my_extra[@]}" && yay -Yc --noconfirm
 '
+
+if [ "$my_gui" = "7" ]; then
+echo ================= INSTALLING JaKooLit
+
+    arch-chroot -u "$my_user" /mnt /bin/sh -c '
+    cd ~
+    yay -S --noconfirm brave-bin vscodium faugus-launcher
+
+    git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to clone Jakoolits Arch-Hyprland repo${RC}"; exit 1; }
+
+    cd "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to navigate to Arch-Hyprland directory${RC}"; exit 1; }
+
+    mkdir -p presets
+
+    cat > presets/mypreset.conf <<EOF
+gtk_themes="ON"
+bluetooth="ON"
+thunar="ON"
+quickshell="OFF"
+sddm="OFF"
+sddm_theme="OFF"
+xdph="ON"
+zsh="OFF"
+pokemon="OFF"
+rog="OFF"
+dots="OFF"
+input_group="ON"
+nvidia="OFF"
+nouveau="OFF"
+EOF
+
+    chmod +x install.sh
+    ./install.sh --preset presets/mypreset.conf
+    '
+fi
+
+
 fi
 
 
