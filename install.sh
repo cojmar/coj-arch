@@ -333,7 +333,7 @@ elif [ "$my_opt" = "6" ]; then
     # export my_extra+=" ${my_opt}"    
     # echo $my_opt
     # echo ""   
-    export my_extra+=" vscodium brave-bin bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu"
+    export my_extra+=" faugus-launcher vscodium brave-bin bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu"
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y   
     export my_drivers=0
