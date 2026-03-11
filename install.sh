@@ -713,7 +713,7 @@ echo ================= INSTALLING JaKooLit
 
     arch-chroot -u "$my_user" /mnt /bin/sh -c '
     cd ~
-    yay -S --noconfirm brave-bin vscodium faugus-launcher
+    yay -S --noconfirm brave-bin vscodium-bin faugus-launcher
 
     git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to clone Jakoolits Arch-Hyprland repo${RC}"; exit 1; }
 
@@ -732,7 +732,7 @@ xdph="ON"
 zsh="OFF"
 pokemon="OFF"
 rog="OFF"
-dots="OFF"
+dots="ON"
 input_group="ON"
 nvidia="OFF"
 nouveau="OFF"
