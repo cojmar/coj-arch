@@ -806,7 +806,7 @@ arch-chroot /mnt /bin/sh -c '
     ./clean.sh    
 '
 fi
-
+sync
 mkdir -p /mnt/boot/efi/EFI/BOOT
 cp /mnt/boot/efi/EFI/arch/grubx64.efi /mnt/boot/efi/EFI/BOOT/BOOTX64.EFI
 
