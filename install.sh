@@ -739,13 +739,13 @@ echo $sep
 echo ================= ADDING HOME TEMPLATE
 echo $sep
 echo $my_use_template
-
+if [ "$my_gui" != "7" ]; then    
 curl -L ${my_url}/home_templates/base.zip > home.zip
 cp home.zip /mnt/home/$my_user/home.zip
 cd /mnt/home/${my_user}
 unzip -o home.zip
 rm -rf home.zip
-
+fi
 curl -L ${my_url}/home_templates/${my_use_template}.zip > home.zip
 cp home.zip /mnt/home/$my_user/home.zip
 cd /mnt/home/${my_user}
