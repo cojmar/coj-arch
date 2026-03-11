@@ -3,7 +3,7 @@
 #DEV export my_url="http://192.168.0.101:5501" && bash <(curl -L ${my_url}/install.sh)
 #DEV export my_url="http://192.168.0.101:5500" && bash <(curl -L ${my_url}/install.sh)
 export sep=$(echo -ne "\n===========================\n \n")
-export my_pacman=(base linux linux-firmware grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch bash)
+export my_pacman=(base linux linux-firmware linux-headers grub efibootmgr openssh dhcpcd sudo mc htop ncdu vim networkmanager dhclient unzip fastfetch modemmanager usb_modeswitch bash)
 export my_extra=""
 export my_gui_autostart=n
 export my_drivers=0
