@@ -732,7 +732,7 @@ yay -Yc --noconfirm
 if [ "$my_gui" = "7" ]; then
 echo ================= INSTALLING JaKooLit
     arch-chroot -u "$my_user" /mnt /bin/sh -c '    
-    yay -S --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd
+    yay -S --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git bat btop swww swaync
     git clone https://aur.archlinux.org/xembed-sni-proxy-git.git
     cd xembed-sni-proxy-git
     makepkg -si  
