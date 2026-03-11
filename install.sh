@@ -731,33 +731,12 @@ yay -Yc --noconfirm
 
 if [ "$my_gui" = "7" ]; then
 echo ================= INSTALLING JaKooLit
-
     arch-chroot -u "$my_user" /mnt /bin/sh -c '
     cd ~
     yay -S --noconfirm brave-bin vscodium-bin faugus-launcher
     git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to clone Jakoolits Arch-Hyprland repo${RC}"; exit 1; }
     cd "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to navigate to Arch-Hyprland directory${RC}"; exit 1; }
-
-    # patch installer defaults
-    sed -i "s/^gtk_themes=.*/gtk_themes=\"ON\"/" install.sh
-    sed -i "s/^bluetooth=.*/bluetooth=\"ON\"/" install.sh
-    sed -i "s/^thunar=.*/thunar=\"ON\"/" install.sh
-    sed -i "s/^quickshell=.*/quickshell=\"OFF\"/" install.sh
-    sed -i "s/^sddm=.*/sddm=\"OFF\"/" install.sh
-    sed -i "s/^sddm_theme=.*/sddm_theme=\"OFF\"/" install.sh
-    sed -i "s/^xdph=.*/xdph=\"ON\"/" install.sh
-    sed -i "s/^zsh=.*/zsh=\"OFF\"/" install.sh
-    sed -i "s/^pokemon=.*/pokemon=\"OFF\"/" install.sh
-    sed -i "s/^rog=.*/rog=\"OFF\"/" install.sh
-    sed -i "s/^dots=.*/dots=\"ON\"/" install.sh
-    sed -i "s/^input_group=.*/input_group=\"ON\"/" install.sh
-    sed -i "s/^nvidia=.*/nvidia=\"OFF\"/" install.sh
-    sed -i "s/^nouveau=.*/nouveau=\"OFF\"/" install.sh
-
-    chmod +x install.sh
-
-    # run installer automatically (no reboot)
-    yes "" | ./install.sh -r n
+    chmod +x install.sh    
     '
 fi
 
