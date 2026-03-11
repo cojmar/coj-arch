@@ -752,14 +752,15 @@ arch-chroot /mnt /bin/sh -c '
     " > clean.sh
     chmod +x clean.sh
     ./clean.sh    
-'    
+'
+mkdir -p /mnt/boot/EFI/BOOT
+cp /mnt/boot/EFI/arch/grubx64.efi /mnt/boot/EFI/BOOT/BOOTX64.EFI
 else
 arch-chroot /mnt /bin/sh -c '    
     
     chown -R root /root 
     chown -R $my_user /home/$my_user/
-    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user
-    
+    echo "$my_user ALL=(ALL) ${my_sudo_pass} ALL" > /etc/sudoers.d/$my_user    
     grub-install --recheck ${my_disk}
     var1="GRUB_TIMEOUT=5" && var2="GRUB_TIMEOUT=1" && sed -i -e "s/$var1/$var2/g" /etc/default/grub    
     grub-mkconfig -o /boot/grub/grub.cfg
@@ -775,6 +776,7 @@ arch-chroot /mnt /bin/sh -c '
     ./clean.sh    
 '
 fi
+
 
 
 sync
