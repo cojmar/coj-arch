@@ -432,7 +432,7 @@ if [ "$my_gui" = "6" ]; then
 fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
-    my_pacman+=(hyprland kitty waybar rofi thunar)    
+    my_pacman+=(hyprland kitty waybar rofi thunar ttf-jetbrains-mono ttf-jetbrains-mono-nerd npm nodejs)
     # video
     my_pacman+=(mesa lib32-mesa libglvnd xf86-video-amdgpu vulkan-radeon nvidia-open-dkms nvidia-utils nvidia-settings vulkan-intel lib32-vulkan-intel libva-intel-driver intel-media-driver libvdpau-va-gl libva-utils vulkan-mesa-layers open-vm-tools xf86-input-vmmouse)
     # pipewire audio
@@ -730,9 +730,8 @@ yay -Yc --noconfirm
 '
 
 if [ "$my_gui" = "7" ]; then
-echo ================= INSTALLING JaKooLit
     arch-chroot -u "$my_user" /mnt /bin/sh -c '    
-    yay -S --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git bat btop swww swaync     
+    yay -S --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git bat btop swww swaync linutil sunshine-bin tailscale tailscale-systray-git
     '
 fi
 
