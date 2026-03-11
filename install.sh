@@ -741,9 +741,7 @@ echo ================= INSTALLING JaKooLit
 
     cd "$HOME/Arch-Hyprland" || { printf "%b\n" "${RED}Failed to navigate to Arch-Hyprland directory${RC}"; exit 1; }
 
-    mkdir -p presets
-
-    cat > presets/mypreset.conf <<EOF
+    cat > setup.conf <<EOF
 gtk_themes="ON"
 bluetooth="ON"
 thunar="ON"
@@ -754,14 +752,16 @@ xdph="ON"
 zsh="OFF"
 pokemon="OFF"
 rog="OFF"
-dots="ON"
+dots="OFF"
 input_group="ON"
 nvidia="OFF"
 nouveau="OFF"
 EOF
 
     chmod +x install.sh
-    ./install.sh --preset presets/mypreset.conf
+
+    # faster non-interactive install
+    ./install.sh -n -r n --no-update --no-backup
     '
 fi
 
