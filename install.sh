@@ -433,7 +433,7 @@ fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
     # hyprland stuff
-    my_pacman+=(hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp)
+    my_pacman+=(bat hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp)
     #fonts
     my_pacman+=(ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-hack ttf-liberation)
     # video
@@ -809,11 +809,6 @@ cd xembed-sni-proxy-git
 makepkg -si --noconfirm
 cd ..
 rm -rf xembed-sni-proxy-git
-
-git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git "Arch-Hyprland" 
-cd "Arch-Hyprland" 
-chmod +x install.sh
-
 sudo npm i -g opencode-ai
 '
 fi
@@ -825,10 +820,6 @@ export my_timestamp2=$(date +%s)
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
 echo install duration: $(convertsecs $duration)
 
-
-if [ "$my_gui" = "7" ]; then
-echo JaKooLit can be installed optionaly from $HOME/Arch-Hyprland/install.sh
-fi
 
 if [ "$my_template" = "1" ]; then
 get_opt "Arch installed, reboot?" "y"
