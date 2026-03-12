@@ -246,7 +246,7 @@ echo $my_opt
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)]\n6 Hyprland (WAY THE LAND)"
+echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)]\n6 Hyprland (+JaKooLit)"
 get_opt "Template:" "6"
 echo $my_opt
 export my_template=$my_opt
@@ -333,7 +333,7 @@ elif [ "$my_opt" = "6" ]; then
     # export my_extra+=" ${my_opt}"    
     # echo $my_opt
     # echo ""   
-    # export my_extra+=" faugus-launcher vscodium brave-bin bluez bluez-utils blueman playerctl upower acpi swaynotificationcenter hyprlock hypridle hyprpicker rofi brightnessctl pacman-contrib curl jq cava wlogout polkit-gnome nm-applet swaync cliphist wl-clipboard xdg-desktop-portal-hyprland swww rofi-emoji rofi-power-menu"
+    
     export my_make_swap=$my_def_swap_opt
     export my_user_autologin=y   
     export my_drivers=0
@@ -433,9 +433,9 @@ fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
     # hyprland stuff
-    my_pacman+=(hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard wlogout xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp)
+    my_pacman+=(hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp)
     #fonts
-    my_pacman+=(ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-victor-mono ttf-hack ttf-liberation)
+    my_pacman+=(ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-hack ttf-liberation)
     # video
     my_pacman+=(open-vm-tools xf86-input-vmmouse mesa lib32-mesa libglvnd vulkan-mesa-layers nvidia-open-dkms nvidia-utils nvidia-settings lib32-nvidia-utils lib32-vulkan-radeon lib32-vulkan-intel)
     # pipewire audio
