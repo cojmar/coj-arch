@@ -246,7 +246,7 @@ echo $my_opt
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)]\n6: Hyprland (+JaKooLit)"
+echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)\n6: Hyprland (+JaKooLit)"
 get_opt "Template:" "6"
 echo $my_opt
 export my_template=$my_opt
