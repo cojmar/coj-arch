@@ -731,7 +731,6 @@ rm -rf yay-bin
 yay -Syu --noconfirm pacseek "${my_extra[@]}"
 yay -Yc --noconfirm
 '
-
 fi
 
 
@@ -795,6 +794,22 @@ arch-chroot /mnt /bin/sh -c '
     " > clean.sh
     chmod +x clean.sh
     ./clean.sh    
+'
+fi
+
+if [ "$my_gui" = "7" ]; then
+arch-chroot -u $my_user /mnt /bin/sh -c '
+cd ~
+
+yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout
+sudo systemctl --user enable --now pipewire pipewire-pulse wireplumber
+
+git clone https://aur.archlinux.org/xembed-sni-proxy-git.git
+cd xembed-sni-proxy-git
+makepkg -si --noconfirm
+cd ..
+rm -rf xembed-sni-proxy-git
+sudo npm i -g opencode-ai
 '
 fi
 
