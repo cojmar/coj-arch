@@ -435,7 +435,7 @@ if [ "$my_gui" = "7" ]; then
     # hyprland stuff
     my_pacman+=(bat hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp)
     #fonts
-    my_pacman+=(ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-hack ttf-liberation)
+    my_pacman+=(otf-font-awesome noto-fonts-emoji ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-hack ttf-liberation)
     # video
     my_pacman+=(open-vm-tools xf86-input-vmmouse mesa lib32-mesa libglvnd vulkan-mesa-layers nvidia-dkms nvidia-utils nvidia-settings lib32-nvidia-utils lib32-vulkan-radeon lib32-vulkan-intel)
     # pipewire audio
