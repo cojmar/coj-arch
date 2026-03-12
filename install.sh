@@ -809,6 +809,11 @@ cd xembed-sni-proxy-git
 makepkg -si --noconfirm
 cd ..
 rm -rf xembed-sni-proxy-git
+
+git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git "Arch-Hyprland" 
+cd "Arch-Hyprland" 
+chmod +x install.sh
+
 sudo npm i -g opencode-ai
 '
 fi
@@ -819,6 +824,11 @@ export my_timestamp2=$(date +%s)
 
 export duration=$(( $my_timestamp2 - $my_timestamp1 ))
 echo install duration: $(convertsecs $duration)
+
+
+if [ "$my_gui" = "7" ]; then
+echo JaKooLit can be installed optionaly from $HOME/Arch-Hyprland/install.sh
+fi
 
 if [ "$my_template" = "1" ]; then
 get_opt "Arch installed, reboot?" "y"
