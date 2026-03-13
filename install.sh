@@ -801,7 +801,7 @@ if [ "$my_gui" = "7" ]; then
 arch-chroot -u $my_user /mnt /bin/sh -c '
 cd ~
 
-yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout sunshine
+yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout
 sudo systemctl --user enable --now pipewire pipewire-pulse wireplumber
 
 git clone https://aur.archlinux.org/xembed-sni-proxy-git.git
