@@ -801,30 +801,32 @@ arch-chroot /mnt /bin/sh -c '
 fi
 
 if [ "$my_gui" = "7" ]; then
-arch-chroot -u $my_user /mnt /bin/sh -c '
-cd /home/'"$my_user"' || exit 1
+arch-chroot -u "$my_user" /mnt /bin/sh -c "
+
+export HOME=/home/$my_user
+cd \$HOME || exit 1
 
 yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers
-sudo systemctl --user enable --now pipewire pipewire-pulse wireplumber
 
-git clone https://aur.archlinux.org/xembed-sni-proxy-git.git
-cd xembed-sni-proxy-git
+systemctl --user enable pipewire pipewire-pulse wireplumber
+
+git clone https://aur.archlinux.org/xembed-sni-proxy-git.git \$HOME/xembed-sni-proxy-git
+cd \$HOME/xembed-sni-proxy-git || exit 1
 makepkg -si --noconfirm
-cd ..
-rm -rf xembed-sni-proxy-git
+cd \$HOME
+rm -rf \$HOME/xembed-sni-proxy-git
 
 sudo npm i -g opencode-ai
 
-git clone https://github.com/LGFae/swww.git
-cd swww-build
-sudo cargo build --release
-sudo cp target/release/swww /usr/bin/
-sudo cp target/release/swww-daemon /usr/bin/
-sudo chmod +x /usr/bin/swww /usr/bin/swww-daemon
-cd ..
-rm -rf swww-build
+git clone https://github.com/LGFae/swww.git \$HOME/swww
+cd \$HOME/swww || exit 1
+cargo build --release
+sudo install -Dm755 target/release/swww /usr/bin/swww
+sudo install -Dm755 target/release/swww-daemon /usr/bin/swww-daemon
+cd \$HOME
+rm -rf \$HOME/swww
 
-'
+"
 fi
 
 sync
