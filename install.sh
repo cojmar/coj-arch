@@ -619,10 +619,10 @@ if [ "$my_drivers" != "0" ]; then
     fi
 fi
 
-useradd -U $my_user
+
+useradd -m -G wheel,input -s /bin/bash $my_user
 echo "$my_user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$my_user
 chmod 0440 /etc/sudoers.d/$my_user
-mkdir /home/$my_user && chown $my_user /home/$my_user 
 echo -ne "AllowUsers $my_user\nAllowTcpForwarding yes\nPermitTunnel yes\n" >> /etc/ssh/sshd_config
 echo "$my_user:$my_pass" | chpasswd
 
