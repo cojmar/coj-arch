@@ -59,10 +59,10 @@ make_part() { # makes partitions on install disk
     sgdisk -Z ${my_disk} # zap all on disk
     sgdisk -a 2048 -o ${my_disk} # new gpt disk 2048 alignment
     if [[ ! -d "/sys/firmware/efi" ]]; then
-        sgdisk -n 1::+100M --typecode=1:ef02:'BIOSBOOT' ${my_disk} # partition 1 (BIOS Boot Partition)    
+        sgdisk -n 1::+1M --typecode=1:ef02:'BIOSBOOT' ${my_disk} # partition 1 (BIOS Boot Partition)    
         sgdisk -n 2::-0 --typecode=2:8300:'ROOT' ${my_disk} # partition 2 (OS) 
     else
-        sgdisk -n 1::+100M --typecode=1:ef00:'EFIBOOT' ${my_disk} # partition 1 (EFI)
+        sgdisk -n 1::+1M --typecode=1:ef00:'EFIBOOT' ${my_disk} # partition 1 (EFI)
         sgdisk -n 2::-0 --typecode=2:8300:'ROOT' ${my_disk} # partition 2 (OS) 
     fi
     partprobe ${my_disk} 
