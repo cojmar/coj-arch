@@ -802,7 +802,7 @@ fi
 
 if [ "$my_gui" = "7" ]; then
 arch-chroot -u $my_user /mnt /bin/sh -c '
-cd "$HOME"
+cd /home/'"$my_user"' || exit 1
 
 yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers
 sudo systemctl --user enable --now pipewire pipewire-pulse wireplumber
