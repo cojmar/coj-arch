@@ -802,7 +802,7 @@ fi
 
 if [ "$my_gui" = "7" ]; then
 arch-chroot -u $my_user /mnt /bin/sh -c '
-cd ~
+cd "$HOME"
 
 yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers
 sudo systemctl --user enable --now pipewire pipewire-pulse wireplumber
@@ -817,7 +817,7 @@ sudo npm i -g opencode-ai
 
 git clone https://github.com/LGFae/swww.git
 cd swww-build
-cargo build --release
+sudo cargo build --release
 sudo cp target/release/swww /usr/bin/
 sudo cp target/release/swww-daemon /usr/bin/
 sudo chmod +x /usr/bin/swww /usr/bin/swww-daemon
