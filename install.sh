@@ -809,7 +809,18 @@ cd xembed-sni-proxy-git
 makepkg -si --noconfirm
 cd ..
 rm -rf xembed-sni-proxy-git
+
 sudo npm i -g opencode-ai
+
+git clone https://github.com/LGFae/swww.git
+cd swww-build
+cargo build --release
+sudo cp target/release/swww /usr/bin/
+sudo cp target/release/swww-daemon /usr/bin/
+sudo chmod +x /usr/bin/swww /usr/bin/swww-daemon
+cd ..
+rm -rf swww-build
+
 '
 fi
 
