@@ -246,7 +246,7 @@ echo $my_opt
 echo $sep
 echo Template
 echo $sep
-echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)\n6: Hyprland (+JaKooLit)"
+echo -ne "1: custom\n2: Server de AUR\n3: Desktop de AUR\n4: Web App in chromium -kiosk\n5: xterm GUI de AUR (DEV)\n6: Hyprland (JaKooLit DOT files, cachy-linux kernel)"
 get_opt "Template:" "6"
 echo $my_opt
 export my_template=$my_opt
@@ -440,6 +440,9 @@ if [ "$my_gui" = "7" ]; then
     my_pacman+=(open-vm-tools xf86-input-vmmouse mesa lib32-mesa libglvnd vulkan-mesa-layers nvidia-dkms nvidia-utils nvidia-settings lib32-nvidia-utils lib32-vulkan-radeon lib32-vulkan-intel)
     # pipewire audio
     my_pacman+=(pipewire wireplumber pipewire-audio pipewire-alsa pipewire-pulse sof-firmware)
+    # add all firmware for portability
+    my_pacman+=(intel-ucode amd-ucode)
+    
 fi
 # drivers
 
@@ -801,7 +804,7 @@ if [ "$my_gui" = "7" ]; then
 arch-chroot -u $my_user /mnt /bin/sh -c '
 cd ~
 
-yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout
+yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers
 sudo systemctl --user enable --now pipewire pipewire-pulse wireplumber
 
 git clone https://aur.archlinux.org/xembed-sni-proxy-git.git
