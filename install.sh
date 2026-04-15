@@ -437,7 +437,7 @@ if [ "$my_gui" = "7" ]; then
     #fonts
     my_pacman+=(otf-font-awesome noto-fonts-emoji ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-hack ttf-liberation)
     # video
-    my_pacman+=(open-vm-tools xf86-input-vmmouse mesa lib32-mesa libglvnd vulkan-mesa-layers nvidia-dkms nvidia-utils nvidia-settings lib32-nvidia-utils lib32-vulkan-radeon lib32-vulkan-intel)
+    my_pacman+=(open-vm-tools xf86-input-vmmouse mesa lib32-mesa libglvnd vulkan-mesa-layers nvidia-open-dkms nvidia-utils nvidia-settings lib32-nvidia-utils lib32-vulkan-radeon lib32-vulkan-intel)
     # pipewire audio
     my_pacman+=(pipewire wireplumber pipewire-audio pipewire-alsa pipewire-pulse sof-firmware)
     # add all firmware for portability
