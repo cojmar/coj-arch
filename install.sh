@@ -808,7 +808,7 @@ arch-chroot -u "$my_user" /mnt /bin/sh -c "
 
 export HOME=/home/$my_user
 cd \$HOME || exit 1
-
+xdg-user-dirs-update
 systemctl --user enable pipewire pipewire-pulse wireplumber
 sudo ln -sf /usr/bin/awww /usr/bin/swww
 sudo ln -sf /usr/bin/awww-daemon /usr/bin/swww-daemon
