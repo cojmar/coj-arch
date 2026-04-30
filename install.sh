@@ -433,7 +433,7 @@ fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
     # hyprland stuff
-    my_pacman+=(ffmpeg moonlight-qt libxml2 libxmlb lib32-libxml2 sshpass zip hyprlock hypridle scrcpy network-manager-applet bat hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp)
+    my_pacman+=(ffmpeg moonlight-qt libxml2 libxmlb lib32-libxml2 sshpass zip hyprlock hypridle scrcpy network-manager-applet bat hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp awww)
     #fonts
     my_pacman+=(otf-font-awesome noto-fonts-emoji ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-hack ttf-liberation)
     # video
@@ -442,6 +442,8 @@ if [ "$my_gui" = "7" ]; then
     my_pacman+=(pipewire wireplumber pipewire-audio pipewire-alsa pipewire-pulse sof-firmware)
     # add all firmware for portability
     my_pacman+=(intel-ucode amd-ucode)
+    # aur
+    export my_extra+=" brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade"
     
 fi
 # drivers
@@ -722,8 +724,9 @@ if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
 fi
 '
 
-arch-chroot -u $my_user /mnt /bin/sh -c '
-cd ~
+arch-chroot -u $my_user /mnt /bin/sh -c "
+export HOME=/home/$my_user
+cd \$HOME || exit 1
 
 # install yay
 git clone https://aur.archlinux.org/yay-bin.git
@@ -733,7 +736,7 @@ cd ..
 rm -rf yay-bin
 yay -Syu --noconfirm pacseek "${my_extra[@]}"
 yay -Yc --noconfirm
-'
+"
 fi
 
 
@@ -806,8 +809,6 @@ arch-chroot -u "$my_user" /mnt /bin/sh -c "
 export HOME=/home/$my_user
 cd \$HOME || exit 1
 
-yay -Syu --noconfirm brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers
-
 systemctl --user enable pipewire pipewire-pulse wireplumber
 
 git clone https://aur.archlinux.org/xembed-sni-proxy-git.git \$HOME/xembed-sni-proxy-git
@@ -817,14 +818,6 @@ cd \$HOME
 rm -rf \$HOME/xembed-sni-proxy-git
 
 sudo npm i -g opencode-ai
-
-git clone https://github.com/LGFae/swww.git \$HOME/swww
-cd \$HOME/swww || exit 1
-cargo build --release
-sudo install -Dm755 target/release/swww /usr/bin/swww
-sudo install -Dm755 target/release/swww-daemon /usr/bin/swww-daemon
-cd \$HOME
-rm -rf \$HOME/swww
 
 "
 fi
