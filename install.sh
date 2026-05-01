@@ -443,7 +443,7 @@ if [ "$my_gui" = "7" ]; then
     # add all firmware for portability
     my_pacman+=(intel-ucode amd-ucode)
     # aur
-    export my_extra="brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade gtk-engine-murrine flat-remix flat-remix-gtk"
+    export my_extra="brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade gtk-engine-murrine"
     
 fi
 # drivers
