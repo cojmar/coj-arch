@@ -780,6 +780,8 @@ arch-chroot /mnt /bin/sh -c '
     " > clean.sh
     chmod +x clean.sh
     ./clean.sh    
+    sudo mkdir -p /boot/efi/EFI/BOOT
+    sudo cp /boot/efi/EFI/arch/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
 '
 else
 arch-chroot /mnt /bin/sh -c '    
