@@ -433,7 +433,7 @@ fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
     # hyprland stuff
-    my_pacman+=(ffmpeg moonlight-qt libxml2 libxmlb lib32-libxml2 sshpass zip hyprlock hypridle scrcpy network-manager-applet bat hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp awww)
+    my_pacman+=(ffmpeg moonlight-qt libxml2 libxmlb lib32-libxml2 sshpass zip hyprlock hypridle scrcpy network-manager-applet bat hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp awww cmake cpio pkgconf)
     #fonts
     my_pacman+=(otf-font-awesome noto-fonts-emoji ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-hack ttf-liberation)
     # video
@@ -443,7 +443,7 @@ if [ "$my_gui" = "7" ]; then
     # add all firmware for portability
     my_pacman+=(intel-ucode amd-ucode)
     # aur
-    export my_extra="brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade"
+    export my_extra="brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade gtk-engine-murrine"
     
 fi
 # drivers
@@ -811,6 +811,8 @@ arch-chroot -u "$my_user" /mnt /bin/sh -c "
 export HOME=/home/$my_user
 cd \$HOME || exit 1
 xdg-user-dirs-update
+mkdir -p \$HOME/Pictures/wallpapers
+curl -L 'https://blog.desdelinux.net/wp-content/uploads/2012/11/otros-wallpapers-de-archlinux_4.jpg' -o \"\$HOME/Pictures/wallpapers/arch-wallpaper.jpg\"
 systemctl --user enable pipewire pipewire-pulse wireplumber
 sudo ln -sf /usr/bin/awww /usr/bin/swww
 sudo ln -sf /usr/bin/awww-daemon /usr/bin/swww-daemon
@@ -822,6 +824,19 @@ cd \$HOME
 rm -rf \$HOME/xembed-sni-proxy-git
 
 sudo npm i -g opencode-ai
+
+TMP_DIR=\"\$(mktemp -d)\"
+cd \"\$TMP_DIR\"
+git clone --depth=1 https://github.com/JaKooLit/GTK-themes-icons.git
+cd GTK-themes-icons
+mkdir -p \"\$HOME/.themes\" \"\$HOME/.icons\"
+find . -type f -name \"*.zip\" -exec unzip -o -q {} -d extracted \\\;
+find extracted -type d -iname \"*theme*\" -exec cp -r {} \"\$HOME/.themes/\" \\\; 2>/dev/null || true
+find extracted -type d -iname \"*icon*\" -exec cp -r {} \"\$HOME/.icons/\" \\\; 2>/dev/null || true
+cp -r extracted/* \"\$HOME/.themes/\" 2>/dev/null || true
+cp -r extracted/* \"\$HOME/.icons/\" 2>/dev/null || true
+cd \$HOME
+rm -rf \"\$TMP_DIR\"
 
 "
 fi
