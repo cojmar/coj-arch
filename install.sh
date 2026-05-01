@@ -443,7 +443,7 @@ if [ "$my_gui" = "7" ]; then
     # add all firmware for portability
     my_pacman+=(intel-ucode amd-ucode)
     # aur
-    export my_extra="brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade gtk-engine-murrine"
+    export my_extra="brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade gtk-engine-murrine flat-remix flat-remix-gtk"
     
 fi
 # drivers
@@ -824,21 +824,6 @@ cd \$HOME
 rm -rf \$HOME/xembed-sni-proxy-git
 
 sudo npm i -g opencode-ai
-
-yay -Sy --noconfirm gtk-engine-murrine
-
-TMP_DIR=\"\$(mktemp -d)\"
-cd \"\$TMP_DIR\"
-git clone --depth=1 https://github.com/JaKooLit/GTK-themes-icons.git
-cd GTK-themes-icons
-mkdir -p \"\$HOME/.themes\" \"\$HOME/.icons\"
-find . -type f -name \"*.zip\" -exec unzip -o -q {} -d extracted \\\;
-find extracted -type d -iname \"*theme*\" -exec cp -r {} \"\$HOME/.themes/\" \\\; 2>/dev/null || true
-find extracted -type d -iname \"*icon*\" -exec cp -r {} \"\$HOME/.icons/\" \\\; 2>/dev/null || true
-cp -r extracted/* \"\$HOME/.themes/\" 2>/dev/null || true
-cp -r extracted/* \"\$HOME/.icons/\" 2>/dev/null || true
-cd \$HOME
-rm -rf \"\$TMP_DIR\"
 
 "
 fi
