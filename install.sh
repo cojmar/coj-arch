@@ -816,7 +816,6 @@ curl -L 'https://blog.desdelinux.net/wp-content/uploads/2012/11/otros-wallpapers
 systemctl --user enable pipewire pipewire-pulse wireplumber
 sudo ln -sf /usr/bin/awww /usr/bin/swww
 sudo ln -sf /usr/bin/awww-daemon /usr/bin/swww-daemon
-awww img \$HOME/Pictures/wallpapers/arch-wallpaper.jpg
 
 git clone https://aur.archlinux.org/xembed-sni-proxy-git.git \$HOME/xembed-sni-proxy-git
 cd \$HOME/xembed-sni-proxy-git || exit 1
