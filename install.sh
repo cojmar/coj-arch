@@ -825,6 +825,8 @@ rm -rf \$HOME/xembed-sni-proxy-git
 
 sudo npm i -g opencode-ai
 
+yay -Sy --noconfirm gtk-engine-murrine
+
 TMP_DIR=\"\$(mktemp -d)\"
 cd \"\$TMP_DIR\"
 git clone --depth=1 https://github.com/JaKooLit/GTK-themes-icons.git
