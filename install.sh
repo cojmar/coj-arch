@@ -817,6 +817,16 @@ systemctl --user enable pipewire pipewire-pulse wireplumber
 sudo ln -sf /usr/bin/awww /usr/bin/swww
 sudo ln -sf /usr/bin/awww-daemon /usr/bin/swww-daemon
 
+# install icons (sparse checkout)
+TMP_DIR=\$(mktemp -d)
+git clone --depth=1 --filter=blob:none --sparse https://github.com/daniruiz/flat-remix.git \"\$TMP_DIR\"
+cd \"\$TMP_DIR\" || exit 1
+git sparse-checkout set Flat-Remix-Blue-Dark Flat-Remix-Black-Dark
+mkdir -p \"\$HOME/.icons\"
+cp -r Flat-Remix-Blue-Dark Flat-Remix-Black-Dark \"\$HOME/.icons/\"
+cd /
+rm -rf \"\$TMP_DIR\"
+
 git clone https://aur.archlinux.org/xembed-sni-proxy-git.git \$HOME/xembed-sni-proxy-git
 cd \$HOME/xembed-sni-proxy-git || exit 1
 makepkg -si --noconfirm
