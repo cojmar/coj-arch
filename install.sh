@@ -443,7 +443,7 @@ if [ "$my_gui" = "7" ]; then
     # add all firmware for portability
     my_pacman+=(intel-ucode amd-ucode)
     # aur
-    export my_extra="brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade gtk-engine-murrine"
+    export my_extra="brave-bin vscodium-bin faugus-launcher wvkbd wallust-git linutil ttf-victor-mono wlogout linux-cachyos linux-cachyos-headers topgrade gtk-engine-murrine bibata-cursor-theme"
     
 fi
 # drivers
@@ -806,18 +806,55 @@ arch-chroot /mnt /bin/sh -c '
 fi
 
 if [ "$my_gui" = "7" ]; then
-arch-chroot -u "$my_user" /mnt /bin/sh -c "
+arch-chroot /mnt /bin/bash -c "
 
-export HOME=/home/$my_user
+USER_NAME='$my_user'
+USER_HOME=/home/\$USER_NAME
+
+# --- run everything as user when needed ---
+runuser -u \$USER_NAME -- bash -c '
+
+export HOME=\$USER_HOME
 cd \$HOME || exit 1
-xdg-user-dirs-update
-mkdir -p \$HOME/Pictures/wallpapers
-curl -L 'https://blog.desdelinux.net/wp-content/uploads/2012/11/otros-wallpapers-de-archlinux_4.jpg' -o \"\$HOME/Pictures/wallpapers/arch-wallpaper.jpg\"
-systemctl --user enable pipewire pipewire-pulse wireplumber
-sudo ln -sf /usr/bin/awww /usr/bin/swww
-sudo ln -sf /usr/bin/awww-daemon /usr/bin/swww-daemon
 
-# install icons (sparse checkout)
+# --- XDG dirs ---
+xdg-user-dirs-update
+
+# --- wallpaper ---
+mkdir -p \$HOME/Pictures/wallpapers
+curl -L \"https://blog.desdelinux.net/wp-content/uploads/2012/11/otros-wallpapers-de-archlinux_4.jpg\" -o \"\$HOME/Pictures/wallpapers/arch-wallpaper.jpg\"
+
+# --- terminal fix (IMPORTANT) ---
+grep -qxF \"export TERMINAL=kitty\" \$HOME/.profile || echo \"export TERMINAL=kitty\" >> \$HOME/.profile
+
+# --- Thunar custom action (bulletproof) ---
+mkdir -p \$HOME/.config/Thunar
+cat > \$HOME/.config/Thunar/uca.xml <<EOF
+<actions>
+  <action>
+    <icon>utilities-terminal</icon>
+    <name>Open Kitty here</name>
+    <command>kitty --working-directory %f</command>
+    <directories/>
+  </action>
+</actions>
+EOF
+
+# --- Faugus launcher registration ---
+mkdir -p \$HOME/.local/share/applications
+cat > \$HOME/.local/share/applications/faugus-launcher.desktop <<EOF
+[Desktop Entry]
+Name=Faugus Launcher
+Exec=faugus-launcher %f
+Type=Application
+MimeType=application/x-ms-dos-executable;application/x-msdownload;
+NoDisplay=false
+EOF
+
+xdg-mime default faugus-launcher.desktop application/x-ms-dos-executable || true
+xdg-mime default faugus-launcher.desktop application/x-msdownload || true
+
+# --- icons (sparse checkout) ---
 TMP_DIR=\$(mktemp -d)
 git clone --depth=1 --filter=blob:none --sparse https://github.com/daniruiz/flat-remix.git \"\$TMP_DIR\"
 cd \"\$TMP_DIR\" || exit 1
@@ -827,13 +864,23 @@ cp -r Flat-Remix-Blue-Dark Flat-Remix-Black-Dark \"\$HOME/.icons/\"
 cd /
 rm -rf \"\$TMP_DIR\"
 
+# --- AUR package ---
 git clone https://aur.archlinux.org/xembed-sni-proxy-git.git \$HOME/xembed-sni-proxy-git
 cd \$HOME/xembed-sni-proxy-git || exit 1
 makepkg -si --noconfirm
 cd \$HOME
 rm -rf \$HOME/xembed-sni-proxy-git
 
-sudo npm i -g opencode-ai
+'
+
+# --- system-wide stuff (root context) ---
+ln -sf /usr/bin/awww /usr/bin/swww
+ln -sf /usr/bin/awww-daemon /usr/bin/swww-daemon
+
+npm i -g opencode-ai
+
+# --- enable user services safely ---
+loginctl enable-linger \$USER_NAME
 
 "
 fi
