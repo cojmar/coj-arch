@@ -433,7 +433,7 @@ fi
 if [ "$my_gui" = "7" ]; then
     export my_gui_autostart="start-hyprland"
     # hyprland stuff
-    my_pacman+=(ffmpeg moonlight-qt libxml2 libxmlb lib32-libxml2 sshpass zip hyprlock hypridle scrcpy network-manager-applet bat hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp awww cmake cpio pkgconf xarchiver)
+    my_pacman+=(ffmpeg moonlight-qt libxml2 libxmlb lib32-libxml2 sshpass zip hyprlock hypridle scrcpy network-manager-applet bat hyprland kitty waybar rofi thunar npm nodejs qbittorrent xorg-xwayland wayland-protocols quickshell swappy xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-desktop-portal-kde cliphist bc grim gvfs gvfs-mtp hyprpolkitagent imagemagick inxi jq kvantum libspng nano pamixer pavucontrol playerctl python-requests python-pyquery qt5ct qt6ct qt6-svg slurp swappy swaync swww unzip wget wl-clipboard xdg-user-dirs xdg-utils yad brightnessctl btop cava loupe gnome-system-monitor mousepad mpv mpv-mpris nvtop nwg-look nwg-displays pacman-contrib qalculate-gtk yt-dlp awww cmake cpio pkgconf thunar-archive-plugin xarchiver)
     #fonts
     my_pacman+=(otf-font-awesome noto-fonts-emoji ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-droid ttf-fantasque-nerd ttf-fira-code adobe-source-code-pro-fonts ttf-hack ttf-liberation)
     # video
@@ -829,6 +829,18 @@ cat > \$HOME/.config/Thunar/uca.xml <<EOF
     <command>kitty --working-directory %f</command>
     <directories/>
   </action>
+  <action>
+    <icon>vscodium</icon>
+    <name>Open in VSCodium</name>
+    <command>codium %f</command>
+    <directories/>
+  </action>
+  <action>
+    <icon>vscodium</icon>
+    <name>Open current folder in VSCodium</name>
+    <command>codium %d</command>
+    <directories/>
+  </action>
 </actions>
 EOF
 
@@ -853,11 +865,23 @@ sudo ln -sf /usr/bin/awww-daemon /usr/bin/swww-daemon
 
 # install icons (sparse checkout)
 TMP_DIR=\$(mktemp -d)
+
+# --- themes array (add more here later) ---
+THEMES=(Flat-Remix-Blue-Dark Flat-Remix-Black-Dark Flat-Remix-Red-Dark Flat-Remix-Teal-Dark Flat-Remix-Orange-Dark Flat-Remix-Magenta-Dark Flat-Remix-Yellow-Dark Flat-Remix-Violet-Dark Flat-Remix-Grey-Dark Flat-Remix-Green-Dark Flat-Remix-Cyan-Dark Flat-Remix-Brown-Dark)
+
 git clone --depth=1 --filter=blob:none --sparse https://github.com/daniruiz/flat-remix.git \"\$TMP_DIR\"
 cd \"\$TMP_DIR\" || exit 1
-git sparse-checkout set Flat-Remix-Blue-Dark Flat-Remix-Black-Dark
+
+# --- sparse checkout from array ---
+git sparse-checkout set \${THEMES[@]}
+
 mkdir -p \"\$HOME/.icons\"
-cp -r Flat-Remix-Blue-Dark Flat-Remix-Black-Dark \"\$HOME/.icons/\"
+
+# --- copy from array ---
+for theme in \"\${THEMES[@]}\"; do
+  cp -r \"\$theme\" \"\$HOME/.icons/\"
+done
+
 cd /
 rm -rf \"\$TMP_DIR\"
 
